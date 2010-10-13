@@ -45,7 +45,7 @@
 							{if $method->class !== get_class($object)}
 								<i>defined in</i> {$method->class}
 							{/if}
-							<a class='phpdoc' title="{$method->getFileName()}" href="{!=\mbase\Debug\DebugHelper::createEditSourceLink($method->getFileName(), $method->getStartLine())}">edit</a>
+							<a class='phpdoc' title="{$method->getFileName()}" href="{!=\Extras\Debug\ComponentTreePanel::createEditLink($method->getFileName(), $method->getStartLine())}">edit</a>
 
 						{include sourcefile.phtml, object => $method, showSource => TRUE}
 

@@ -9,7 +9,7 @@
 		<?php
 		$refl = $object->getReflection();
 		?>
-		<a class='phpdoc' title="{$refl->getFileName()}" href="{!=\mbase\Debug\DebugHelper::createEditSourceLink($refl->getFileName(), $refl->getStartLine())}">edit</a>
+		<a class='phpdoc' title="{$refl->getFileName()}" href="{!=\Extras\Debug\ComponentTreePanel::createEditLink($refl->getFileName(), $refl->getStartLine())}">edit</a>
 
 		<?php
 

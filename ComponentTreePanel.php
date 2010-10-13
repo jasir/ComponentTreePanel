@@ -12,6 +12,7 @@ use \Nette\Object;
 use \Nette\IDebugPanel;
 use \Nette\Templates\FileTemplate;
 use \Nette\Templates\LatteFilter;
+use \Nette\Debug;
 use \Nette\Environment;
 
 class ComponentTreePanel extends Object implements IDebugPanel {
@@ -65,5 +66,21 @@ class ComponentTreePanel extends Object implements IDebugPanel {
 	public function getId() {
 		return __CLASS__;
 	}
+
+	public static function createEditLink($file, $line) {
+		return strtr(Debug::$editor, array('%file' => urlencode(realpath($file)), '%line' => $line));
+	}
+
+	public static function getSource($fileName, $startLine = NULL, $endLine = NULL) {
+		static $sources = array(); /* --- simple caching --- */
+
+		if (!in_array($fileName, $sources)) {
+			$sources[$fileName] = file($fileName);
+		}
+
+		$iterator = new \LimitIterator(new \ArrayIterator($sources[$fileName]), $startLine, $endLine - $startLine + 1);
+		return $iterator;
+	}
+
 
 }
