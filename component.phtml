@@ -13,6 +13,7 @@
 		<?php
 
 			$cache = \Nette\Environment::getCache('Debug.Panels.ComponentTree');
+			if (FALSE && isset($cache[$object->name])) {
 				$cached = $cache[$object->name];
 				echo $cached;
 			}
