@@ -34,10 +34,10 @@
 ?>
 
 	{if count($filtered)>0 || $showEmpty === TRUE}
-		<li class="open">
+		<li>
 			<i>{$name} ({=count($filtered)})</i><a class="nette-toggler" href="#"><abbr>&#x25ba;</abbr></a>
 
-			<ul>
+			<ul class="nette-hidden">
 
 				{foreach $filtered as $method}
 					<li>
@@ -45,7 +45,7 @@
 							{if $method->class !== get_class($object)}
 								<i>defined in</i> {$method->class}
 							{/if}
-							<a class='phpdoc' title="{$method->getFileName()}" href="{!=\Extras\Debug\ComponentTreePanel::createEditLink($method->getFileName(), $method->getStartLine())}">edit</a>
+							<a href="{!=\Extras\Debug\ComponentTreePanel::createEditLink($method->getFileName(), $method->getStartLine())}">edit</a>
 							<a class="nette-toggler" href="#"><abbr>&#x25ba;</abbr></a>
 							<div class="nette-hidden">
 								{include sourcefile.phtml, object => $method, showSource => TRUE}

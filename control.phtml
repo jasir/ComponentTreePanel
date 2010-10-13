@@ -49,6 +49,11 @@
 		background:#ddd;
 	}
 
+	#componentsTreeComponent ul {
+		padding-left:10px;
+		padding-bottom:5px;
+	}
+
 
 </style>
 
@@ -59,7 +64,7 @@
 
 <div class="nette-inner">
 	<div id="componentsTreeComponent" style="border:1px solid #aaa;">
-		<ul id="tree" class="filetree open">
+		<ul id="tree">
 			{include component.phtml, object => $rootComponent}
 		</ul>
 	</div>
