@@ -1,6 +1,6 @@
 {block #componentRender}
 
-	<li  {if ($object instanceof \Nette\Application\Presenter) && (!$object instanceOf \Nette\Forms\FormControl)}class="open"{/if}
+	<li  {if ($object instanceof \Nette\Application\Presenter) && (!$object instanceOf \Nette\Forms\FormControl)}class="open"{/if}>
 
 		{var $refl => $object->getReflection()}
 
