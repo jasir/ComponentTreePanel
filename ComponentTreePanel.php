@@ -21,9 +21,18 @@ class ComponentTreePanel extends Object implements IDebugPanel {
 
 	static private $dumps = array();
 
+	static private $isRegistered = FALSE;
+
 	/* --- Properties --- */
 
 	/* --- Public Methods--- */
+
+	public static function register() {
+		if (!self::$isRegistered) {
+			Debug::addPanel(new self);
+			self::$isRegistered = TRUE;
+		}
+	}
 
 	/**
 	 * Renders HTML code for custom tab.
