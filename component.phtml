@@ -35,7 +35,7 @@
 							name => "action<Action>", object => $object, inherited => TRUE, pattern => "#^(action)(.+)#"}
 						{include
 							methods.phtml
-							name => "beforeRender", object => $object, inherited => TRUE, pattern => "#^()(beforeRender)#"}
+							name => "lifecycle", object => $object, inherited => TRUE, pattern => "#^()(startup|beforeHandle|beforeRender|shutdown)#"}
 					{/if}
 
 					<!-- render<view>, handle<signal> -->
