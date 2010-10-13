@@ -1,19 +1,18 @@
 {block #componentRender}
 
 	<li  {if ($object instanceof \Nette\Application\Presenter) && (!$object instanceOf \Nette\Forms\FormControl)}class="open"{/if}
+
+		{var $refl => $object->getReflection()}
+
 		<b>{$object->name}</b>
 		<i>instance of</i> {=get_class($object)}
-		<i>extends</i> {$object->getReflection()->getParentClass()->getName()}
+		<i>extends</i> {$refl->getParentClass()->getName()}
 
-
-		<?php
-		$refl = $object->getReflection();
-		?>
 		<a class='phpdoc' title="{$refl->getFileName()}" href="{!=\Extras\Debug\ComponentTreePanel::createEditLink($refl->getFileName(), $refl->getStartLine())}">edit</a>
 
 		<?php
 
-			$cache = \Nette\Environment::getCache('Debug.Panels.ComponentTree.Methods');
+			$cache = \Nette\Environment::getCache('Debug.Panels.ComponentTree');
 			if (isset($cache[$object->name])) {
 				$cached = $cache[$object->name];
 				echo $cached;
@@ -104,6 +103,5 @@
 				{/foreach}
 			</ul>
 	{/if}
-
 	</ul>
 {/block}
