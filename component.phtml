@@ -1,0 +1,109 @@
+{block #componentRender}
+
+	<li  {if ($object instanceof \Nette\Application\Presenter) && (!$object instanceOf \Nette\Forms\FormControl)}class="open"{/if}
+		<b>{$object->name}</b>
+		<i>instance of</i> {=get_class($object)}
+		<i>extends</i> {$object->getReflection()->getParentClass()->getName()}
+
+
+		<?php
+		$refl = $object->getReflection();
+		?>
+		<a class='phpdoc' title="{$refl->getFileName()}" href="{!=\mbase\Debug\DebugHelper::createEditSourceLink($refl->getFileName(), $refl->getStartLine())}">edit</a>
+
+		<?php
+
+			$cache = \Nette\Environment::getCache('Debug.Panels.ComponentTree.Methods');
+			if (isset($cache[$object->name])) {
+				$cached = $cache[$object->name];
+				echo $cached;
+			}
+			else {
+				ob_start();
+		?>
+
+		<ul>
+			<li class="closed">
+
+				<i>Methods</i>
+				<ul>
+
+					<!-- aciton<action>, beforeRender<view>-->
+
+					{if $object instanceof \Nette\Application\Presenter}
+						{include
+							methods.phtml
+							name => "action<Action>", object => $object, inherited => TRUE, pattern => "#^(action)(.+)#"}
+						{include
+							methods.phtml
+							name => "beforeRender", object => $object, inherited => TRUE, pattern => "#^()(beforeRender)#"}
+					{/if}
+
+					<!-- render<view>, handle<signal> -->
+
+					{if $object instanceof \Nette\Application\Control}
+						{include methods.phtml
+							name => "render<View>", object => $object, inherited => TRUE, pattern => "#^(render)(.*)#"}
+						{include methods.phtml
+							name => "handle<Signal>", object => $object, inherited => TRUE, pattern => "#^(handle)(.*)#", hideMethods => array()}
+					{/if}
+
+					<!-- createComponent -->
+
+					{include methods.phtml name => "createComponent<name>", object => $object, inherited => TRUE, pattern => "#^(createComponent)(.+)#", hideMethods => array()}
+
+					<!-- create<object>-->
+					{include methods.phtml name => "create<object>", object =>$object, inherited => TRUE, pattern => "#^(create(?!Component))(\w+)#", hideMethods => array('createRequest')}
+
+					<!-- get/set properties-->
+
+					{include methods.phtml
+						name => "get<property>", object => $object, inherited => FALSE, pattern => "#^(get)(.+)#"}
+
+					{include methods.phtml
+						name => "set<property>", object => $object, inherited => FALSE, pattern => "#^(set)(.*)#"}
+				</ul>
+
+
+			{if !$object instanceOf \Nette\Application\AppForm}
+			<li><i>Source File</i>
+				<ul>
+					{include sourcefile.phtml, object => $object, showSource => TRUE}
+				</ul>
+			{/if}
+
+			<?php
+					$content = ob_get_clean();
+					echo $content;
+					$cache->save($object->name, $content, array('files'=>array($refl->getFileName())));
+				}
+			?>
+
+
+	<!--! Childs COMPONENTS -->
+
+	{if $object instanceOf \Nette\ComponentContainer}
+
+		<?php
+		$filteredComponents = array();
+
+		foreach ($object->components as $component) {
+			if ($component instanceof \Extras\Debug\ComponentTreeControl) {
+				continue;
+			}
+			$filteredComponents[] = $component;
+		}
+		?>
+
+		<li class="open">
+
+			<i>Child Components ({=count($filteredComponents)})</i>
+			<ul n:if="count($filteredComponents)>0">
+				{foreach $filteredComponents as $com}
+					{include #componentRender object => $com}
+				{/foreach}
+			</ul>
+	{/if}
+
+	</ul>
+{/block}

@@ -1,0 +1,58 @@
+{*
+  @param $object
+  @param $inherited show Inherited Methods?
+  @param $name
+  @param $showEmpty
+  @param $hideMethods
+*}
+
+{block #methods}
+
+<?php
+	if (!isset($hideMethods)) {
+		$hideMethods = array();
+	}
+	$methods = $object->getReflection()->getMethods();
+
+	$filtered = array();
+
+	foreach($methods as $method) {
+
+		if (!preg_match($pattern, $method->getName(), $matches)) {
+			continue;
+		}
+		if ($method->class !== get_class($object) && $inherited === FALSE) {
+			continue;
+		}
+		if (in_array($method->getName(), $hideMethods)) {
+			continue;
+		}
+
+		$filtered[] = $method;
+	}
+	$showEmpty = isset($showEmpty) ? $showEmpty : FALSE;
+?>
+
+	{if count($filtered)>0 || $showEmpty === TRUE}
+		<li class="open">
+			<i>{$name} ({=count($filtered)})</i>
+
+			<ul>
+
+				{foreach $filtered as $method}
+					<li>
+						{!=preg_replace($pattern, '${1}<strong>${2}</strong>', $method->name)}()
+							{if $method->class !== get_class($object)}
+								<i>defined in</i> {$method->class}
+							{/if}
+							<a class='phpdoc' title="{$method->getFileName()}" href="{!=\mbase\Debug\DebugHelper::createEditSourceLink($method->getFileName(), $method->getStartLine())}">edit</a>
+
+						{include sourcefile.phtml, object => $method, showSource => TRUE}
+
+				{/foreach}
+
+			</ul>
+		</li>
+	{/if}
+
+{/block}

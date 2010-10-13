@@ -1,0 +1,76 @@
+<?php
+/**
+* @param $rootComponent
+* @param $BaseUri
+* @param $presenter
+* @param $template
+* @todo Javascript collapsable
+* @todo Odkazy na editaci souboru
+* @todo TODOS a zobrazovat brat ze souboru
+* @todo Refactor: přénést PHP z šablon @component.phtml a @methods.phtml do helperů
+*/
+?>
+<style n:syntax="off">
+
+
+	#componentsTreeComponent ul,
+	#componentsTreeComponent li,
+	#componentsTreeComponent ol
+	{
+		font-family: arial;
+		line-height: 1.2;
+		font-size:13px;
+		list-style: none;
+		margin-top: 0;
+		margin-bottom: 0;
+		margin-left:0em;
+		text-align: left;
+	}
+
+	#componentsTreeComponent i {
+		color:#666;
+	}
+
+	#componentsTreeComponent b {
+		color:darkgreen;
+	}
+
+	#componentsTreeComponent strong {
+		color:darkred;
+	}
+
+	#componentsTreeComponent code {
+		font-family: consolas;
+		background:#ddd;
+	}
+
+	#componentsTreeComponent .source {
+		font-family: consolas;
+		background:#ddd;
+	}
+
+
+</style>
+
+<script n:syntax="off">
+  $(document).ready(function() {
+	 $("#tree").treeview(
+		{
+			//persist: "cookie",
+			cookieId: "treeview",
+			collapsed:true
+		}
+	 )
+	 ;
+  });
+</script>
+
+<h1>Component Tree</h1>
+
+<div class="nette-inner">
+	<div id="componentsTreeComponent" style="background:#eee; border:1px solid #aaa;">
+		<ul id="tree" class="filetree open">
+			{include component.phtml, object => $rootComponent}
+		</ul>
+	</div>
+</div>

@@ -1,0 +1,54 @@
+<?php
+ /**
+  * @param $object
+  * @param $showSource bool
+  */
+?>
+{block #sourcefile}
+<ul>
+		<?php
+			if ( !($object instanceOf \Nette\Reflection\MethodReflection || $object instanceof \Nette\Reflection\ClassReflection)) {
+				$object = $object->getReflection();
+			}
+			$link = \mbase\Debug\DebugHelper::createEditSourceLink($object->getFileName(), $object->getStartLine());
+		?>
+		 <li>
+
+			{if $showSource}
+
+				<?php
+					$sourceLines = \mbase\Debug\DebugHelper::getSource($object->getFileName(), $object->getStartLine()-1, $object->getEndLine()-1);
+
+					$phpDocTxt = $object->getDocComment();
+					$phpDoc = array();
+					if (strlen($phpDocTxt) > 0) {
+						$phpDoc = explode("\r", $phpDocTxt);
+						$phpDoc[] = "\n";
+					}
+
+					$phpDoc = new ArrayIterator($phpDoc);
+					$lines = new AppendIterator();
+
+					$lines->append($phpDoc);
+					$lines->append($sourceLines);
+
+					$source = '';
+
+					foreach($lines as $line) {
+						$line = trim($line, "\r\n");
+						$source .= $line . "\n";
+					}
+					$source = highlight_string("<?php\n" . $source, TRUE);
+					$source = str_replace('<span style="color: #0000BB">&lt;?php<br />&nbsp;&nbsp;&nbsp;&nbsp;</span>', '', $source);
+					$source = str_replace('<span style="color: #0000BB">&lt;?php<br /></span>', '', $source);
+					$source = "&nbsp;&nbsp;&nbsp;" . $source;
+
+				?>
+				<div class="source">
+				{!$source}
+				</div>
+
+
+			{/if}
+</ul>
+{/block}
