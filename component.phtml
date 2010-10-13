@@ -13,19 +13,19 @@
 		<?php
 
 			$cache = \Nette\Environment::getCache('Debug.Panels.ComponentTree');
-			if (isset($cache[$object->name])) {
 				$cached = $cache[$object->name];
 				echo $cached;
 			}
 			else {
 				ob_start();
 		?>
+		<a class="nette-toggler" href="#"><abbr>&#x25ba;</abbr></a>
+		<ul class="nette-hidden">
+			<li>
 
-		<ul>
-			<li class="closed">
+				<i>Methods</i><a class="nette-toggler" href="#"><abbr>&#x25ba;</abbr></a>
 
-				<i>Methods</i>
-				<ul>
+				<ul class="nette-hidden">
 
 					<!-- aciton<action>, beforeRender<view>-->
 
@@ -62,15 +62,12 @@
 					{include methods.phtml
 						name => "set<property>", object => $object, inherited => FALSE, pattern => "#^(set)(.*)#"}
 				</ul>
-
-
 			{if !$object instanceOf \Nette\Application\AppForm}
-			<li><i>Source File</i>
-				<ul>
+			<li><i>Source File</i><a class="nette-toggler" href="#"><abbr>&#x25ba;</abbr></a>
+				<ul class="nette-hidden">
 					{include sourcefile.phtml, object => $object, showSource => TRUE}
 				</ul>
 			{/if}
-
 			<?php
 					$content = ob_get_clean();
 					echo $content;
@@ -82,7 +79,6 @@
 	<!--! Childs COMPONENTS -->
 
 	{if $object instanceOf \Nette\ComponentContainer}
-
 		<?php
 		$filteredComponents = array();
 
@@ -94,14 +90,12 @@
 		}
 		?>
 
-		<li class="open">
-
-			<i>Child Components ({=count($filteredComponents)})</i>
-			<ul n:if="count($filteredComponents)>0">
+		<li>
+			<i>Child Components ({=count($filteredComponents)})</i><a class="nette-toggler" href="#"><abbr>&#x25ba;</abbr></a>
+			<ul n:if="count($filteredComponents)>0" class="nette-hidden">
 				{foreach $filteredComponents as $com}
 					{include #componentRender object => $com}
 				{/foreach}
 			</ul>
 	{/if}
-	</ul>
 {/block}
