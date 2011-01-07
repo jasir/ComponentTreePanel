@@ -1,6 +1,6 @@
 {block #componentRender}
 
-	<li  {if ($object instanceof \Nette\Application\Presenter) && (!$object instanceOf \Nette\Forms\FormControl)}class="open"{/if}>
+	<li>
 
 		{var $refl => $object->getReflection()}
 
@@ -13,7 +13,7 @@
 		<?php
 
 			$cache = \Nette\Environment::getCache('Debug.Panels.ComponentTree');
-			if (FALSE && isset($cache[$object->name])) {
+			if (isset($cache[$object->name])) {
 				$cached = $cache[$object->name];
 				echo $cached;
 			}

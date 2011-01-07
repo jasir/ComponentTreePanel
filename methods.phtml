@@ -35,9 +35,9 @@
 
 	{if count($filtered)>0 || $showEmpty === TRUE}
 		<li>
-			<i>{$name} ({=count($filtered)})</i><a class="nette-toggler" rel="next" href="#"><abbr> &#x25ba;</abbr></a>
+			<i>{$name} ({=count($filtered)})</i><a class="nette-toggler" rel="next" href="#"><abbr>&#x25bc;</abbr></a>
 
-			<ul class="nette-hidden">
+			<ul>
 
 				{foreach $filtered as $method}
 					<li>

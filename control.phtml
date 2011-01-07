@@ -19,34 +19,40 @@
 	{
 		font-family: arial;
 		line-height: 1.2;
-		font-size:13px;
+		font-size: 13px;
 		list-style: none;
 		margin-top: 0;
 		margin-bottom: 0;
-		margin-left:0em;
+		margin-left: 0em;
 		text-align: left;
 	}
 
 	#componentsTreeComponent i {
-		color:#666;
+		color: #666;
+		font-style: italic;
 	}
 
 	#componentsTreeComponent b {
 		color:darkgreen;
+		font-weight:bold;
 	}
 
 	#componentsTreeComponent strong {
 		color:darkred;
+		font-weight: bold;
 	}
 
 	#componentsTreeComponent code {
-		font-family: consolas;
-		background:#ddd;
+		font: 9pt/1.0 Consolas, monospace !important;
+		background:#eee;
+		line-height: 3em;
 	}
+
 
 	#componentsTreeComponent .source {
 		font-family: consolas;
-		background:#ddd;
+		background:#eee;
+
 	}
 
 	#componentsTreeComponent ul {
@@ -76,13 +82,10 @@
 
 </style>
 
-<script n:syntax="off">
-</script>
-
 <h1>Component Tree</h1>
 
 <div class="nette-inner">
-	<div id="componentsTreeComponent" style="border:1px solid #aaa;">
+	<div id="componentsTreeComponent">
 		<ul id="tree">
 			{include component.phtml, object => $rootComponent, opened=>true}
 		</ul>
