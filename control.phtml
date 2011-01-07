@@ -50,9 +50,28 @@
 	}
 
 	#componentsTreeComponent ul {
-		padding-left:10px;
-		padding-bottom:5px;
+		list-style-type: none;
+		margin-left:10px;
+		padding-left:4px;
+		background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAKAQMAAABPHKYJAAAAA1BMVEWIiIhYZW6zAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH1ggGExMZBky19AAAAAtJREFUCNdjYMAEAAAUAAHlhrBKAAAAAElFTkSuQmCC') repeat-y;
 	}
+
+	#componentsTreeComponent li {
+		list-style-type: none;
+		padding-left:10px;
+		margin-left:-4px;
+		background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAUAQMAAACK1e4oAAAABlBMVEUAAwCIiIgd2JB2AAAAAXRSTlMAQObYZgAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9YIBhQIJYVaFGwAAAARSURBVAjXY2hgQIf/GTDFGgDSkwqATqpCHAAAAABJRU5ErkJggg==') no-repeat;
+	}
+
+	#componentsTreeComponent li:last-child {
+		list-style-type: none;
+		padding-left:10px;
+		margin-left:-4px;
+		background: #fff url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAUAQMAAACK1e4oAAAABlBMVEUAAwCIiIgd2JB2AAAAAXRSTlMAQObYZgAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9YIBhQIIhs+gc8AAAAQSURBVAjXY2hgQIf/GbAAAKCTBYBUjWvCAAAAAElFTkSuQmCC') no-repeat;
+
+	}
+
+
 
 
 </style>
@@ -65,7 +84,7 @@
 <div class="nette-inner">
 	<div id="componentsTreeComponent" style="border:1px solid #aaa;">
 		<ul id="tree">
-			{include component.phtml, object => $rootComponent}
+			{include component.phtml, object => $rootComponent, opened=>true}
 		</ul>
 	</div>
 </div>

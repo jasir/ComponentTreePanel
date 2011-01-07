@@ -20,12 +20,11 @@
 			else {
 				ob_start();
 		?>
-		<a class="nette-toggler" href="#"><abbr>&#x25ba;</abbr></a>
-		<ul class="nette-hidden">
+		<a class="nette-toggler" href="#" rel="next"> <abbr>{if $opened}&#x25bc{else}&#x25ba{/if};</abbr></a>
+		<ul {if !$opened}class="nette-hidden">{/if}
 			<li>
 
-				<i>Methods</i><a class="nette-toggler" href="#"><abbr>&#x25ba;</abbr></a>
-
+				<i>Methods </i><a class="nette-toggler" rel="next" href="#"><abbr>&#x25ba;</abbr></a>
 				<ul class="nette-hidden">
 
 					<!-- aciton<action>, beforeRender<view>-->
@@ -64,7 +63,7 @@
 						name => "set<property>", object => $object, inherited => FALSE, pattern => "#^(set)(.*)#"}
 				</ul>
 			{if !$object instanceOf \Nette\Application\AppForm}
-			<li><i>Source File</i><a class="nette-toggler" href="#"><abbr>&#x25ba;</abbr></a>
+			<li><i>Source File</i> <a class="nette-toggler" rel="next" href="#"><abbr>&#x25ba;</abbr></a>
 				<ul class="nette-hidden">
 					{include sourcefile.phtml, object => $object, showSource => TRUE}
 				</ul>
@@ -82,7 +81,6 @@
 	{if $object instanceOf \Nette\ComponentContainer}
 		<?php
 		$filteredComponents = array();
-
 		foreach ($object->components as $component) {
 			if ($component instanceof \Extras\Debug\ComponentTreeControl) {
 				continue;
@@ -92,11 +90,12 @@
 		?>
 
 		<li>
-			<i>Child Components ({=count($filteredComponents)})</i><a class="nette-toggler" href="#"><abbr>&#x25ba;</abbr></a>
-			<ul n:if="count($filteredComponents)>0" class="nette-hidden">
+			<i>Child Components ({=count($filteredComponents)})</i> <a class="nette-toggler" rel="next" href="#"><abbr>&#x25bc;</abbr></a>
+			<ul n:if="count($filteredComponents) > 0">
 				{foreach $filteredComponents as $com}
-					{include #componentRender object => $com}
+					{include #componentRender object=>$com, opened=>false}
 				{/foreach}
 			</ul>
 	{/if}
+	</ul>
 {/block}

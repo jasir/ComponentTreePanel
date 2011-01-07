@@ -35,7 +35,7 @@
 
 	{if count($filtered)>0 || $showEmpty === TRUE}
 		<li>
-			<i>{$name} ({=count($filtered)})</i><a class="nette-toggler" href="#"><abbr>&#x25ba;</abbr></a>
+			<i>{$name} ({=count($filtered)})</i><a class="nette-toggler" rel="next" href="#"><abbr> &#x25ba;</abbr></a>
 
 			<ul class="nette-hidden">
 
@@ -46,7 +46,7 @@
 								<i>defined in</i> {$method->class}
 							{/if}
 							<a href="{!=\Extras\Debug\ComponentTreePanel::createEditLink($method->getFileName(), $method->getStartLine())}">edit</a>
-							<a class="nette-toggler" href="#"><abbr>&#x25ba;</abbr></a>
+							<a class="nette-toggler" href="#" rel="next"><abbr>&#x25ba;</abbr></a>
 							<div class="nette-hidden">
 								{include sourcefile.phtml, object => $method, showSource => TRUE}
 							</div>
