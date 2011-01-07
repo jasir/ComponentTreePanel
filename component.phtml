@@ -1,3 +1,7 @@
+{*
+@param object
+@param opened
+*}
 {block #componentRender}
 
 	<li>
@@ -21,7 +25,7 @@
 				ob_start();
 		?>
 		<a class="nette-toggler" href="#" rel="next"> <abbr>{if $opened}&#x25bc{else}&#x25ba{/if};</abbr></a>
-		<ul {if !$opened}class="nette-hidden">{/if}
+		<ul {if !$opened}class="nette-hidden"{/if}>
 			<li>
 
 				<i>Methods </i><a class="nette-toggler" rel="next" href="#"><abbr>&#x25ba;</abbr></a>
