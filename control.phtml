@@ -19,58 +19,75 @@
 	{
 		font-family: arial;
 		line-height: 1.2;
-		font-size:13px;
+		font-size: 13px;
 		list-style: none;
 		margin-top: 0;
 		margin-bottom: 0;
-		margin-left:0em;
+		margin-left: 0em;
 		text-align: left;
 	}
 
 	#componentsTreeComponent i {
-		color:#666;
+		color: #666;
+		font-style: italic;
 	}
 
 	#componentsTreeComponent b {
 		color:darkgreen;
+		font-weight:bold;
 	}
 
 	#componentsTreeComponent strong {
 		color:darkred;
+		font-weight: bold;
 	}
 
 	#componentsTreeComponent code {
-		font-family: consolas;
-		background:#ddd;
+		font: 9pt/1.0 Consolas, monospace !important;
+		background:#eee;
+		line-height: 3em;
 	}
+
 
 	#componentsTreeComponent .source {
 		font-family: consolas;
-		background:#ddd;
+		background:#eee;
+
 	}
+
+	#componentsTreeComponent ul {
+		list-style-type: none;
+		margin-left:10px;
+		padding-left:4px;
+		background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAKAQMAAABPHKYJAAAAA1BMVEWIiIhYZW6zAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH1ggGExMZBky19AAAAAtJREFUCNdjYMAEAAAUAAHlhrBKAAAAAElFTkSuQmCC') repeat-y;
+	}
+
+	#componentsTreeComponent li {
+		list-style-type: none;
+		padding-left:10px;
+		margin-left:-4px;
+		background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAUAQMAAACK1e4oAAAABlBMVEUAAwCIiIgd2JB2AAAAAXRSTlMAQObYZgAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9YIBhQIJYVaFGwAAAARSURBVAjXY2hgQIf/GTDFGgDSkwqATqpCHAAAAABJRU5ErkJggg==') no-repeat;
+	}
+
+	#componentsTreeComponent li:last-child {
+		list-style-type: none;
+		padding-left:10px;
+		margin-left:-4px;
+		background: #fff url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAUAQMAAACK1e4oAAAABlBMVEUAAwCIiIgd2JB2AAAAAXRSTlMAQObYZgAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9YIBhQIIhs+gc8AAAAQSURBVAjXY2hgQIf/GbAAAKCTBYBUjWvCAAAAAElFTkSuQmCC') no-repeat;
+
+	}
+
+
 
 
 </style>
 
-<script n:syntax="off">
-  $(document).ready(function() {
-	 $("#tree").treeview(
-		{
-			//persist: "cookie",
-			cookieId: "treeview",
-			collapsed:true
-		}
-	 )
-	 ;
-  });
-</script>
-
 <h1>Component Tree</h1>
 
 <div class="nette-inner">
-	<div id="componentsTreeComponent" style="border:1px solid #aaa;">
-		<ul id="tree" class="filetree open">
-			{include component.phtml, object => $rootComponent}
+	<div id="componentsTreeComponent">
+		<ul id="tree">
+			{include component.phtml, object => $rootComponent, opened=>true}
 		</ul>
 	</div>
 </div>
