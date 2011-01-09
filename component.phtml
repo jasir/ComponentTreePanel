@@ -28,7 +28,7 @@
 		<ul {if !$opened}class="nette-hidden"{/if}>
 			<li>
 
-				<i>Methods </i><a class="nette-toggler" rel="next" href="#"><abbr>&#x25ba;</abbr></a>
+				Methods<a class="nette-toggler" rel="next" href="#"><abbr>&#x25ba;</abbr></a>
 				<ul class="nette-hidden">
 
 					<!-- aciton<action>, beforeRender<view>-->
@@ -67,7 +67,7 @@
 						name => "set<property>", object => $object, inherited => FALSE, pattern => "#^(set)(.*)#"}
 				</ul>
 			{if !$object instanceOf \Nette\Application\AppForm}
-			<li><i>Source File</i> <a class="nette-toggler" rel="next" href="#"><abbr>&#x25ba;</abbr></a>
+			<li>Source File <a class="nette-toggler" rel="next" href="#"><abbr>&#x25ba;</abbr></a>
 				<ul class="nette-hidden">
 					{include sourcefile.phtml, object => $object, showSource => TRUE}
 				</ul>
@@ -94,7 +94,7 @@
 		?>
 
 		<li>
-			<i>Child Components ({=count($filteredComponents)})</i> <a class="nette-toggler" rel="next" href="#"><abbr>&#x25bc;</abbr></a>
+			Child Components ({=count($filteredComponents)}) <a class="nette-toggler" rel="next" href="#"><abbr>&#x25bc;</abbr></a>
 			<ul n:if="count($filteredComponents) > 0">
 				{foreach $filteredComponents as $com}
 					{include #componentRender object=>$com, opened=>false}
