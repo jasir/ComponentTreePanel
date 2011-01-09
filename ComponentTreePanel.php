@@ -12,6 +12,7 @@ use \Nette\Object;
 use \Nette\IDebugPanel;
 use \Nette\Templates\FileTemplate;
 use \Nette\Templates\LatteFilter;
+use \Nette\Debug;
 use \Nette\Environment;
 
 class ComponentTreePanel extends Object implements IDebugPanel {
@@ -20,9 +21,18 @@ class ComponentTreePanel extends Object implements IDebugPanel {
 
 	static private $dumps = array();
 
+	static private $isRegistered = FALSE;
+
 	/* --- Properties --- */
 
 	/* --- Public Methods--- */
+
+	public static function register() {
+		if (!self::$isRegistered) {
+			Debug::addPanel(new self);
+			self::$isRegistered = TRUE;
+		}
+	}
 
 	/**
 	 * Renders HTML code for custom tab.
@@ -30,7 +40,7 @@ class ComponentTreePanel extends Object implements IDebugPanel {
 	 * @see IDebugPanel::getTab()
 	 */
 	public function getTab() {
-		return "Tree";
+		return "<img src=\"data:image/gif;base64,R0lGODlhEAAQAMQWACRITrPgAKXFXgQ2BBA+EP/ndv/6u8z/AAo6Cgk6CgBRHigVAXCjAP/NJD4fAFwuAP+xEeDg4EAcAQFaUgBIHgAuOwFcdwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAABYALAAAAAAQABAAAAVToGUBUgmIaCpKhlFIaswWjROrEg0td0o+i1MvVUlNKMhJrIiiRCIBwrJCrSgiB0FimaIEBIwBFzUhIAZKFXNINCIp6XbzGZ1Wr9kt2wsWs8tnaSEAOw%3D%3D\">Tree";
 	}
 
 	/**
@@ -65,5 +75,21 @@ class ComponentTreePanel extends Object implements IDebugPanel {
 	public function getId() {
 		return __CLASS__;
 	}
+
+	public static function createEditLink($file, $line) {
+		return strtr(Debug::$editor, array('%file' => urlencode(realpath($file)), '%line' => $line));
+	}
+
+	public static function getSource($fileName, $startLine = NULL, $endLine = NULL) {
+		static $sources = array(); /* --- simple caching --- */
+
+		if (!in_array($fileName, $sources)) {
+			$sources[$fileName] = file($fileName);
+		}
+
+		$iterator = new \LimitIterator(new \ArrayIterator($sources[$fileName]), $startLine, $endLine - $startLine + 1);
+		return $iterator;
+	}
+
 
 }

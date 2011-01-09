@@ -1,19 +1,22 @@
+{*
+@param object
+@param opened
+*}
 {block #componentRender}
 
-	<li  {if ($object instanceof \Nette\Application\Presenter) && (!$object instanceOf \Nette\Forms\FormControl)}class="open"{/if}
+	<li>
+
+		{var $refl => $object->getReflection()}
+
 		<b>{$object->name}</b>
 		<i>instance of</i> {=get_class($object)}
-		<i>extends</i> {$object->getReflection()->getParentClass()->getName()}
+		<i>extends</i> {$refl->getParentClass()->getName()}
 
-
-		<?php
-		$refl = $object->getReflection();
-		?>
-		<a class='phpdoc' title="{$refl->getFileName()}" href="{!=\mbase\Debug\DebugHelper::createEditSourceLink($refl->getFileName(), $refl->getStartLine())}">edit</a>
+		<a title="{$refl->getFileName()}" href="{!=\Extras\Debug\ComponentTreePanel::createEditLink($refl->getFileName(), $refl->getStartLine())}">edit</a>
 
 		<?php
 
-			$cache = \Nette\Environment::getCache('Debug.Panels.ComponentTree.Methods');
+			$cache = \Nette\Environment::getCache('Debug.Panels.ComponentTree');
 			if (isset($cache[$object->name])) {
 				$cached = $cache[$object->name];
 				echo $cached;
@@ -21,12 +24,12 @@
 			else {
 				ob_start();
 		?>
+		<a class="nette-toggler" href="#" rel="next"> <abbr>{if $opened}&#x25bc{else}&#x25ba{/if};</abbr></a>
+		<ul {if !$opened}class="nette-hidden"{/if}>
+			<li>
 
-		<ul>
-			<li class="closed">
-
-				<i>Methods</i>
-				<ul>
+				Methods<a class="nette-toggler" rel="next" href="#"><abbr>&#x25ba;</abbr></a>
+				<ul class="nette-hidden">
 
 					<!-- aciton<action>, beforeRender<view>-->
 
@@ -36,7 +39,7 @@
 							name => "action<Action>", object => $object, inherited => TRUE, pattern => "#^(action)(.+)#"}
 						{include
 							methods.phtml
-							name => "beforeRender", object => $object, inherited => TRUE, pattern => "#^()(beforeRender)#"}
+							name => "lifecycle", object => $object, inherited => TRUE, pattern => "~\A()(startup | beforeHandle | beforeRender |shutdown)\z~x"}
 					{/if}
 
 					<!-- render<view>, handle<signal> -->
@@ -63,15 +66,12 @@
 					{include methods.phtml
 						name => "set<property>", object => $object, inherited => FALSE, pattern => "#^(set)(.*)#"}
 				</ul>
-
-
 			{if !$object instanceOf \Nette\Application\AppForm}
-			<li><i>Source File</i>
-				<ul>
+			<li>Source File <a class="nette-toggler" rel="next" href="#"><abbr>&#x25ba;</abbr></a>
+				<ul class="nette-hidden">
 					{include sourcefile.phtml, object => $object, showSource => TRUE}
 				</ul>
 			{/if}
-
 			<?php
 					$content = ob_get_clean();
 					echo $content;
@@ -83,10 +83,8 @@
 	<!--! Childs COMPONENTS -->
 
 	{if $object instanceOf \Nette\ComponentContainer}
-
 		<?php
 		$filteredComponents = array();
-
 		foreach ($object->components as $component) {
 			if ($component instanceof \Extras\Debug\ComponentTreeControl) {
 				continue;
@@ -95,15 +93,13 @@
 		}
 		?>
 
-		<li class="open">
-
-			<i>Child Components ({=count($filteredComponents)})</i>
-			<ul n:if="count($filteredComponents)>0">
+		<li>
+			Child Components ({=count($filteredComponents)}) <a class="nette-toggler" rel="next" href="#"><abbr>&#x25bc;</abbr></a>
+			<ul n:if="count($filteredComponents) > 0">
 				{foreach $filteredComponents as $com}
-					{include #componentRender object => $com}
+					{include #componentRender object=>$com, opened=>false}
 				{/foreach}
 			</ul>
 	{/if}
-
 	</ul>
 {/block}

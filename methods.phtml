@@ -34,8 +34,8 @@
 ?>
 
 	{if count($filtered)>0 || $showEmpty === TRUE}
-		<li class="open">
-			<i>{$name} ({=count($filtered)})</i>
+		<li>
+			<i>{$name} ({=count($filtered)})</i><a class="nette-toggler" rel="next" href="#"><abbr>&#x25bc;</abbr></a>
 
 			<ul>
 
@@ -45,9 +45,11 @@
 							{if $method->class !== get_class($object)}
 								<i>defined in</i> {$method->class}
 							{/if}
-							<a class='phpdoc' title="{$method->getFileName()}" href="{!=\mbase\Debug\DebugHelper::createEditSourceLink($method->getFileName(), $method->getStartLine())}">edit</a>
-
-						{include sourcefile.phtml, object => $method, showSource => TRUE}
+							<a title="{$method->getFileName()}:{$method->getStartLine()}"href="{!=\Extras\Debug\ComponentTreePanel::createEditLink($method->getFileName(), $method->getStartLine())}">edit</a>
+							<a class="nette-toggler" href="#" rel="next"><abbr>&#x25ba;</abbr></a>
+							<div class="nette-hidden">
+								{include sourcefile.phtml, object => $method, showSource => TRUE}
+							</div>
 
 				{/foreach}
 

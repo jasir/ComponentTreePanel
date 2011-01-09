@@ -10,14 +10,14 @@
 			if ( !($object instanceOf \Nette\Reflection\MethodReflection || $object instanceof \Nette\Reflection\ClassReflection)) {
 				$object = $object->getReflection();
 			}
-			$link = \mbase\Debug\DebugHelper::createEditSourceLink($object->getFileName(), $object->getStartLine());
+			$link = \Extras\Debug\ComponentTreePanel::createEditLink($object->getFileName(), $object->getStartLine());
 		?>
 		 <li>
 
 			{if $showSource}
 
 				<?php
-					$sourceLines = \mbase\Debug\DebugHelper::getSource($object->getFileName(), $object->getStartLine()-1, $object->getEndLine()-1);
+					$sourceLines = \Extras\Debug\ComponentTreePanel::getSource($object->getFileName(), $object->getStartLine()-1, $object->getEndLine()-1);
 
 					$phpDocTxt = $object->getDocComment();
 					$phpDoc = array();
