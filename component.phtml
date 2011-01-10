@@ -29,9 +29,10 @@
 		?>
 		<a class="nette-toggler" href="#" rel="next"> <abbr>{if $opened}&#x25bc{else}&#x25ba{/if};</abbr></a>
 		<ul {if !$opened}class="nette-hidden"{/if}>
+
 			<li>
 
-				Methods<a class="nette-toggler" rel="next" href="#"><abbr>&#x25ba;</abbr></a>
+				Methods <a class="nette-toggler" rel="next" href="#"><abbr>&#x25ba;</abbr></a>
 				<ul class="nette-hidden">
 
 					<!-- aciton<action>, beforeRender<view>-->
@@ -70,7 +71,10 @@
 						name => "set<property>", object => $object, inherited => FALSE, pattern => "#^(set)(.*)#"}
 				</ul>
 			{if !$object instanceOf \Nette\Application\AppForm}
-			<li>Source File <a class="nette-toggler" rel="next" href="#"><abbr>&#x25ba;</abbr></a>
+
+			<li>
+
+				Source File <a class="nette-toggler" rel="next" href="#"><abbr>&#x25ba;</abbr></a>
 				<ul class="nette-hidden">
 					{include sourcefile.phtml, object => $object, showSource => TRUE}
 				</ul>
