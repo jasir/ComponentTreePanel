@@ -63,8 +63,6 @@ class ComponentTreePanel extends Object implements IDebugPanel {
 	 */
 	public function getPanel() {
 
-		//Debug::timer('component-tree');
-
 		/** @var Template */
 		$template = new FileTemplate;
 		$template->setFile(dirname(__FILE__) . "/control.phtml");
@@ -76,8 +74,6 @@ class ComponentTreePanel extends Object implements IDebugPanel {
 		$template->fullTree = static::$fullTree;
 		ob_start();
 		$template->render();
-
-		//Debug::fireLog("component-tree render time (ms): " . round(1000 * Debug::timer('component-tree', TRUE), 2));
 
 		return ob_get_clean();
 	}
