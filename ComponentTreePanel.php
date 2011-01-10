@@ -18,6 +18,12 @@ use \Nette\Environment;
  */
 class ComponentTreePanel extends Object implements IDebugPanel {
 
+	/**
+	 * Use wrapping in output
+	 * @var bool
+	 */
+	public static $wrap = FALSE;
+
 	private $response;
 
 	static private $dumps = array();
@@ -60,6 +66,7 @@ class ComponentTreePanel extends Object implements IDebugPanel {
 		$template->baseUri = /*Nette\*/Environment::getVariable('baseUri');
 		$template->basePath = rtrim($template->baseUri, '/');
 		$template->presenter = $template->control = $template->rootComponent = Environment::getApplication()->getPresenter();
+		$template->wrap = static::$wrap;
 		ob_start();
 		$template->render();
 

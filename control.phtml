@@ -4,14 +4,16 @@
 * @param $BaseUri
 * @param $presenter
 * @param $template
-* @todo Javascript collapsable
-* @todo Odkazy na editaci souboru
-* @todo TODOS a zobrazovat brat ze souboru
+*
+* @param $wrap
+*
 * @todo Refactor: přénést PHP z šablon @component.phtml a @methods.phtml do helperů
 */
 ?>
-<style n:syntax="off">
-
+<style>
+	#componentsTreeComponent {
+		white-space:{= $wrap ? 'nowrap' : 'normal'};
+	}
 
 	#componentsTreeComponent ul,
 	#componentsTreeComponent li,
@@ -75,10 +77,6 @@
 		background: #fff url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAUAQMAAACK1e4oAAAABlBMVEUAAwCIiIgd2JB2AAAAAXRSTlMAQObYZgAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9YIBhQIIhs+gc8AAAAQSURBVAjXY2hgQIf/GbAAAKCTBYBUjWvCAAAAAElFTkSuQmCC') no-repeat;
 
 	}
-
-
-
-
 </style>
 
 <h1>Component Tree</h1>
