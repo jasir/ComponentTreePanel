@@ -24,6 +24,12 @@ class ComponentTreePanel extends Object implements IDebugPanel {
 	 */
 	public static $wrap = FALSE;
 
+	/**
+	 * Tree of components is fully visible (opened) on reload
+	 * @var bool
+	 */
+	public static $fullTree = FALSE;
+
 	private $response;
 
 	static private $dumps = array();
@@ -67,6 +73,7 @@ class ComponentTreePanel extends Object implements IDebugPanel {
 		$template->basePath = rtrim($template->baseUri, '/');
 		$template->presenter = $template->control = $template->rootComponent = Environment::getApplication()->getPresenter();
 		$template->wrap = static::$wrap;
+		$template->fullTree = static::$fullTree;
 		ob_start();
 		$template->render();
 

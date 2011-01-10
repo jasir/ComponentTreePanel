@@ -1,6 +1,7 @@
 {*
 @param object
 @param opened
+@param childOpened
 *}
 {block #componentRender}
 
@@ -97,7 +98,7 @@
 			Child Components ({=count($filteredComponents)}) <a class="nette-toggler" rel="next" href="#"><abbr>&#x25bc;</abbr></a>
 			<ul n:if="count($filteredComponents) > 0">
 				{foreach $filteredComponents as $com}
-					{include #componentRender object=>$com, opened=>false}
+					{include #componentRender object=>$com, opened=>$childOpened}
 				{/foreach}
 			</ul>
 	{/if}

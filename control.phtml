@@ -6,6 +6,7 @@
 * @param $template
 *
 * @param $wrap
+* @param $fullTree
 *
 * @todo Refactor: přénést PHP z šablon @component.phtml a @methods.phtml do helperů
 */
@@ -84,7 +85,7 @@
 <div class="nette-inner">
 	<div id="componentsTreeComponent">
 		<ul id="tree">
-			{include component.phtml, object => $rootComponent, opened=>true}
+			{include component.phtml, object => $rootComponent, opened => true, childOpened => $fullTree}
 		</ul>
 	</div>
 </div>
