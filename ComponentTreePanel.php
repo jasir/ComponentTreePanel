@@ -18,6 +18,18 @@ use \Nette\Environment;
  */
 class ComponentTreePanel extends Object implements IDebugPanel {
 
+	/**
+	 * Use wrapping in output
+	 * @var bool
+	 */
+	public static $wrap = FALSE;
+
+	/**
+	 * Tree of components is fully visible (opened) on reload
+	 * @var bool
+	 */
+	public static $fullTree = FALSE;
+
 	private $response;
 
 	static private $dumps = array();
@@ -51,8 +63,6 @@ class ComponentTreePanel extends Object implements IDebugPanel {
 	 */
 	public function getPanel() {
 
-		//Debug::timer('component-tree');
-
 		/** @var Template */
 		$template = new FileTemplate;
 		$template->setFile(dirname(__FILE__) . "/control.phtml");
@@ -60,10 +70,10 @@ class ComponentTreePanel extends Object implements IDebugPanel {
 		$template->baseUri = /*Nette\*/Environment::getVariable('baseUri');
 		$template->basePath = rtrim($template->baseUri, '/');
 		$template->presenter = $template->control = $template->rootComponent = Environment::getApplication()->getPresenter();
+		$template->wrap = static::$wrap;
+		$template->fullTree = static::$fullTree;
 		ob_start();
 		$template->render();
-
-		//Debug::fireLog("component-tree render time (ms): " . round(1000 * Debug::timer('component-tree', TRUE), 2));
 
 		return ob_get_clean();
 	}
