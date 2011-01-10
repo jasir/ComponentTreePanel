@@ -10,10 +10,12 @@
 		{var $refl => $object->getReflection()}
 
 		<b>{$object->name}</b>
-		<i>instance of</i> {=get_class($object)}
-		<i>extends</i> {$refl->getParentClass()->getName()}
-
-		<a title="{$refl->getFileName()}" href="{!=\Extras\Debug\ComponentTreePanel::createEditLink($refl->getFileName(), $refl->getStartLine())}">edit</a>
+		<i>instance of</i>
+			<a title="{$refl->getFileName()}" href="{!=\Extras\Debug\ComponentTreePanel::createEditLink($refl->getFileName(), $refl->getStartLine())}">
+				{=get_class($object)}
+			</a>
+			{var $parent = $refl->getParentClass()}
+			<i>extends</i> <a title="{$parent->getFileName()}" href="{!=\Extras\Debug\ComponentTreePanel::createEditLink($parent->getFileName(), $parent->getStartLine())}">{$parent->getName()}</a>
 
 		<?php
 
