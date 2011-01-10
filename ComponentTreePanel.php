@@ -2,9 +2,6 @@
 /**
  * @author jasir
  * @license LGPL
- *
- * Heavily based on original David Grudl's DebugBar panel from Nette Framework
- * - see nettephp.com
  */
 namespace Extras\Debug;
 
@@ -15,6 +12,10 @@ use \Nette\Templates\LatteFilter;
 use \Nette\Debug;
 use \Nette\Environment;
 
+/**
+ * Displays current presenter and component
+ * tree hiearchy
+ */
 class ComponentTreePanel extends Object implements IDebugPanel {
 
 	private $response;
