@@ -1,7 +1,7 @@
 <?php
 /**
  * @author jasir
- * @license LGPL
+ * @license WTFPL (http://en.wikipedia.org/wiki/WTFPL)
  */
 namespace Extras\Debug;
 
