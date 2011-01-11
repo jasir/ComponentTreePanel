@@ -95,7 +95,10 @@ class ComponentTreePanel extends Object implements IDebugPanel {
 		static $sources = array(); /* --- simple caching --- */
 
 		if (!in_array($fileName, $sources)) {
-			$sources[$fileName] = file($fileName);
+			$txt = file_get_contents($fileName);
+			$txt = str_replace("\r\n", "\n", $txt);
+			$txt = str_replace("\r", "\n", $txt);
+			$sources[$fileName] = explode("\n", $txt);
 		}
 
 		$iterator = new \LimitIterator(new \ArrayIterator($sources[$fileName]), $startLine, $endLine - $startLine + 1);

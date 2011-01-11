@@ -22,10 +22,8 @@
 					$phpDocTxt = $object->getDocComment();
 					$phpDoc = array();
 					if (strlen($phpDocTxt) > 0) {
-						$phpDoc = explode("\r", $phpDocTxt);
-						$phpDoc[] = "\n";
+						$phpDoc = explode("\n", $phpDocTxt);
 					}
-
 					$phpDoc = new ArrayIterator($phpDoc);
 					$lines = new AppendIterator();
 
@@ -34,8 +32,7 @@
 
 					$source = '';
 
-					foreach($lines as $line) {
-						$line = trim($line, "\r\n");
+					foreach ($lines as $line) {
 						$source .= $line . "\n";
 					}
 					$source = highlight_string("<?php\n" . $source, TRUE);
