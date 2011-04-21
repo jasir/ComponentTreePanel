@@ -6,17 +6,17 @@
 namespace Extras\Debug;
 
 use \Nette\Object;
-use \Nette\IDebugPanel;
-use \Nette\Templates\FileTemplate;
-use \Nette\Templates\LatteFilter;
-use \Nette\Debug;
+use Nette\Diagnostics\IBarPanel;
+use Nette\Templating\FileTemplate;
+use Nette\Latte\Engine;
+use Nette\Diagnostics\Debugger;
 use \Nette\Environment;
 
 /**
  * Displays current presenter and component
  * tree hiearchy
  */
-class ComponentTreePanel extends Object implements IDebugPanel {
+class ComponentTreePanel extends Object implements IBarPanel {
 
 	/**
 	 * Use wrapping in output
@@ -30,6 +30,12 @@ class ComponentTreePanel extends Object implements IDebugPanel {
 	 */
 	public static $fullTree = FALSE;
 
+	/**
+	 * Is caching allowed
+	 * @var bool
+	 */
+	public static $cache = TRUE;
+
 	private $response;
 
 	static private $dumps = array();
@@ -42,7 +48,7 @@ class ComponentTreePanel extends Object implements IDebugPanel {
 
 	public static function register() {
 		if (!self::$isRegistered) {
-			Debug::addPanel(new self);
+			Debugger::addPanel(new self);
 			self::$isRegistered = TRUE;
 		}
 	}
@@ -66,12 +72,13 @@ class ComponentTreePanel extends Object implements IDebugPanel {
 		/** @var Template */
 		$template = new FileTemplate;
 		$template->setFile(dirname(__FILE__) . "/control.phtml");
-		$template->registerFilter(new LatteFilter());
+		$template->registerFilter(new Engine());
 		$template->baseUri = /*Nette\*/Environment::getVariable('baseUri');
 		$template->basePath = rtrim($template->baseUri, '/');
 		$template->presenter = $template->control = $template->rootComponent = Environment::getApplication()->getPresenter();
 		$template->wrap = static::$wrap;
 		$template->fullTree = static::$fullTree;
+		$template->cache = static::$cache ? \Nette\Environment::getCache('Debugger.Panels.ComponentTree') : NULL;
 		ob_start();
 		$template->render();
 
@@ -88,7 +95,7 @@ class ComponentTreePanel extends Object implements IDebugPanel {
 	}
 
 	public static function createEditLink($file, $line) {
-		return strtr(Debug::$editor, array('%file' => urlencode(realpath($file)), '%line' => $line));
+		return strtr(Debugger::$editor, array('%file' => urlencode(realpath($file)), '%line' => $line));
 	}
 
 	public static function getSource($fileName, $startLine = NULL, $endLine = NULL) {

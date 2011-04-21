@@ -1,8 +1,10 @@
 {*
-@param object
-@param opened
-@param childOpened
+	@param object mixed
+	@param opened bool
+	@param childOpened bool
+	@param cache bool
 *}
+
 {block #componentRender}
 
 	<li>
@@ -19,8 +21,7 @@
 
 		<?php
 
-			$cache = \Nette\Environment::getCache('Debug.Panels.ComponentTree');
-			if (isset($cache[$object->name])) {
+			if ($cache && isset($cache[$object->name])) {
 				$cached = $cache[$object->name];
 				echo $cached;
 			}
@@ -37,7 +38,7 @@
 
 					<!-- aciton<action>, beforeRender<view>-->
 
-					{if $object instanceof \Nette\Application\Presenter}
+					{if $object instanceof \Nette\Application\IPresenter}
 						{include
 							methods.phtml
 							name => "action<Action>", object => $object, inherited => TRUE, pattern => "#^(action)(.+)#"}
@@ -70,43 +71,36 @@
 					{include methods.phtml
 						name => "set<property>", object => $object, inherited => FALSE, pattern => "#^(set)(.*)#"}
 				</ul>
-			{if !$object instanceOf \Nette\Application\AppForm}
+			{if !$object instanceOf \Nette\Application\UI\Form}
+				<li>
 
-			<li>
-
-				Source File <a class="nette-toggler" rel="next" href="#"><abbr>&#x25ba;</abbr></a>
-				<ul class="nette-hidden">
-					{include sourcefile.phtml, object => $object, showSource => TRUE}
-				</ul>
+					Source File <a class="nette-toggler" rel="next" href="#"><abbr>&#x25ba;</abbr></a>
+					<ul class="nette-hidden">
+						{include sourcefile.phtml, object => $object, showSource => TRUE}
+					</ul>
 			{/if}
 			<?php
 					$content = ob_get_clean();
 					echo $content;
-					$cache->save($object->name, $content, array('files'=>array($refl->getFileName())));
+					if ($cache) {
+						$cache->save($object->name, $content, array('files'=>array($refl->getFileName())));
+					}
 				}
 			?>
 
 
 	<!--! Childs COMPONENTS -->
 
-	{if $object instanceOf \Nette\ComponentContainer}
-		<?php
-		$filteredComponents = array();
-		foreach ($object->components as $component) {
-			if ($component instanceof \Extras\Debug\ComponentTreeControl) {
-				continue;
-			}
-			$filteredComponents[] = $component;
-		}
-		?>
-
+	{if $object instanceOf \Nette\ComponentModel\Container}
+		{var $components = $object->getComponents()}
 		<li>
-			Child Components ({=count($filteredComponents)}) <a class="nette-toggler" rel="next" href="#"><abbr>&#x25bc;</abbr></a>
-			<ul n:if="count($filteredComponents) > 0">
-				{foreach $filteredComponents as $com}
+			Child Components ({=count($components)}) <a class="nette-toggler" rel="next" href="#"><abbr>&#x25bc;</abbr></a>
+			<ul n:if="count($components) > 0">
+				{foreach $components as $com}
 					{include #componentRender object=>$com, opened=>$childOpened}
 				{/foreach}
 			</ul>
 	{/if}
 	</ul>
+
 {/block}
