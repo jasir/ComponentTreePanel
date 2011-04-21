@@ -93,20 +93,11 @@
 	<!--! Childs COMPONENTS -->
 
 	{if $object instanceOf \Nette\ComponentContainer}
-		<?php
-		$filteredComponents = array();
-		foreach ($object->components as $component) {
-			if ($component instanceof \Extras\Debug\ComponentTreeControl) {
-				continue;
-			}
-			$filteredComponents[] = $component;
-		}
-		?>
-
+		{var $components = $object->getComponents()}
 		<li>
-			Child Components ({=count($filteredComponents)}) <a class="nette-toggler" rel="next" href="#"><abbr>&#x25bc;</abbr></a>
-			<ul n:if="count($filteredComponents) > 0">
-				{foreach $filteredComponents as $com}
+			Child Components ({=count($components)}) <a class="nette-toggler" rel="next" href="#"><abbr>&#x25bc;</abbr></a>
+			<ul n:if="count($components) > 0">
+				{foreach $components as $com}
 					{include #componentRender object=>$com, opened=>$childOpened}
 				{/foreach}
 			</ul>
