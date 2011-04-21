@@ -38,7 +38,7 @@
 
 					<!-- aciton<action>, beforeRender<view>-->
 
-					{if $object instanceof \Nette\Application\Presenter}
+					{if $object instanceof \Nette\Application\IPresenter}
 						{include
 							methods.phtml
 							name => "action<Action>", object => $object, inherited => TRUE, pattern => "#^(action)(.+)#"}
@@ -71,14 +71,13 @@
 					{include methods.phtml
 						name => "set<property>", object => $object, inherited => FALSE, pattern => "#^(set)(.*)#"}
 				</ul>
-			{if !$object instanceOf \Nette\Application\AppForm}
+			{if !$object instanceOf \Nette\Application\UI\Form}
+				<li>
 
-			<li>
-
-				Source File <a class="nette-toggler" rel="next" href="#"><abbr>&#x25ba;</abbr></a>
-				<ul class="nette-hidden">
-					{include sourcefile.phtml, object => $object, showSource => TRUE}
-				</ul>
+					Source File <a class="nette-toggler" rel="next" href="#"><abbr>&#x25ba;</abbr></a>
+					<ul class="nette-hidden">
+						{include sourcefile.phtml, object => $object, showSource => TRUE}
+					</ul>
 			{/if}
 			<?php
 					$content = ob_get_clean();
@@ -92,7 +91,7 @@
 
 	<!--! Childs COMPONENTS -->
 
-	{if $object instanceOf \Nette\ComponentContainer}
+	{if $object instanceOf \Nette\ComponentModel\Container}
 		{var $components = $object->getComponents()}
 		<li>
 			Child Components ({=count($components)}) <a class="nette-toggler" rel="next" href="#"><abbr>&#x25bc;</abbr></a>

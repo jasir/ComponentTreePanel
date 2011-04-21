@@ -7,7 +7,7 @@
 {block #sourcefile}
 <ul>
 		<?php
-			if ( !($object instanceOf \Nette\Reflection\MethodReflection || $object instanceof \Nette\Reflection\ClassReflection)) {
+			if ( !($object instanceOf \Nette\Reflection\Method || $object instanceof \Nette\Reflection\ClassType)) {
 				$object = $object->getReflection();
 			}
 			$link = \Extras\Debug\ComponentTreePanel::createEditLink($object->getFileName(), $object->getStartLine());
