@@ -1,8 +1,10 @@
 {*
-@param object
-@param opened
-@param childOpened
+	@param object mixed
+	@param opened bool
+	@param childOpened bool
+	@param cache bool
 *}
+
 {block #componentRender}
 
 	<li>
@@ -19,8 +21,7 @@
 
 		<?php
 
-			$cache = \Nette\Environment::getCache('Debug.Panels.ComponentTree');
-			if (isset($cache[$object->name])) {
+			if ($cache && isset($cache[$object->name])) {
 				$cached = $cache[$object->name];
 				echo $cached;
 			}
@@ -82,7 +83,9 @@
 			<?php
 					$content = ob_get_clean();
 					echo $content;
-					$cache->save($object->name, $content, array('files'=>array($refl->getFileName())));
+					if ($cache) {
+						$cache->save($object->name, $content, array('files'=>array($refl->getFileName())));
+					}
 				}
 			?>
 
@@ -109,4 +112,5 @@
 			</ul>
 	{/if}
 	</ul>
+
 {/block}

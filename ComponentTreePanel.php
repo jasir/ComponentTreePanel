@@ -30,6 +30,12 @@ class ComponentTreePanel extends Object implements IBarPanel {
 	 */
 	public static $fullTree = FALSE;
 
+	/**
+	 * Is caching allowed
+	 * @var bool
+	 */
+	public static $cache = TRUE;
+
 	private $response;
 
 	static private $dumps = array();
@@ -72,6 +78,7 @@ class ComponentTreePanel extends Object implements IBarPanel {
 		$template->presenter = $template->control = $template->rootComponent = Environment::getApplication()->getPresenter();
 		$template->wrap = static::$wrap;
 		$template->fullTree = static::$fullTree;
+		$template->cache = static::$cache ? \Nette\Environment::getCache('Debugger.Panels.ComponentTree') : NULL;
 		ob_start();
 		$template->render();
 
