@@ -41,7 +41,7 @@ class ComponentTreePanel extends Object implements IBarPanel {
 	 *
 	 * @var bool
 	 */
-	 public static $dumps = TRUE;
+	public static $dumps = TRUE;
 
 
 	/**
