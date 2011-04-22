@@ -22,6 +22,10 @@
 		<a class="nette-toggler" href="#" rel="next"> <abbr>{if $opened}&#x25bc{else}&#x25ba{/if};</abbr></a>
 		<ul {if !$opened}class="nette-hidden"{/if}>
 
+
+		{* Methods *}
+
+
 		<?php
 
 			if ($cache && isset($cache[$object->name])) {
@@ -71,6 +75,11 @@
 					{include methods.phtml
 						name => "set<property>", object => $object, inherited => FALSE, pattern => "#^(set)(.*)#"}
 				</ul>
+
+
+		{* Source *}
+
+
 			{if !$object instanceOf \Nette\Application\UI\Form}
 				<li>
 
@@ -88,7 +97,49 @@
 				}
 			?>
 
+
+	{* Parameters *}
+
+
+	{if $object instanceOf \Nette\Application\UI\PresenterComponent}
+
+		{var $params = $template->parametersInfo($object)}
+
+		<li><span title="persistent parameters are marked with @">Parameters ({=count($params)})</span> <a class="nette-toggler" href="#" rel="next"> <abbr>{if $parametersOpen}&#x25bc{else}&#x25ba{/if};</abbr></a>
+		<ul {if !$parametersOpen}class="nette-hidden"{/if}>
+			{foreach $params as $name =>$param}
+			<li>
+				{if $param['persistent']}
+					<strong>@{$name}</strong> = <code>{?var_dump($param['value'])}</code>
+					{if $param['value'] === $param['meta']['def']}
+						<strong>(default value)</strong>
+					{/if}
+					<a class="nette-toggler" href="#" rel="next"> <abbr>&#x25ba;</abbr></a>
+					<ul class="nette-hidden">
+						<li>
+							{var $refl = new \Nette\Reflection\ClassType($param['meta']['since']) }
+							persistent parameter declared in
+							<a title="{$refl->getFileName()}" href="{!=\Extras\Debug\ComponentTreePanel::createEditLink($refl->getFileName(), 1)}">
+							{$param['meta']['since']} {if $param['meta']['since'] == get_class($object)}(this){/if}
+							</a>
+						<li>default value: <code>{?var_dump($param['meta']['def'])}</code>
+						<li>full name: <strong>{$object->getParamId($name)}</strong>
+					</ul>
+				{else}
+					<strong>{$name}</strong> = <code>{?var_dump($param['value'])}</code> <a class="nette-toggler" href="#" rel="next"> <abbr>&#x25ba;</abbr></a>
+					<ul class="nette-hidden">
+						<li>full name: <strong>{$object->getParamId($name)}</strong>
+					</ul>
+
+				{/if}
+			{/foreach}
+		</ul>
+
+	{/if}
+
+
 	{* Dumps *}
+
 
 	{if $dumps}
 		<li>Dump <a class="nette-toggler" href="#" rel="next"> <abbr>&#x25ba;</abbr></a>
@@ -98,9 +149,8 @@
 	{/if}
 
 
-
-
 	{* Components *}
+
 
 	{if $object instanceOf \Nette\ComponentModel\Container}
 		{var $components = $object->getComponents()}
