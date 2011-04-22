@@ -94,7 +94,7 @@
 
 		{var $params = $template->parametersInfo($object)}
 
-		<li><span title="persistent parameters are marked with @">Parameters</span> <a class="nette-toggler" href="#" rel="next"> <abbr>&#x25ba;</abbr></a>
+		<li><span title="persistent parameters are marked with @">Parameters ({=count($params)})</span> <a class="nette-toggler" href="#" rel="next"> <abbr>&#x25ba;</abbr></a>
 		<ul class="nette-hiddens">
 			{foreach $params as $name =>$param}
 			<li>
@@ -113,7 +113,6 @@
 							</a>
 						<li>default = <code>{?var_dump($param['meta']['def'])}</code>
 					</ul>
-
 				{else}
 					<strong>{$name}</strong> = <code>{?var_dump($param['value'])}</code>
 				{/if}
@@ -122,7 +121,6 @@
 		</ul>
 
 	{/if}
-
 
 
 	{* Dumps *}
