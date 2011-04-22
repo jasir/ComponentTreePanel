@@ -2,21 +2,29 @@
 	@param object mixed
 	@param opened bool
 	@param childOpened bool
-	@param cache bool
+	@param paramsOpened
+	@param cache \Nette\Caching\Cache
+	@param dumps
 *}
 
 {block #componentRender}
 
+	{default childOpened => FALSE}
+	{default opened => FALSE}
+	{default paramsOpened => TRUE}
+	{default dumps => TRUE}
+	{default cache => NULL}
+
 	<li>
 
-		{var $refl => $object->getReflection()}
+		{var refl => $object->getReflection()}
 
 		<b>{$object->name}</b>
 		<i>instance of</i>
 			<a title="{$refl->getFileName()}" href="{!=\Extras\Debug\ComponentTreePanel::createEditLink($refl->getFileName(), $refl->getStartLine())}">
 				{=get_class($object)}
 			</a>
-			{var $parent = $refl->getParentClass()}
+			{var parent => $refl->getParentClass()}
 			<i>extends</i> <a title="{$parent->getFileName()}" href="{!=\Extras\Debug\ComponentTreePanel::createEditLink($parent->getFileName(), $parent->getStartLine())}">{$parent->getName()}</a>
 
 		<a class="nette-toggler" href="#" rel="next"> <abbr>{if $opened}&#x25bc{else}&#x25ba{/if};</abbr></a>
@@ -27,7 +35,7 @@
 
 		{if $object instanceOf \Nette\Application\UI\PresenterComponent}
 
-			{var $params = $template->parametersInfo($object)}
+			{var params => $template->parametersInfo($object)}
 
 			<li><span title="persistent parameters are marked with @">Parameters ({=count($params)})</span> <a class="nette-toggler" href="#" rel="next"> <abbr>{if $parametersOpen}&#x25bc{else}&#x25ba{/if};</abbr></a>
 			<ul {if !$parametersOpen}class="nette-hidden"{/if}>
@@ -41,7 +49,7 @@
 						<a class="nette-toggler" href="#" rel="next"> <abbr>&#x25ba;</abbr></a>
 						<ul class="nette-hidden">
 							<li>
-								{var $refl = new \Nette\Reflection\ClassType($param['meta']['since']) }
+								{var refl => new \Nette\Reflection\ClassType($param['meta']['since']) }
 								persistent parameter declared in
 								<a title="{$refl->getFileName()}" href="{!=\Extras\Debug\ComponentTreePanel::createEditLink($refl->getFileName(), 1)}">
 								{$param['meta']['since']} {if $param['meta']['since'] == get_class($object)}(this){/if}
@@ -142,7 +150,7 @@
 
 	{if $dumps}
 		<li>Dump <a class="nette-toggler" href="#" rel="next"> <abbr>&#x25ba;</abbr></a>
-		<ul class="nette-hidden">
+		<ul class="nette-hidden"><li>
 			<div class="ct-dump">{!= \Nette\Diagnostics\Helpers::clickableDump($object)}</div>
 		</ul>
 	{/if}
@@ -152,7 +160,7 @@
 
 
 	{if $object instanceOf \Nette\ComponentModel\Container}
-		{var $components = $object->getComponents()}
+		{var components => $object->getComponents()}
 		{if count($components) > 0}
 		<li>
 			Components ({=count($components)}) <a class="nette-toggler" rel="next" href="#"><abbr>&#x25bc;</abbr></a>
