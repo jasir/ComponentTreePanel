@@ -41,7 +41,16 @@ class ComponentTreePanel extends Object implements IBarPanel {
 	 *
 	 * @var bool
 	 */
-	 public static $dumps = TRUE;
+	public static $dumps = TRUE;
+
+
+	/**
+	 * Should be paremeters section open by default
+	 *
+	 * @var bool
+	 */
+	public static $parametersOpen = TRUE;
+
 
 	private $response;
 
@@ -85,6 +94,9 @@ class ComponentTreePanel extends Object implements IBarPanel {
 		$template->fullTree = static::$fullTree;
 		$template->cache = static::$cache ? \Nette\Environment::getCache('Debugger.Panels.ComponentTree') : NULL;
 		$template->dumps = static::$dumps;
+		$template->parametersOpen = static::$parametersOpen;
+		$template->registerHelper('parametersInfo', callback($this, 'getParametersInfo'));
+
 		ob_start();
 		$template->render();
 
@@ -116,6 +128,32 @@ class ComponentTreePanel extends Object implements IBarPanel {
 
 		$iterator = new \LimitIterator(new \ArrayIterator($sources[$fileName]), $startLine, $endLine - $startLine + 1);
 		return $iterator;
+	}
+
+	public function getParametersInfo($presenterComponent) {
+			$params = array();
+
+			$normalParameters = $presenterComponent->getParam();
+			ksort($normalParameters);
+			foreach ($normalParameters as $name => $value) {
+				$params[$name] = array(
+					'value' => $value,
+					'persistent' => FALSE,
+					'meta' => NULL,
+				);
+			}
+
+			$persistentParameters = $presenterComponent->getReflection()->getPersistentParams();
+			ksort($persistentParameters);
+			foreach ($persistentParameters as $name => $meta) {
+				$params[$name] = array(
+					'value' => $presenterComponent->$name,
+					'persistent' => TRUE,
+					'meta' => $meta,
+				);
+			}
+
+			return $params;
 	}
 
 
