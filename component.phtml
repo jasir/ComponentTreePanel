@@ -22,6 +22,10 @@
 		<a class="nette-toggler" href="#" rel="next"> <abbr>{if $opened}&#x25bc{else}&#x25ba{/if};</abbr></a>
 		<ul {if !$opened}class="nette-hidden"{/if}>
 
+
+		{* Methods *}
+
+
 		<?php
 
 			if ($cache && isset($cache[$object->name])) {
@@ -71,6 +75,11 @@
 					{include methods.phtml
 						name => "set<property>", object => $object, inherited => FALSE, pattern => "#^(set)(.*)#"}
 				</ul>
+
+
+		{* Source *}
+
+
 			{if !$object instanceOf \Nette\Application\UI\Form}
 				<li>
 
@@ -88,7 +97,9 @@
 				}
 			?>
 
+
 	{* Parameters *}
+
 
 	{if $object instanceOf \Nette\Application\UI\PresenterComponent}
 
@@ -125,6 +136,7 @@
 
 	{* Dumps *}
 
+
 	{if $dumps}
 		<li>Dump <a class="nette-toggler" href="#" rel="next"> <abbr>&#x25ba;</abbr></a>
 		<ul class="nette-hidden">
@@ -133,9 +145,8 @@
 	{/if}
 
 
-
-
 	{* Components *}
+
 
 	{if $object instanceOf \Nette\ComponentModel\Container}
 		{var $components = $object->getComponents()}
