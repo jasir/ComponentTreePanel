@@ -87,6 +87,69 @@
 					}
 				}
 			?>
+<h4></h4>
+
+
+	{* Parameters *}
+
+	{if $object instanceOf \Nette\Application\UI\PresenterComponent}
+
+		<?php
+			$params = array();
+
+			$normalParameters = $object->getParam();
+			ksort($normalParameters);
+			foreach ($normalParameters as $name => $value) {
+				$params[$name] = array(
+					'value' => $value,
+					'persistent' => FALSE,
+					'meta' => NULL,
+				);
+			}
+
+			$persistentParameters = $object->getReflection()->getPersistentParams();
+			ksort($persistentParameters);
+			foreach ($persistentParameters as $name => $meta) {
+				$property = $object->getReflection()->getProperty($name);
+				$params[$name] = array(
+					'value' => $object->$name,
+					'persistent' => TRUE,
+					'meta' => $meta,
+				);
+			}
+
+		?>
+
+		<li><span title="persistent parameters are marked with @">Parameters</span> <a class="nette-toggler" href="#" rel="next"> <abbr>&#x25ba;</abbr></a>
+		<ul class="nette-hiddens">
+			{foreach $params as $name =>$param}
+			<li>
+				{if $param['persistent']}
+					<strong>@{$name}</strong> = <code>{?var_dump($param['value'])}</code>
+					{if $param['value'] === $param['meta']['def']}
+						<strong>(default value)</strong>
+					{/if}
+					<a class="nette-toggler" href="#" rel="next"> <abbr>&#x25ba;</abbr></a>
+					<ul class="nette-hidden">
+						<li>
+							{var $refl = new \Nette\Reflection\ClassType($param['meta']['since']) }
+							persistent parameter declared in
+							<a title="{$refl->getFileName()}" href="{!=\Extras\Debug\ComponentTreePanel::createEditLink($refl->getFileName(), 1)}">
+							{$param['meta']['since']} {if $param['meta']['since'] == get_class($object)}(this){/if}
+							</a>
+						<li>default = <code>{?var_dump($param['meta']['def'])}</code>
+					</ul>
+
+				{else}
+					<strong>{$name}</strong> = <code>{?var_dump($param['value'])}</code>
+				{/if}
+					{* <li>{?\Nette\Diagnostics\Debugger::dump($param)} *}
+			{/foreach}
+		</ul>
+
+	{/if}
+
+
 
 	{* Dumps *}
 
