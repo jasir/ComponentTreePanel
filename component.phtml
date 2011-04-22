@@ -105,8 +105,8 @@
 
 		{var $params = $template->parametersInfo($object)}
 
-		<li><span title="persistent parameters are marked with @">Parameters ({=count($params)})</span> <a class="nette-toggler" href="#" rel="next"> <abbr>&#x25ba;</abbr></a>
-		<ul class="nette-hiddens">
+		<li><span title="persistent parameters are marked with @">Parameters ({=count($params)})</span> <a class="nette-toggler" href="#" rel="next"> <abbr>{if $parametersOpen}&#x25bc{else}&#x25ba{/if};</abbr></a>
+		<ul {if !$parametersOpen}class="nette-hidden"{/if}>
 			{foreach $params as $name =>$param}
 			<li>
 				{if $param['persistent']}

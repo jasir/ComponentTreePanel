@@ -43,6 +43,15 @@ class ComponentTreePanel extends Object implements IBarPanel {
 	 */
 	 public static $dumps = TRUE;
 
+
+	/**
+	 * Should be paremeters section open by default
+	 *
+	 * @var bool
+	 */
+	public static $parametersOpen = TRUE;
+
+
 	private $response;
 
 	static private $isRegistered = FALSE;
@@ -85,6 +94,7 @@ class ComponentTreePanel extends Object implements IBarPanel {
 		$template->fullTree = static::$fullTree;
 		$template->cache = static::$cache ? \Nette\Environment::getCache('Debugger.Panels.ComponentTree') : NULL;
 		$template->dumps = static::$dumps;
+		$template->parametersOpen = static::$parametersOpen;
 		$template->registerHelper('parametersInfo', callback($this, 'getParametersInfo'));
 
 		ob_start();
