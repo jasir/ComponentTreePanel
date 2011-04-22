@@ -87,38 +87,12 @@
 					}
 				}
 			?>
-<h4></h4>
-
 
 	{* Parameters *}
 
 	{if $object instanceOf \Nette\Application\UI\PresenterComponent}
 
-		<?php
-			$params = array();
-
-			$normalParameters = $object->getParam();
-			ksort($normalParameters);
-			foreach ($normalParameters as $name => $value) {
-				$params[$name] = array(
-					'value' => $value,
-					'persistent' => FALSE,
-					'meta' => NULL,
-				);
-			}
-
-			$persistentParameters = $object->getReflection()->getPersistentParams();
-			ksort($persistentParameters);
-			foreach ($persistentParameters as $name => $meta) {
-				$property = $object->getReflection()->getProperty($name);
-				$params[$name] = array(
-					'value' => $object->$name,
-					'persistent' => TRUE,
-					'meta' => $meta,
-				);
-			}
-
-		?>
+		{var $params = $template->parametersInfo($object)}
 
 		<li><span title="persistent parameters are marked with @">Parameters</span> <a class="nette-toggler" href="#" rel="next"> <abbr>&#x25ba;</abbr></a>
 		<ul class="nette-hiddens">
