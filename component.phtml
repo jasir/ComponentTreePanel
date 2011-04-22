@@ -88,18 +88,29 @@
 				}
 			?>
 
+	{* Dumps *}
 
-	<!--! Childs COMPONENTS -->
+	{if $dumps}
+	<li>Dump <a class="nette-toggler" href="#" rel="next"> <abbr>&#x25ba;</abbr></a>
+		<ul class="nette-hidden">
+			<li>{!= \Nette\Diagnostics\Helpers::clickableDump($object)}
+		</ul>
+	{/if}
+
+
+	{* Childs COMPONENTS *}
 
 	{if $object instanceOf \Nette\ComponentModel\Container}
 		{var $components = $object->getComponents()}
+		{if count($components) > 0}
 		<li>
-			Child Components ({=count($components)}) <a class="nette-toggler" rel="next" href="#"><abbr>&#x25bc;</abbr></a>
+			Components ({=count($components)}) <a class="nette-toggler" rel="next" href="#"><abbr>&#x25bc;</abbr></a>
 			<ul n:if="count($components) > 0">
 				{foreach $components as $com}
 					{include #componentRender object=>$com, opened=>$childOpened}
 				{/foreach}
 			</ul>
+		{/if}
 	{/if}
 	</ul>
 
