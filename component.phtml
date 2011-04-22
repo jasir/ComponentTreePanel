@@ -19,6 +19,9 @@
 			{var $parent = $refl->getParentClass()}
 			<i>extends</i> <a title="{$parent->getFileName()}" href="{!=\Extras\Debug\ComponentTreePanel::createEditLink($parent->getFileName(), $parent->getStartLine())}">{$parent->getName()}</a>
 
+		<a class="nette-toggler" href="#" rel="next"> <abbr>{if $opened}&#x25bc{else}&#x25ba{/if};</abbr></a>
+		<ul {if !$opened}class="nette-hidden"{/if}>
+
 		<?php
 
 			if ($cache && isset($cache[$object->name])) {
@@ -28,11 +31,8 @@
 			else {
 				ob_start();
 		?>
-		<a class="nette-toggler" href="#" rel="next"> <abbr>{if $opened}&#x25bc{else}&#x25ba{/if};</abbr></a>
-		<ul {if !$opened}class="nette-hidden"{/if}>
 
 			<li>
-
 				Methods <a class="nette-toggler" rel="next" href="#"><abbr>&#x25ba;</abbr></a>
 				<ul class="nette-hidden">
 
@@ -98,16 +98,16 @@
 	{/if}
 
 
-	{* Childs COMPONENTS *}
+	{* Components *}
 
 	{if $object instanceOf \Nette\ComponentModel\Container}
 		{var $components = $object->getComponents()}
 		{if count($components) > 0}
 		<li>
 			Components ({=count($components)}) <a class="nette-toggler" rel="next" href="#"><abbr>&#x25bc;</abbr></a>
-			<ul n:if="count($components) > 0">
+			<ul>
 				{foreach $components as $com}
-					{include #componentRender object=>$com, opened=>$childOpened}
+					{include #componentRender object=>$com, opened=>$childOpened, childOpened=>$childOpened}
 				{/foreach}
 			</ul>
 		{/if}
