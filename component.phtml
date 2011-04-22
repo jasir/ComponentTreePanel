@@ -91,11 +91,13 @@
 	{* Dumps *}
 
 	{if $dumps}
-	<li>Dump <a class="nette-toggler" href="#" rel="next"> <abbr>&#x25ba;</abbr></a>
+		<li>Dump <a class="nette-toggler" href="#" rel="next"> <abbr>&#x25ba;</abbr></a>
 		<ul class="nette-hidden">
-			<li>{!= \Nette\Diagnostics\Helpers::clickableDump($object)}
+			<div class="ct-dump">{!= \Nette\Diagnostics\Helpers::clickableDump($object)}</div>
 		</ul>
 	{/if}
+
+
 
 
 	{* Components *}
