@@ -131,9 +131,9 @@
 				<li>
 
 					Source File <a class="nette-toggler" rel="next" href="#"><abbr>&#x25ba;</abbr></a>
-					<ul class="nette-hidden">
+					<div class="nette-hidden">
 						{include sourcefile.phtml, object => $object, showSource => TRUE}
-					</ul>
+					</div>
 			{/if}
 			<?php
 					$content = ob_get_clean();
