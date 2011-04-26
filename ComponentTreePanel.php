@@ -97,6 +97,7 @@ class ComponentTreePanel extends Object implements IBarPanel {
 		$template->parametersOpen = static::$parametersOpen;
 		$template->registerHelper('parametersInfo', callback($this, 'getParametersInfo'));
 		$template->registerHelper('editlink', callback($this, 'buildEditorLink'));
+		$template->registerHelper('highlight', callback($this, 'highlight'));
 
 		ob_start();
 		$template->render();
@@ -129,6 +130,38 @@ class ComponentTreePanel extends Object implements IBarPanel {
 
 		$iterator = new \LimitIterator(new \ArrayIterator($sources[$fileName]), $startLine, $endLine - $startLine + 1);
 		return $iterator;
+	}
+
+	public function highlight($object) {
+
+		if ( !($object instanceOf \Nette\Reflection\Method || $object instanceof \Nette\Reflection\ClassType)) {
+			$object = $object->getReflection();
+		}
+
+		$sourceLines = static::getSource($object->getFileName(), $object->getStartLine()-1, $object->getEndLine()-1);
+
+		$phpDocTxt = $object->getDocComment();
+		$phpDoc = array();
+		if (strlen($phpDocTxt) > 0) {
+			$phpDoc = explode("\n", $phpDocTxt);
+		}
+		$phpDoc = new \ArrayIterator($phpDoc);
+		$lines = new \AppendIterator();
+
+		$lines->append($phpDoc);
+		$lines->append($sourceLines);
+
+		$source = '';
+
+		foreach ($lines as $line) {
+			$source .= $line . "\n";
+		}
+		$source = highlight_string("<?php\n" . $source, TRUE);
+		$source = str_replace('<span style="color: #0000BB">&lt;?php<br />&nbsp;&nbsp;&nbsp;&nbsp;</span>', '', $source);
+		$source = str_replace('<span style="color: #0000BB">&lt;?php<br /></span>', '', $source);
+		$source = "&nbsp;&nbsp;&nbsp;" . $source;
+		return $source;
+
 	}
 
 	public function getParametersInfo($presenterComponent) {

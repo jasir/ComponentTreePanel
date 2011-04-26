@@ -6,46 +6,11 @@
 ?>
 {block #sourcefile}
 <ul>
-		<?php
-			if ( !($object instanceOf \Nette\Reflection\Method || $object instanceof \Nette\Reflection\ClassType)) {
-				$object = $object->getReflection();
-			}
-			$link = $template->editlink($object->getFileName(), $object->getStartLine());
-		?>
-		 <li>
-
-			{if $showSource}
-
-				<?php
-					$sourceLines = \Extras\Debug\ComponentTreePanel::getSource($object->getFileName(), $object->getStartLine()-1, $object->getEndLine()-1);
-
-					$phpDocTxt = $object->getDocComment();
-					$phpDoc = array();
-					if (strlen($phpDocTxt) > 0) {
-						$phpDoc = explode("\n", $phpDocTxt);
-					}
-					$phpDoc = new ArrayIterator($phpDoc);
-					$lines = new AppendIterator();
-
-					$lines->append($phpDoc);
-					$lines->append($sourceLines);
-
-					$source = '';
-
-					foreach ($lines as $line) {
-						$source .= $line . "\n";
-					}
-					$source = highlight_string("<?php\n" . $source, TRUE);
-					$source = str_replace('<span style="color: #0000BB">&lt;?php<br />&nbsp;&nbsp;&nbsp;&nbsp;</span>', '', $source);
-					$source = str_replace('<span style="color: #0000BB">&lt;?php<br /></span>', '', $source);
-					$source = "&nbsp;&nbsp;&nbsp;" . $source;
-
-				?>
-				<div class="source">
-				{!$source}
-				</div>
-
-
-			{/if}
+	 <li>
+		{if $showSource}
+			<div class="source">
+			{!=$template->highlight($object)}
+			</div>
+		{/if}
 </ul>
 {/block}
