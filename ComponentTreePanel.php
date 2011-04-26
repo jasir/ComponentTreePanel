@@ -96,6 +96,7 @@ class ComponentTreePanel extends Object implements IBarPanel {
 		$template->dumps = static::$dumps;
 		$template->parametersOpen = static::$parametersOpen;
 		$template->registerHelper('parametersInfo', callback($this, 'getParametersInfo'));
+		$template->registerHelper('editlink', callback($this, 'buildEditorLink'));
 
 		ob_start();
 		$template->render();
@@ -112,7 +113,7 @@ class ComponentTreePanel extends Object implements IBarPanel {
 		return __CLASS__;
 	}
 
-	public static function createEditLink($file, $line) {
+	public function buildEditorLink($file, $line) {
 		return strtr(Debugger::$editor, array('%file' => urlencode(realpath($file)), '%line' => $line));
 	}
 

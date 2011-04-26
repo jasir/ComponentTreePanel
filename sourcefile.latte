@@ -10,7 +10,7 @@
 			if ( !($object instanceOf \Nette\Reflection\Method || $object instanceof \Nette\Reflection\ClassType)) {
 				$object = $object->getReflection();
 			}
-			$link = \Extras\Debug\ComponentTreePanel::createEditLink($object->getFileName(), $object->getStartLine());
+			$link = $template->editlink($object->getFileName(), $object->getStartLine());
 		?>
 		 <li>
 

@@ -21,11 +21,11 @@
 
 		<b>{$object->name}</b>
 		<i>instance of</i>
-			<a title="{$refl->getFileName()}" href="{!=\Extras\Debug\ComponentTreePanel::createEditLink($refl->getFileName(), $refl->getStartLine())}">
+			<a title="{$refl->getFileName()}" href="{!=$template->editlink($refl->getFileName(), $refl->getStartLine())}">
 				{=get_class($object)}
 			</a>
 			{var parent => $refl->getParentClass()}
-			<i>extends</i> <a title="{$parent->getFileName()}" href="{!=\Extras\Debug\ComponentTreePanel::createEditLink($parent->getFileName(), $parent->getStartLine())}">{$parent->getName()}</a>
+			<i>extends</i> <a title="{$parent->getFileName()}" href="{!=$template->editlink($parent->getFileName(), $parent->getStartLine())}">{$parent->getName()}</a>
 
 		<a class="nette-toggler" href="#" rel="next"> <abbr>{if $opened}&#x25bc{else}&#x25ba{/if};</abbr></a>
 		<ul {if !$opened}class="nette-hidden"{/if}>
@@ -51,7 +51,7 @@
 							<li>
 								{var refl => new \Nette\Reflection\ClassType($param['meta']['since']) }
 								persistent parameter declared in
-								<a title="{$refl->getFileName()}" href="{!=\Extras\Debug\ComponentTreePanel::createEditLink($refl->getFileName(), 1)}">
+								<a title="{$refl->getFileName()}" href="{!=$template->editlink($refl->getFileName(), 1)}">
 								{$param['meta']['since']} {if $param['meta']['since'] == get_class($object)}(this){/if}
 								</a>
 							<li>default value: <code>{?var_dump($param['meta']['def'])}</code>

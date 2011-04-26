@@ -41,7 +41,7 @@
 
 				{foreach $filtered as $method}
 					<li>
-						<a title="{$method->getFileName()}:{$method->getStartLine()}"href="{!=\Extras\Debug\ComponentTreePanel::createEditLink($method->getFileName(), $method->getStartLine())}">
+						<a title="{$method->getFileName()}:{$method->getStartLine()}"href="{!=$template->editlink($method->getFileName(), $method->getStartLine())}">
 						{!=preg_replace($pattern, '${1}<strong>${2}</strong>', $method->name)}()
 							{if $method->class !== get_class($object)}
 								<i>defined in</i> {$method->class}
