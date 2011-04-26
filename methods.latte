@@ -8,37 +8,16 @@
 
 {block #methods}
 
-<?php
-	if (!isset($hideMethods)) {
-		$hideMethods = array();
-	}
-	$methods = $object->getReflection()->getMethods();
+{default $showEmpty => FALSE}
+{default $hideMethods => array()}
 
-	$filtered = array();
+{var $filtered = $template->filterMethods($object, $pattern, $hideMethods, $inherited)}
 
-	foreach($methods as $method) {
 
-		if (!preg_match($pattern, $method->getName(), $matches)) {
-			continue;
-		}
-		if ($method->class !== get_class($object) && $inherited === FALSE) {
-			continue;
-		}
-		if (in_array($method->getName(), $hideMethods)) {
-			continue;
-		}
-
-		$filtered[] = $method;
-	}
-	$showEmpty = isset($showEmpty) ? $showEmpty : FALSE;
-?>
-
-	{if count($filtered)>0 || $showEmpty === TRUE}
+	{if count($filtered) > 0 || $showEmpty === TRUE}
 		<li>
 			{$name} ({=count($filtered)}) <a class="nette-toggler" rel="next" href="#"><abbr>&#x25bc;</abbr></a>
-
 			<ul>
-
 				{foreach $filtered as $method}
 					<li>
 						<a title="{$method->getFileName()}:{$method->getStartLine()}"href="{!=$template->editlink($method->getFileName(), $method->getStartLine())}">
@@ -51,9 +30,7 @@
 							<div class="nette-hidden">
 								{include sourcefile.latte, object => $method, showSource => TRUE}
 							</div>
-
 				{/foreach}
-
 			</ul>
 		</li>
 	{/if}

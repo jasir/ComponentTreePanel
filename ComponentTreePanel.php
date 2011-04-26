@@ -98,7 +98,7 @@ class ComponentTreePanel extends Object implements IBarPanel {
 		$template->registerHelper('parametersInfo', callback($this, 'getParametersInfo'));
 		$template->registerHelper('editlink', callback($this, 'buildEditorLink'));
 		$template->registerHelper('highlight', callback($this, 'highlight'));
-
+		$template->registerHelper('filterMethods', callback($this, 'filterMethods'));
 		ob_start();
 		$template->render();
 
@@ -162,6 +162,34 @@ class ComponentTreePanel extends Object implements IBarPanel {
 		$source = "&nbsp;&nbsp;&nbsp;" . $source;
 		return $source;
 
+	}
+
+	/**
+	 * Filters methods from object
+	 * - filters in methods that matches pattern
+	 * - filters out methods that are in $hideMethods
+	 * - if $inherited === FALSE, shows only methods from current object's class, not from its predecessors
+	 * @param mixed $object
+	 * @param string $pattern
+	 * @param array $hideMethods
+	 * @param bool $inherited
+	 */
+	public function filterMethods($object, $pattern, $hideMethods, $inherited) {
+		$methods = $object->getReflection()->getMethods();
+		$filtered = array();
+		foreach ($methods as $method) {
+			if (!preg_match($pattern, $method->getName(), $matches)) {
+				continue;
+			}
+			if ($method->class !== get_class($object) && $inherited === FALSE) {
+				continue;
+			}
+			if (in_array($method->getName(), $hideMethods)) {
+				continue;
+			}
+			$filtered[] = $method;
+		}
+		return $filtered;
 	}
 
 	public function getParametersInfo($presenterComponent) {
