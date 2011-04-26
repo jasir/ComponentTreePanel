@@ -62,7 +62,7 @@ class ComponentTreePanel extends Object implements IBarPanel {
 
 	public static function register() {
 		if (!self::$isRegistered) {
-			Debugger::addPanel(new self);
+			Debugger::$bar->addPanel(new self);
 			self::$isRegistered = TRUE;
 		}
 	}
