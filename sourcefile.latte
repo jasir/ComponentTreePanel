@@ -1,0 +1,16 @@
+<?php
+ /**
+  * @param $object
+  * @param $showSource bool
+  */
+?>
+{block #sourcefile}
+<ul>
+	 <li>
+		{if $showSource}
+			<div class="source">
+			{!=$template->highlight($object)}
+			</div>
+		{/if}
+</ul>
+{/block}

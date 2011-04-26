@@ -1,0 +1,38 @@
+{*
+  @param $object
+  @param $inherited show Inherited Methods?
+  @param $name
+  @param $showEmpty
+  @param $hideMethods
+*}
+
+{block #methods}
+
+{default $showEmpty => FALSE}
+{default $hideMethods => array()}
+
+{var $filtered = $template->filterMethods($object, $pattern, $hideMethods, $inherited)}
+
+
+	{if count($filtered) > 0 || $showEmpty === TRUE}
+		<li>
+			{$name} ({=count($filtered)}) <a class="nette-toggler" rel="next" href="#"><abbr>&#x25bc;</abbr></a>
+			<ul>
+				{foreach $filtered as $method}
+					<li>
+						<a title="{$method->getFileName()}:{$method->getStartLine()}"href="{!=$template->editlink($method->getFileName(), $method->getStartLine())}">
+						{!=preg_replace($pattern, '${1}<strong>${2}</strong>', $method->name)}()
+							{if $method->class !== get_class($object)}
+								<i>defined in</i> {$method->class}
+							{/if}
+						</a>
+							<a class="nette-toggler" href="#" rel="next"><abbr>&#x25ba;</abbr></a>
+							<div class="nette-hidden">
+								{include sourcefile.latte, object => $method, showSource => TRUE}
+							</div>
+				{/foreach}
+			</ul>
+		</li>
+	{/if}
+
+{/block}

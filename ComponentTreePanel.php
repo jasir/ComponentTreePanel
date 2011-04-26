@@ -62,7 +62,7 @@ class ComponentTreePanel extends Object implements IBarPanel {
 
 	public static function register() {
 		if (!self::$isRegistered) {
-			Debugger::addPanel(new self);
+			Debugger::$bar->addPanel(new self);
 			self::$isRegistered = TRUE;
 		}
 	}
@@ -85,7 +85,7 @@ class ComponentTreePanel extends Object implements IBarPanel {
 
 		/** @var Template */
 		$template = new FileTemplate;
-		$template->setFile(dirname(__FILE__) . "/control.phtml");
+		$template->setFile(dirname(__FILE__) . "/bar.latte");
 		$template->registerFilter(new Engine());
 		$template->baseUri = /*Nette\*/Environment::getVariable('baseUri');
 		$template->basePath = rtrim($template->baseUri, '/');
@@ -96,7 +96,9 @@ class ComponentTreePanel extends Object implements IBarPanel {
 		$template->dumps = static::$dumps;
 		$template->parametersOpen = static::$parametersOpen;
 		$template->registerHelper('parametersInfo', callback($this, 'getParametersInfo'));
-
+		$template->registerHelper('editlink', callback($this, 'buildEditorLink'));
+		$template->registerHelper('highlight', callback($this, 'highlight'));
+		$template->registerHelper('filterMethods', callback($this, 'filterMethods'));
 		ob_start();
 		$template->render();
 
@@ -112,7 +114,7 @@ class ComponentTreePanel extends Object implements IBarPanel {
 		return __CLASS__;
 	}
 
-	public static function createEditLink($file, $line) {
+	public function buildEditorLink($file, $line) {
 		return strtr(Debugger::$editor, array('%file' => urlencode(realpath($file)), '%line' => $line));
 	}
 
@@ -128,6 +130,66 @@ class ComponentTreePanel extends Object implements IBarPanel {
 
 		$iterator = new \LimitIterator(new \ArrayIterator($sources[$fileName]), $startLine, $endLine - $startLine + 1);
 		return $iterator;
+	}
+
+	public function highlight($object) {
+
+		if ( !($object instanceOf \Nette\Reflection\Method || $object instanceof \Nette\Reflection\ClassType)) {
+			$object = $object->getReflection();
+		}
+
+		$sourceLines = static::getSource($object->getFileName(), $object->getStartLine()-1, $object->getEndLine()-1);
+
+		$phpDocTxt = $object->getDocComment();
+		$phpDoc = array();
+		if (strlen($phpDocTxt) > 0) {
+			$phpDoc = explode("\n", $phpDocTxt);
+		}
+		$phpDoc = new \ArrayIterator($phpDoc);
+		$lines = new \AppendIterator();
+
+		$lines->append($phpDoc);
+		$lines->append($sourceLines);
+
+		$source = '';
+
+		foreach ($lines as $line) {
+			$source .= $line . "\n";
+		}
+		$source = highlight_string("<?php\n" . $source, TRUE);
+		$source = str_replace('<span style="color: #0000BB">&lt;?php<br />&nbsp;&nbsp;&nbsp;&nbsp;</span>', '', $source);
+		$source = str_replace('<span style="color: #0000BB">&lt;?php<br /></span>', '', $source);
+		$source = "&nbsp;&nbsp;&nbsp;" . $source;
+		return $source;
+
+	}
+
+	/**
+	 * Filters methods from object
+	 * - filters in methods that matches pattern
+	 * - filters out methods that are in $hideMethods
+	 * - if $inherited === FALSE, shows only methods from current object's class, not from its predecessors
+	 * @param mixed $object
+	 * @param string $pattern
+	 * @param array $hideMethods
+	 * @param bool $inherited
+	 */
+	public function filterMethods($object, $pattern, $hideMethods, $inherited) {
+		$methods = $object->getReflection()->getMethods();
+		$filtered = array();
+		foreach ($methods as $method) {
+			if (!preg_match($pattern, $method->getName(), $matches)) {
+				continue;
+			}
+			if ($method->class !== get_class($object) && $inherited === FALSE) {
+				continue;
+			}
+			if (in_array($method->getName(), $hideMethods)) {
+				continue;
+			}
+			$filtered[] = $method;
+		}
+		return $filtered;
 	}
 
 	public function getParametersInfo($presenterComponent) {
