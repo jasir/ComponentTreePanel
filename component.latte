@@ -91,35 +91,35 @@
 
 					{if $object instanceof \Nette\Application\IPresenter}
 						{include
-							methods.phtml
+							methods.latte
 							name => "action<Action>", object => $object, inherited => TRUE, pattern => "#^(action)(.+)#"}
 						{include
-							methods.phtml
+							methods.latte
 							name => "lifecycle", object => $object, inherited => TRUE, pattern => "~\A()(startup | beforeHandle | beforeRender |shutdown)\z~x"}
 					{/if}
 
 					<!-- render<view>, handle<signal> -->
 
 					{if $object instanceof \Nette\Application\Control}
-						{include methods.phtml
+						{include methods.latte
 							name => "render<View>", object => $object, inherited => TRUE, pattern => "#^(render)(.*)#"}
-						{include methods.phtml
+						{include methods.latte
 							name => "handle<Signal>", object => $object, inherited => TRUE, pattern => "#^(handle)(.*)#", hideMethods => array()}
 					{/if}
 
 					<!-- createComponent -->
 
-					{include methods.phtml name => "createComponent<name>", object => $object, inherited => TRUE, pattern => "#^(createComponent)(.+)#", hideMethods => array()}
+					{include methods.latte name => "createComponent<name>", object => $object, inherited => TRUE, pattern => "#^(createComponent)(.+)#", hideMethods => array()}
 
 					<!-- create<object>-->
-					{include methods.phtml name => "create<object>", object =>$object, inherited => TRUE, pattern => "#^(create(?!Component))(\w+)#", hideMethods => array('createRequest')}
+					{include methods.latte name => "create<object>", object =>$object, inherited => TRUE, pattern => "#^(create(?!Component))(\w+)#", hideMethods => array('createRequest')}
 
 					<!-- get/set properties-->
 
-					{include methods.phtml
+					{include methods.latte
 						name => "get<property>", object => $object, inherited => FALSE, pattern => "#^(get)(.+)#"}
 
-					{include methods.phtml
+					{include methods.latte
 						name => "set<property>", object => $object, inherited => FALSE, pattern => "#^(set)(.*)#"}
 				</ul>
 
@@ -132,7 +132,7 @@
 
 					Source File <a class="nette-toggler" rel="next" href="#"><abbr>&#x25ba;</abbr></a>
 					<div class="nette-hidden">
-						{include sourcefile.phtml, object => $object, showSource => TRUE}
+						{include sourcefile.latte, object => $object, showSource => TRUE}
 					</div>
 			{/if}
 			<?php

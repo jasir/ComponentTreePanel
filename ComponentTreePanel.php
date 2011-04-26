@@ -85,7 +85,7 @@ class ComponentTreePanel extends Object implements IBarPanel {
 
 		/** @var Template */
 		$template = new FileTemplate;
-		$template->setFile(dirname(__FILE__) . "/control.phtml");
+		$template->setFile(dirname(__FILE__) . "/bar.latte");
 		$template->registerFilter(new Engine());
 		$template->baseUri = /*Nette\*/Environment::getVariable('baseUri');
 		$template->basePath = rtrim($template->baseUri, '/');

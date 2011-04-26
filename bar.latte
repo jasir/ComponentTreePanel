@@ -8,7 +8,7 @@
 * @param $wrap
 * @param $fullTree
 *
-* @todo Refactor: přénést PHP z šablon @component.phtml a @methods.phtml do helperů
+* @todo Refactor: přénést PHP z šablon @component.latte a @methods.latte do helperů
 */
 ?>
 <style>
@@ -93,7 +93,7 @@
 <div class="nette-inner">
 	<div id="componentsTreeComponent">
 		<ul id="tree">
-			{include component.phtml, object => $rootComponent, opened => true, childOpened => $fullTree}
+			{include component.latte, object => $rootComponent, opened => true, childOpened => $fullTree}
 		</ul>
 	</div>
 </div>
