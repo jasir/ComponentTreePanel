@@ -87,8 +87,6 @@ class ComponentTreePanel extends Object implements IBarPanel {
 		$template = new FileTemplate;
 		$template->setFile(dirname(__FILE__) . "/bar.latte");
 		$template->registerFilter(new Engine());
-		$template->baseUri = /*Nette\*/Environment::getVariable('baseUri');
-		$template->basePath = rtrim($template->baseUri, '/');
 		$template->presenter = $template->control = $template->rootComponent = Environment::getApplication()->getPresenter();
 		$template->wrap = static::$wrap;
 		$template->fullTree = static::$fullTree;
@@ -106,18 +104,24 @@ class ComponentTreePanel extends Object implements IBarPanel {
 	}
 
 	/**
-	 * Returns panel ID.
+	 * Returns link to open file in editor
+	 *
+	 * @param string $file
+	 * @param int $line
 	 * @return string
-	 * @see IDebugPanel::getId()
 	 */
-	public function getId() {
-		return __CLASS__;
-	}
-
-	public function buildEditorLink($file, $line) {
+	public static function buildEditorLink($file, $line) {
 		return strtr(Debugger::$editor, array('%file' => urlencode(realpath($file)), '%line' => $line));
 	}
 
+	/**
+	 * Get part of source file
+	 *
+	 * @param string $fileName
+	 * @param int $startLine
+	 * @param int $endLine
+	 * @return \LimitIterator
+	 */
 	public static function getSource($fileName, $startLine = NULL, $endLine = NULL) {
 		static $sources = array(); /* --- simple caching --- */
 
@@ -132,7 +136,13 @@ class ComponentTreePanel extends Object implements IBarPanel {
 		return $iterator;
 	}
 
-	public function highlight($object) {
+	/**
+	 * Highligts PHP source code of object
+	 *
+	 * @param mixed $object
+	 * @return source
+	 */
+	public static function highlight($object) {
 
 		if ( !($object instanceOf \Nette\Reflection\Method || $object instanceof \Nette\Reflection\ClassType)) {
 			$object = $object->getReflection();
@@ -173,8 +183,9 @@ class ComponentTreePanel extends Object implements IBarPanel {
 	 * @param string $pattern
 	 * @param array $hideMethods
 	 * @param bool $inherited
+	 * @return array
 	 */
-	public function filterMethods($object, $pattern, $hideMethods, $inherited) {
+	public static function filterMethods($object, $pattern, $hideMethods, $inherited) {
 		$methods = $object->getReflection()->getMethods();
 		$filtered = array();
 		foreach ($methods as $method) {
@@ -192,7 +203,12 @@ class ComponentTreePanel extends Object implements IBarPanel {
 		return $filtered;
 	}
 
-	public function getParametersInfo($presenterComponent) {
+	/**
+	 * Returns informations about parameters (actual and persistent)
+	 * @param presenterComponent $presenterComponent
+	 * @return array
+	 */
+	public static function getParametersInfo($presenterComponent) {
 			$params = array();
 
 			$normalParameters = $presenterComponent->getParam();
@@ -217,6 +233,5 @@ class ComponentTreePanel extends Object implements IBarPanel {
 
 			return $params;
 	}
-
 
 }
