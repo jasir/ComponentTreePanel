@@ -14,12 +14,13 @@
 	<li>
 
 
+		{var id => 'ctr-' . $object->lookupPath('Nette\Application\IPresenter', FALSE) . '-' . str_replace($object->name, ':', '-')}
 
-		<a class="nette-toggler" href="#" rel="next">{$object->name}</a>
+		<a class="nette-toggler" href="#" rel="#{!$id}">{$object->name}</a>
 		{if $object instanceOf \Nette\ComponentModel\Container && count($object->getComponents()) > 0}
 		<ul>
 		{/if}
-		<div class="nette-hidden" style="margin-left: 1em;background: #eee;">
+		<div class="nette-hidden" id = "{!$id}"style="margin-left: 1em;background: #eee;">
 			<ul>
 
 			{* object info *}
