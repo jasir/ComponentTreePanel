@@ -12,23 +12,23 @@
 	{default cache => NULL}
 
 	<li>
-
-
 		{var id => 'ctr-' . $object->lookupPath('Nette\Application\IPresenter', FALSE) . '-' . str_replace($object->name, ':', '-')}
+		{var refl => $object->getReflection()}
 
-		<a class="nette-toggler" href="#" rel="#{!$id}">{$object->name}</a>
+		<a class="nette-toggler" href="#" rel="#{!$id}"><strong>{$object->name}</strong> [{=get_class($object)}]</a>
 		{if $object instanceOf \Nette\ComponentModel\Container && count($object->getComponents()) > 0}
 		<ul>
 		{/if}
-		<div class="nette-hidden" id = "{!$id}"style="margin-left: 1em;background: #eee;">
+		<div class="nette-hidden" id = "{!$id}"style="padding:0.5em;">
 			<ul>
 
 			{* object info *}
 
-			{var refl => $object->getReflection()}
-			<li><i>instance of</i>
+
+			<li>
+				<i>instance of</i>
 				<a title="{$refl->getFileName()}" href="{!=$template->editlink($refl->getFileName(), $refl->getStartLine())}">
-					{=get_class($object)}
+				{=get_class($object)}
 				</a>
 				{var parent => $refl->getParentClass()}
 				<i>extends</i> <a title="{$parent->getFileName()}" href="{!=$template->editlink($parent->getFileName(), $parent->getStartLine())}">{$parent->getName()}</a>
