@@ -98,9 +98,9 @@ class ComponentTreePanel extends Object implements IBarPanel {
 		$template->registerHelper('editlink', callback($this, 'buildEditorLink'));
 		$template->registerHelper('highlight', callback($this, 'highlight'));
 		$template->registerHelper('filterMethods', callback($this, 'filterMethods'));
+
 		ob_start();
 		$template->render();
-
 		return ob_get_clean();
 	}
 
@@ -210,29 +210,29 @@ class ComponentTreePanel extends Object implements IBarPanel {
 	 * @return array
 	 */
 	public static function getParametersInfo($presenterComponent) {
-			$params = array();
+		$params = array();
 
-			$normalParameters = $presenterComponent->getParam();
-			ksort($normalParameters);
-			foreach ($normalParameters as $name => $value) {
-				$params[$name] = array(
-					'value' => $value,
-					'persistent' => FALSE,
-					'meta' => NULL,
-				);
-			}
+		$normalParameters = $presenterComponent->getParam();
+		ksort($normalParameters);
+		foreach ($normalParameters as $name => $value) {
+			$params[$name] = array(
+			'value' => $value,
+			'persistent' => FALSE,
+			'meta' => NULL,
+			);
+		}
 
-			$persistentParameters = $presenterComponent->getReflection()->getPersistentParams();
-			ksort($persistentParameters);
-			foreach ($persistentParameters as $name => $meta) {
-				$params[$name] = array(
-					'value' => $presenterComponent->$name,
-					'persistent' => TRUE,
-					'meta' => $meta,
-				);
-			}
+		$persistentParameters = $presenterComponent->getReflection()->getPersistentParams();
+		ksort($persistentParameters);
+		foreach ($persistentParameters as $name => $meta) {
+			$params[$name] = array(
+			'value' => $presenterComponent->$name,
+			'persistent' => TRUE,
+			'meta' => $meta,
+			);
+		}
 
-			return $params;
+		return $params;
 	}
 
 }
