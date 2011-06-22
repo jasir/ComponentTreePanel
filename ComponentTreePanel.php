@@ -25,12 +25,6 @@ class ComponentTreePanel extends Object implements IBarPanel {
 	public static $wrap = FALSE;
 
 	/**
-	 * Tree of components is fully visible (opened) on reload
-	 * @var bool
-	 */
-	public static $fullTree = FALSE;
-
-	/**
 	 * Is caching allowed
 	 * @var bool
 	 */
@@ -90,7 +84,6 @@ class ComponentTreePanel extends Object implements IBarPanel {
 		$template->registerFilter(new Engine());
 		$template->presenter = $template->control = $template->rootComponent = Environment::getApplication()->getPresenter();
 		$template->wrap = static::$wrap;
-		$template->fullTree = static::$fullTree;
 		$template->cache = static::$cache ? \Nette\Environment::getCache('Debugger.Panels.ComponentTree') : NULL;
 		$template->dumps = static::$dumps;
 		$template->parametersOpen = static::$parametersOpen;
