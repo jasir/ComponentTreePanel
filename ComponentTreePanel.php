@@ -5,12 +5,12 @@
  */
 namespace Extras\Debug;
 
-use \Nette\Object;
+use Nette\Object;
 use Nette\Diagnostics\IBarPanel;
 use Nette\Templating\FileTemplate;
 use Nette\Latte\Engine;
 use Nette\Diagnostics\Debugger;
-use \Nette\Environment;
+use Nette\Environment;
 
 /**
  * Displays current presenter and component
@@ -84,7 +84,7 @@ class ComponentTreePanel extends Object implements IBarPanel {
 		$template->registerFilter(new Engine());
 		$template->presenter = $template->control = $template->rootComponent = Environment::getApplication()->getPresenter();
 		$template->wrap = static::$wrap;
-		$template->cache = static::$cache ? \Nette\Environment::getCache('Debugger.Panels.ComponentTree') : NULL;
+		$template->cache = static::$cache ? Environment::getCache('Debugger.Panels.ComponentTree') : NULL;
 		$template->dumps = static::$dumps;
 		$template->parametersOpen = static::$parametersOpen;
 		$template->registerHelper('parametersInfo', callback($this, 'getParametersInfo'));
