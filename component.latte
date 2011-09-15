@@ -156,6 +156,16 @@
 				?>
 
 
+		{* Values *}
+
+		{if $object instanceOf \Nette\Forms\Form}
+			<li>Values <a class="nette-toggler" href="#" rel="next"> <abbr>&#x25ba;</abbr></a>
+			<ul class="nette-hidden"><li>
+				<div class="ct-values">{!= \Nette\Diagnostics\Helpers::clickableDump($object->getValues())}</div>
+			</ul>
+		{/if}
+
+
 		{* Dumps *}
 
 
