@@ -79,6 +79,7 @@
 		{* Methods *}
 
 
+
 			<?php
 
 				if ($cache && isset($cache[$object->name])) {
@@ -88,6 +89,8 @@
 				else {
 					ob_start();
 			?>
+
+			{if !($object instanceOf \Nette\Forms\Controls\BaseControl || $object instanceOf \Nette\Forms\Form)}
 
 				<li>
 					Methods <a class="nette-toggler" rel="next" href="#"><abbr>&#x25ba;</abbr></a>
@@ -130,11 +133,10 @@
 					</ul>
 				</li>
 
-
 		{* Source *}
 
 
-				{if !$object instanceOf \Nette\Application\UI\Form}
+				{if !$object instanceOf \Nette\Forms\Form}
 					<li>
 
 						Source File <a class="nette-toggler" rel="next" href="#"><abbr>&#x25ba;</abbr></a>
@@ -143,6 +145,7 @@
 						</div>
 					</li>
 				{/if}
+				{/if} {* /if object instanceOf BaseControl*}
 				<?php
 						$content = ob_get_clean();
 						echo $content;
