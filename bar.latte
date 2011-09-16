@@ -92,7 +92,7 @@
 <div class="nette-inner">
 	<div id="componentsTreeComponent">
 		<ul id="tree">
-			<li>{include component.latte, object => $rootComponent, opened => false}</li>
+			<li>{include component.latte, object => $rootComponent, opened => $presenterOpen}</li>
 		</ul>
 	</div>
 

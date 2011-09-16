@@ -31,19 +31,23 @@ class ComponentTreePanel extends Object implements IBarPanel {
 	public static $cache = TRUE;
 
 	/**
-	 * Include dumps
-	 *
+	 * Include dumps in tree
 	 * @var bool
 	 */
 	public static $dumps = TRUE;
 
 
 	/**
-	 * Should be paremeters section open by default
-	 *
+	 * Should be paremeters section open by default?
 	 * @var bool
 	 */
 	public static $parametersOpen = TRUE;
+
+	/**
+	 * Parameters section open by default?
+	 * @var bool
+	 */
+	public static $presenterOpen = TRUE;
 
 
 	private $response;
@@ -87,6 +91,7 @@ class ComponentTreePanel extends Object implements IBarPanel {
 		$template->cache = static::$cache ? Environment::getCache('Debugger.Panels.ComponentTree') : NULL;
 		$template->dumps = static::$dumps;
 		$template->parametersOpen = static::$parametersOpen;
+		$template->presenterOpen = static::$presenterOpen;
 		$template->registerHelper('parametersInfo', callback($this, 'getParametersInfo'));
 		$template->registerHelper('editlink', callback($this, 'buildEditorLink'));
 		$template->registerHelper('highlight', callback($this, 'highlight'));

@@ -1,13 +1,13 @@
 {*
 	@param object mixed
-	@param paramsOpened
+	@param parametersOpen
 	@param cache \Nette\Caching\Cache
 	@param dumps
 *}
 
 {block #componentRender}
 
-	{default paramsOpened => TRUE}
+	{default parametersOpen => TRUE}
 	{default opened => FALSE}
 	{default dumps => TRUE}
 	{default cache => NULL}
@@ -44,7 +44,7 @@
 				{if count($params) > 0}
 
 					<li><span title="persistent parameters are marked with @">Parameters ({=count($params)})</span> <a class="nette-toggler" href="#" rel="next"> <abbr>{if $parametersOpen}&#x25bc{else}&#x25ba{/if};</abbr></a>
-					<ul {if !$paramsOpened}class="nette-hidden"{/if}>
+					<ul {if !$parametersOpen}class="nette-hidden"{/if}>
 						{foreach $params as $name =>$param}
 						<li>
 							{if $param['persistent']}
