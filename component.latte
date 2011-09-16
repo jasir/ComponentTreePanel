@@ -108,7 +108,7 @@
 
 						<!-- render<view>, handle<signal> -->
 
-						{if $object instanceof \Nette\Application\Control}
+						{if $object instanceof \Nette\Application\UI\Control}
 							{include methods.latte
 								name => "render<View>", object => $object, inherited => TRUE, pattern => "#^(render)(.*)#"}
 							{include methods.latte
