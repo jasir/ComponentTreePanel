@@ -163,11 +163,13 @@
 				<div class="ct-values">{!= \Nette\Diagnostics\Helpers::clickableDump($object->getValues())}</div>
 			</ul>
 
+		{* Form components *}
+
 			{if $objectHasComponents}
 				<li>Controls <a class="nette-toggler" href="#" rel="next"> <abbr>&#x25ba;</abbr></a>
 				<ul>
 					{foreach $components as $c}
-						<li>{include #componentRender object=>$c}
+						<li>{include #componentRender object=>$c, opened=>false}
 					{/foreach}
 				</ul>
 			{/if}
