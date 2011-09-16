@@ -8,18 +8,20 @@
 {block #componentRender}
 
 	{default paramsOpened => TRUE}
+	{default opened => FALSE}
 	{default dumps => TRUE}
 	{default cache => NULL}
 
-	<li>
-		{var id => 'ctr-' . $object->lookupPath('Nette\Application\IPresenter', FALSE) . '-' . str_replace($object->name, ':', '-')}
-		{var refl => $object->getReflection()}
+	{var id => 'ctr-' . $object->lookupPath('Nette\Application\IPresenter', FALSE) . '-' . str_replace($object->name, ':', '-')}
+	{var refl => $object->getReflection()}
+	{var objectIsForm => $object instanceOf \Nette\Forms\Form}
+	{var objectIsContainer => $object instanceOf \Nette\ComponentModel\Container}
+	{var components => $objectIsContainer ? $object->getComponents() : array()}
+	{var objectHasComponents => $objectIsContainer && count($components) > 0}
 
 		<a class="nette-toggler" href="#" rel="#{!$id}"><strong>{$object->name}</strong> [{=get_class($object)}]</a>
-		{if $object instanceOf \Nette\ComponentModel\Container && count($object->getComponents()) > 0}
 		<ul>
-		{/if}
-		<div class="nette-hidden" id = "{!$id}"style="padding:0.5em;">
+		<div {if !$opened}class="nette-hidden"{/if} id = "{!$id}"style="padding:0.5em;">
 			<ul>
 
 			{* object info *}
@@ -42,7 +44,7 @@
 				{if count($params) > 0}
 
 					<li><span title="persistent parameters are marked with @">Parameters ({=count($params)})</span> <a class="nette-toggler" href="#" rel="next"> <abbr>{if $parametersOpen}&#x25bc{else}&#x25ba{/if};</abbr></a>
-					<ul {if !$parametersOpen}class="nette-hidden"{/if}>
+					<ul {if !$paramsOpened}class="nette-hidden"{/if}>
 						{foreach $params as $name =>$param}
 						<li>
 							{if $param['persistent']}
@@ -75,10 +77,7 @@
 
 			{/if}
 
-
 		{* Methods *}
-
-
 
 			<?php
 
@@ -163,6 +162,16 @@
 			<ul class="nette-hidden"><li>
 				<div class="ct-values">{!= \Nette\Diagnostics\Helpers::clickableDump($object->getValues())}</div>
 			</ul>
+
+			{if $objectHasComponents}
+				<li>Controls <a class="nette-toggler" href="#" rel="next"> <abbr>&#x25ba;</abbr></a>
+				<ul>
+					{foreach $components as $c}
+						<li>{include #componentRender object=>$c}
+					{/foreach}
+				</ul>
+			{/if}
+
 		{/if}
 
 
@@ -181,14 +190,10 @@
 
 
 	{* Components *}
-		{if $object instanceOf \Nette\ComponentModel\Container}
-			{var components => $object->getComponents()}
-			{if count($components) > 0}
-
-					{foreach $components as $com}
-						{include #componentRender object=>$com}
-					{/foreach}
-			</ul>
-			{/if}
+		{if ($objectIsForm === FALSE) && $object instanceOf \Nette\ComponentModel\Container}
+			{foreach $components as $com}
+				<li>{include #componentRender object=>$com, opened=>false}</li>
+			{/foreach}
 		{/if}
+	</ul>
 {/block}
