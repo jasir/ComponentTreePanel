@@ -13,16 +13,13 @@
 			{include #dump object => $t}
 			
 			{? ksort($parameters)}
-			<li>Params ({count($parameters)}) {include #toggler open=>false}
-			<ul class="nette-hidden">
-			<li><table>
-			{foreach $parameters as $name => $value}
-				<tr><td>{$name}</td><td><div class="ct-values">{!= \Nette\Diagnostics\Helpers::clickableDump($value)}</div></td></tr>
-			{/foreach}
-			</table>
+			<li>Params ({count($parameters)}) {include #toggler open=>true}
+			<ul>
+			<li>{include #values values => $parameters, title=>'Params'}
 			</ul>
 		</ul>
 {/define}
+
 	
 {define #dump}
 	{default title = 'Dump'}
@@ -32,6 +29,18 @@
 			<div class="ct-dump">{!= \Nette\Diagnostics\Helpers::clickableDump($object)}</div>
 		</ul>
 	{/if}
+{/define}
+			
+			
+{define #values}
+	{default title = 'Values'}
+	{default open = true}
+	{$title} {include #toggler open=>open}
+	<table>
+	{foreach $values as $name => $value}
+		<tr><th>{$name}</th><td width="80%"><div class="ct-values">{!= \Nette\Diagnostics\Helpers::clickableDump($value)}</div></td></tr>
+	{/foreach}
+	</table>			
 {/define}
 			
 

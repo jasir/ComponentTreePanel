@@ -151,7 +151,7 @@
 		{* Form Values *}
 
 		{if $object instanceOf \Nette\Forms\Form}
-			{include #dump object => $object->getValues(), title => 'Values'}
+			<li>{include #values title=>"Values", values=>$object->getValues()}
 
 		{* Form components *}
 
