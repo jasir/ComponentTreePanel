@@ -108,45 +108,31 @@
 					Methods <a class="nette-toggler" rel="next" href="#"><abbr>&#x25ba;</abbr></a>
 					<ul class="nette-hidden">
 
-						<!-- aciton<action>, beforeRender<view>-->
-
+						{* aciton<action>, beforeRender<view> *}
 						{if $object instanceof \Nette\Application\IPresenter}
-							{include
-								#methods
-								name => "action<Action>", object => $object, inherited => TRUE, pattern => "#^(action)(.+)#"}
-							{include
-								#methods
-								name => "lifecycle", object => $object, inherited => TRUE, pattern => "~\A()(startup | beforeHandle | beforeRender |shutdown)\z~x"}
+						{include #methods name => "action<Action>", object => $object, inherited => TRUE, pattern => "#^(action)(.+)#"}
+						{include #methods name => "lifecycle", object => $object, inherited => TRUE, pattern => "~\A()(startup | beforeHandle | beforeRender |shutdown)\z~x"}
 						{/if}
 
-						<!-- render<view>, handle<signal> -->
-
+						{* render<view>, handle<signal> *}
 						{if $object instanceof \Nette\Application\UI\Control}
-							{include #methods
-								name => "render<View>", object => $object, inherited => TRUE, pattern => "#^(render)(.*)#"}
-							{include #methods
-								name => "handle<Signal>", object => $object, inherited => TRUE, pattern => "#^(handle)(.*)#", hideMethods => array()}
+						{include #methods name => "render<View>", object => $object, inherited => TRUE, pattern => "#^(render)(.*)#"}
+						{include #methods name => "handle<Signal>", object => $object, inherited => TRUE, pattern => "#^(handle)(.*)#", hideMethods => array()}
 						{/if}
 
-						<!-- createComponent -->
-
+						{* createComponent *}
 						{include #methods name => "createComponent<name>", object => $object, inherited => TRUE, pattern => "#^(createComponent)(.+)#", hideMethods => array()}
 
-						<!-- create<object>-->
+						{* create<object> *}
 						{include #methods name => "create<object>", object =>$object, inherited => TRUE, pattern => "#^(create(?!Component))(\w+)#", hideMethods => array('createRequest')}
 
-						<!-- get/set properties-->
-
-						{include #methods
-							name => "get<property>", object => $object, inherited => FALSE, pattern => "#^(get)(.+)#"}
-
-						{include #methods
-							name => "set<property>", object => $object, inherited => FALSE, pattern => "#^(set)(.*)#"}
+						{* get/set properties *}
+						{include #methods name => "get<property>", object => $object, inherited => FALSE, pattern => "#^(get)(.+)#"}
+						{include #methods name => "set<property>", object => $object, inherited => FALSE, pattern => "#^(set)(.*)#"}
 					</ul>
 				</li>
 
 		{* Source *}
-
 
 				{if !$object instanceOf \Nette\Forms\Form}
 					{include #source object => $object}
