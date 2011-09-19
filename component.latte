@@ -19,8 +19,9 @@
 	{var components => $objectIsContainer ? $object->getComponents() : array()}
 	{var objectHasComponents => $objectIsContainer && count($components) > 0}
 
-		<a class="nette-toggler" href="#" rel="#{!$id}"><strong>{$object->name}</strong> [{=get_class($object)}]</a>
-		<ul>
+	<a class="nette-toggler" href="#" rel="#{!$id}">{if $objectIsForm}<span class="texticon-form">&thinsp;F&thinsp;</span>{/if}<strong>{$object->name}</strong> [{=get_class($object)}]</a>
+	
+	<ul>
 		<div {if !$opened}class="nette-hidden"{/if} id = "{!$id}"style="padding:0.5em;">
 			<ul>
 
