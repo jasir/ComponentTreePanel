@@ -1,0 +1,35 @@
+{*
+  @param $object
+  @param $inherited show Inherited Methods?
+  @param $name
+  @param $showEmpty
+  @param $hideMethods
+*}
+
+{define #template}
+	{var params = $t->getParams()}
+	{? asort($params)}
+	{$file} <a class="nette-toggler" href="#" rel="next"> <abbr>&#x25ba;</abbr></a>
+		<ul class="nette-hidden">
+			{include #dump object=>$t}
+			<li>Params ({count($params)})
+			<ul>
+			<li><table>
+			{foreach $params as $name => $value}
+				<tr><td>{$name}</td><td><div class="ct-values">{!= \Nette\Diagnostics\Helpers::clickableDump($value)}</div></td></tr>
+			{/foreach}
+			</table>
+			</ul>
+		</ul>
+{/define}
+	
+{define #dump}
+	{default title = 'Dump'}
+	{if $dumps}
+		<li>{$title} <a class="nette-toggler" href="#" rel="next"> <abbr>&#x25ba;</abbr></a>
+		<ul class="nette-hidden"><li>
+			<div class="ct-dump">{!= \Nette\Diagnostics\Helpers::clickableDump($object)}</div>
+		</ul>
+	{/if}
+{/define}
+			

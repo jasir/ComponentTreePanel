@@ -167,13 +167,10 @@
 				?>
 
 
-		{* Values *}
+		{* Form Values *}
 
 		{if $object instanceOf \Nette\Forms\Form}
-			<li>Values <a class="nette-toggler" href="#" rel="next"> <abbr>&#x25ba;</abbr></a>
-			<ul class="nette-hidden"><li>
-				<div class="ct-values">{!= \Nette\Diagnostics\Helpers::clickableDump($object->getValues())}</div>
-			</ul>
+			{include #dump object => $object->getValues(), title => 'Values'}
 
 		{* Form components *}
 
@@ -190,14 +187,8 @@
 
 
 		{* Dumps *}
-
-
-		{if $dumps}
-			<li>Dump <a class="nette-toggler" href="#" rel="next"> <abbr>&#x25ba;</abbr></a>
-			<ul class="nette-hidden"><li>
-				<div class="ct-dump">{!= \Nette\Diagnostics\Helpers::clickableDump($object)}</div>
-			</ul>
-		{/if}
+		{include #dump object=>$object}
+					
 
 	</ul>
 	</div>
