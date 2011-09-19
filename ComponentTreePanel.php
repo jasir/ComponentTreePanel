@@ -54,6 +54,8 @@ class ComponentTreePanel extends Object implements IBarPanel {
 	 * @var bool
 	 */
 	public static $presenterOpen = TRUE;
+	
+	public static $appDir;
 
 
 	private $response;
@@ -254,6 +256,12 @@ class ComponentTreePanel extends Object implements IBarPanel {
 			}
 		}
 		return $arr;
+	}
+	
+	public static function relativizePath($path) {
+		$s = str_replace('\\', '/', substr(realpath($path), strlen(static::$appDir)));
+		$s = \trim($s, '/');
+		return $s;
 	}
 	
 }
