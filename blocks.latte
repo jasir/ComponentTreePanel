@@ -7,7 +7,7 @@
 *}
 
 {define #template}
-	{=\Extras\Debug\ComponentTreePanel::relativizePath($file)} {include #toggler}
+	{=\Extras\Debug\ComponentTreePanel::relativizePath($file)}{include #editlink file=>$file} {include #toggler}
 		<ul class="nette-hidden">
 			{include #dump object => $t}
 			{? ksort($parameters)}
@@ -53,13 +53,12 @@
 
 {define #plainsource}
 	<div class="source">
-	{!=$template->highlight($object)}
+		{!=$template->highlight($object)}
 	</div>
 {/define}
 			
 
 {define #methods}
-
 	{default $showEmpty => FALSE}
 	{default $hideMethods => array()}
 
@@ -71,25 +70,30 @@
 			<ul>
 				{foreach $filtered as $method}
 					<li>
-						<a title="{$method->getFileName()}:{$method->getStartLine()}"href="{!=$template->editlink($method->getFileName(), $method->getStartLine())}">
-						{!=preg_replace($pattern, '${1}<strong>${2}</strong>', $method->name)}()
-							{if $method->class !== get_class($object)}
-								<i>defined in</i> {$method->class}
-							{/if}
-						</a>
-							{include #toggler}
-							<div class="nette-hidden">
-								{include #plainsource, object => $method, showSource => TRUE}
-							</div>
+						{include #editlink file=>$method->getFileName(), line=>$method->getStartLine(), title=>preg_replace($pattern, '${1}<strong>${2}</strong>', $method->name)}
+						{if $method->class !== get_class($object)}
+							<i>defined in</i> {$method->class}
+						{/if}
+						{include #toggler}
+						<div class="nette-hidden">
+							{include #plainsource, object => $method}
+						</div>
 				{/foreach}
 			</ul>
 		</li>
 	{/if}
-
 {/define}
 		
 
 {define #toggler}
-	{default $open=>false}
+	{default open = false}
 	<a class="nette-toggler" href="#" rel="next"><abbr>{if $open}&#x25bc{else}&#x25ba{/if}</abbr></a>
 {/define}
+	
+
+{define #editlink}
+	{default title = '[source]'}
+	{default line = 1}
+	{default file = __FILE__}
+	<a title="{$file}" href="{!=$template->editlink($file, $line)}">{!$title}</a>
+ {/define}

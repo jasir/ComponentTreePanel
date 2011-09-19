@@ -30,12 +30,10 @@
 
 
 			<li>
-				<i>instance of</i>
-				<a title="{$refl->getFileName()}" href="{!=$template->editlink($refl->getFileName(), $refl->getStartLine())}">
-				{=get_class($object)}
-				</a>
+				<i>instance of</i>{include #editlink title=>get_class($object), file=>$refl->getFileName(), line=>$refl->getStartLine()}
 				{var parent = $refl->getParentClass()}
-				<i>extends</i> <a title="{$parent->getFileName()}" href="{!=$template->editlink($parent->getFileName(), $parent->getStartLine())}">{$parent->getName()}</a>
+				<i>extends</i> 
+				{include #editlink title=>get_class($parent), file=>$parent->getFileName(), line=>$parent->getStartLine()}
 			</li>
 
 			{* Parameters *}
@@ -59,9 +57,8 @@
 									<li>
 										{var refl = new \Nette\Reflection\ClassType($param['meta']['since']) }
 										persistent parameter declared in
-										<a title="{$refl->getFileName()}" href="{!=$template->editlink($refl->getFileName(), 1)}">
-										{$param['meta']['since']} {if $param['meta']['since'] == get_class($object)}(this){/if}
-										</a>
+										{include #editlink title=>$param['meta']['since'], file=>$refl->getFileName(), line=>1} 
+										{if $param['meta']['since'] == get_class($object)}(this){/if}
 									<li>default value: <code>{?var_dump($param['meta']['def'])}</code>
 									<li>full name: <strong>{$object->getParamId($name)}</strong>
 								</ul>
