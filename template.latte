@@ -9,14 +9,9 @@
 {define #template}
 	{=\Extras\Debug\ComponentTreePanel::relativizePath($file)} {include #toggler}
 		<ul class="nette-hidden">
-			
 			{include #dump object => $t}
-			
 			{? ksort($parameters)}
-			<li>Params ({count($parameters)}) {include #toggler open=>true}
-			<ul>
-			<li>{include #values values => $parameters, title=>'Params'}
-			</ul>
+			<li>{include #values values => $parameters, title=>'Params', open=>true}
 		</ul>
 {/define}
 
@@ -35,7 +30,7 @@
 {define #values}
 	{default title = 'Values'}
 	{default open = true}
-	{$title} {include #toggler open=>open}
+	{$title} ({=count($values)}) {include #toggler open=>open}
 	<table>
 	{foreach $values as $name => $value}
 		<tr><th>{$name}</th><td width="80%"><div class="ct-values">{!= \Nette\Diagnostics\Helpers::clickableDump($value)}</div></td></tr>
