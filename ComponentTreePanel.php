@@ -96,6 +96,7 @@ class ComponentTreePanel extends Object implements IBarPanel {
 		$template->registerHelper('editlink', callback($this, 'buildEditorLink'));
 		$template->registerHelper('highlight', callback($this, 'highlight'));
 		$template->registerHelper('filterMethods', callback($this, 'filterMethods'));
+		$template->registerHelper('renderedTemplates', callback($this, 'getRenderedTemplates'));
 
 		ob_start();
 		$template->render();
@@ -232,5 +233,20 @@ class ComponentTreePanel extends Object implements IBarPanel {
 
 		return $params;
 	}
-
+	
+	/**
+	 * Returns templates used when rendering object
+	 * @param type $object
+	 * @return array
+	 */
+	public static function getRenderedTemplates($object) {
+		$arr = array();
+		foreach(\Extras\Debug\DebugTemplate::$templatesRendered as $info) {
+			if ($info['template']->control === $object) {
+				$arr[$info['file']] = $info['template'];
+			}
+		}
+		return $arr;
+	}
+	
 }

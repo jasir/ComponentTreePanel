@@ -4,7 +4,7 @@
 	@param cache \Nette\Caching\Cache
 	@param dumps
 *}
-
+{includeblock 'template.latte'}
 {block #componentRender}
 
 	{default parametersOpen = TRUE}
@@ -77,6 +77,17 @@
 				{/if}
 
 			{/if}
+						
+		{* Templates *}
+		{var $templates = $template->renderedTemplates($object)}
+		{if count($templates)}
+			<li>Rendered templates ({count($templates)})
+				<ul>
+				{foreach $templates as $tfile => $t}
+					<li>{include #template t => $t, file => $tfile}
+				{/foreach}
+				</ul>
+		{/if}
 
 		{* Methods *}
 
