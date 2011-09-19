@@ -79,7 +79,7 @@
 		{* Templates *}
 		{var $templates = $template->renderedTemplates($object)}
 		{if count($templates)}
-			<li>Rendered templates ({count($templates)})
+			<li>Templates (rendered) ({count($templates)}){include #toggler}
 				<ul>
 				{foreach $templates as $tinfo}
 					<li>{include #template t=>$tinfo['template'], file => $tinfo['file'], parameters =>$tinfo['params']}

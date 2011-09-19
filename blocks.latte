@@ -9,14 +9,15 @@
 {define #template}
 	{=\Extras\Debug\ComponentTreePanel::relativizePath($file)}{include #editlink file=>$file} {include #toggler}
 		<ul class="nette-hidden">
+			<li><i>instance of </i>{include #editlink title=>get_class($t), file=>$t->getReflection()->getFileName()}
 			{include #dump object => $t}
-			{? ksort($parameters)}
 			{if $showSources}
 			<li>Source code {include #toggler}
 				<pre class="nette-hidden source">
 {!=file_get_contents($file)}
 				</pre>
 			{/if}
+			{? ksort($parameters)}
 			<li>{include #values values => $parameters, title=>'Params', open=>true}
 		</ul>
 {/define}
@@ -50,7 +51,7 @@
 	{if $showSources}
 		<li>{$title} {include #toggler}
 		<ul class="nette-hidden">
-			<li>
+			<li>/
 			{include #plainsource}
 		</ul>
 	{/if}
