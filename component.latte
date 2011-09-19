@@ -45,7 +45,7 @@
 				{var params = $template->parametersInfo($object)}
 				{if count($params) > 0}
 
-					<li><span title="persistent parameters are marked with @">Parameters ({=count($params)})</span> <a class="nette-toggler" href="#" rel="next"> <abbr>{if $parametersOpen}&#x25bc{else}&#x25ba{/if};</abbr></a>
+					<li><span title="persistent parameters are marked with @">Parameters ({=count($params)})</span> {include #toggler open=>$parametersOpen}
 					<ul {if !$parametersOpen}class="nette-hidden"{/if}>
 						{foreach $params as $name =>$param}
 						<li>
@@ -54,7 +54,7 @@
 								{if $param['value'] === $param['meta']['def']}
 									<strong>(default value)</strong>
 								{/if}
-								<a class="nette-toggler" href="#" rel="next"> <abbr>&#x25ba;</abbr></a>
+								{include #toggler}
 								<ul class="nette-hidden">
 									<li>
 										{var refl = new \Nette\Reflection\ClassType($param['meta']['since']) }
@@ -84,8 +84,8 @@
 		{if count($templates)}
 			<li>Rendered templates ({count($templates)})
 				<ul>
-				{foreach $templates as $tfile => $t}
-					<li>{include #template t => $t, file => $tfile}
+				{foreach $templates as $tinfo}
+					<li>{include #template t=>$tinfo['template'], file => $tinfo['file'], parameters =>$tinfo['params']}
 				{/foreach}
 				</ul>
 		{/if}
@@ -105,7 +105,7 @@
 			{if !($object instanceOf \Nette\Forms\Controls\BaseControl || $object instanceOf \Nette\Forms\Form)}
 
 				<li>
-					Methods <a class="nette-toggler" rel="next" href="#"><abbr>&#x25ba;</abbr></a>
+					Methods {include #toggler}
 					<ul class="nette-hidden">
 
 						{* aciton<action>, beforeRender<view> *}
@@ -156,7 +156,7 @@
 		{* Form components *}
 
 			{if $objectHasComponents}
-				<li>Controls <a class="nette-toggler" href="#" rel="next"> <abbr>&#x25ba;</abbr></a>
+				<li>Controls {include #toggler}
 				<ul>
 					{foreach $components as $c}
 						<li>{include #componentRender object=>$c, opened=>false}

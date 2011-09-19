@@ -7,15 +7,16 @@
 *}
 
 {define #template}
-	{var params = $t->getParams()}
-	{? asort($params)}
-	{$file} <a class="nette-toggler" href="#" rel="next"> <abbr>&#x25ba;</abbr></a>
+	{$file} {include #toggler}
 		<ul class="nette-hidden">
-			{include #dump object=>$t}
-			<li>Params ({count($params)})
-			<ul>
+			
+			{include #dump object => $t}
+			
+			{? ksort($parameters)}
+			<li>Params ({count($parameters)}) {include #toggler open=>false}
+			<ul class="nette-hidden">
 			<li><table>
-			{foreach $params as $name => $value}
+			{foreach $parameters as $name => $value}
 				<tr><td>{$name}</td><td><div class="ct-values">{!= \Nette\Diagnostics\Helpers::clickableDump($value)}</div></td></tr>
 			{/foreach}
 			</table>
@@ -26,7 +27,7 @@
 {define #dump}
 	{default title = 'Dump'}
 	{if $dumps}
-		<li>{$title} <a class="nette-toggler" href="#" rel="next"> <abbr>&#x25ba;</abbr></a>
+		<li>{$title} {include #toggler}
 		<ul class="nette-hidden"><li>
 			<div class="ct-dump">{!= \Nette\Diagnostics\Helpers::clickableDump($object)}</div>
 		</ul>
@@ -37,7 +38,7 @@
 {define #source}
 	{default title = 'Source code'}
 	{if $showSources}
-		<li>{$title} <a class="nette-toggler" href="#" rel="next"> <abbr>&#x25ba;</abbr></a>
+		<li>{$title} {include #toggler}
 		<ul class="nette-hidden">
 			<li>
 			{include #plainsource}
@@ -62,7 +63,7 @@
 
 	{if count($filtered) > 0 || $showEmpty === TRUE}
 		<li>
-			{$name} ({=count($filtered)}) <a class="nette-toggler" rel="next" href="#"><abbr>&#x25bc;</abbr></a>
+			{$name} ({=count($filtered)}) {include #toggler open => true}
 			<ul>
 				{foreach $filtered as $method}
 					<li>
@@ -72,7 +73,7 @@
 								<i>defined in</i> {$method->class}
 							{/if}
 						</a>
-							<a class="nette-toggler" href="#" rel="next"><abbr>&#x25ba;</abbr></a>
+							{include #toggler}
 							<div class="nette-hidden">
 								{include #plainsource, object => $method, showSource => TRUE}
 							</div>
@@ -81,4 +82,10 @@
 		</li>
 	{/if}
 
+{/define}
+		
+
+{define #toggler}
+	{default $open=>false}
+	<a class="nette-toggler" href="#" rel="next"><abbr>{if $open}&#x25bc{else}&#x25ba{/if}</abbr></a>
 {/define}

@@ -250,7 +250,7 @@ class ComponentTreePanel extends Object implements IBarPanel {
 		$arr = array();
 		foreach(\Extras\Debug\DebugTemplate::$templatesRendered as $info) {
 			if ($info['template']->control === $object) {
-				$arr[$info['file']] = $info['template'];
+				$arr[] = $info;
 			}
 		}
 		return $arr;
