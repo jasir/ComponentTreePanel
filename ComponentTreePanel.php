@@ -259,9 +259,65 @@ class ComponentTreePanel extends Object implements IBarPanel {
 	}
 	
 	public static function relativizePath($path) {
-		$s = str_replace('\\', '/', substr(realpath($path), strlen(static::$appDir)));
-		$s = \trim($s, '/');
-		return $s;
+		return static::getRelative($path, static::$appDir);
 	}
+	
+   /**
+    * Converts path to be relative to given $compartTo path
+    *
+    * @param string $path
+    * @param string $compareTo
+    * @return string
+    */
+   static public function getRelative($path, $compareTo) {
+      $path = realpath($path);
+      $path = str_replace(':', '', $path);
+      $path = str_replace('\\', '/', $path);
+      $compareTo = realpath($compareTo);
+      $compareTo = str_replace(':', '', $compareTo);
+      $compareTo = str_replace('\\', '/', $compareTo);
+
+      // clean arguments by removing trailing and prefixing slashes
+      if (substr($path, - 1) == '/') {
+         $path = substr($path, 0, - 1);
+      }
+      if (substr($path, 0, 1) == '/') {
+         $path = substr($path, 1);
+      }
+
+      if (substr($compareTo, - 1) == '/') {
+         $compareTo = substr($compareTo, 0, - 1);
+      }
+      if (substr($compareTo, 0, 1) == '/') {
+         $compareTo = substr($compareTo, 1);
+      }
+
+      // simple case: $compareTo is in $path
+      if (strpos($path, $compareTo) === 0) {
+         $offset = strlen($compareTo) + 1;
+         return substr($path, $offset);
+      }
+
+      $relative       = array();
+      $pathParts      = explode('/', $path);
+      $compareToParts = explode('/', $compareTo);
+
+      foreach ($compareToParts as $index => $part) {
+         if (isset($pathParts[$index]) && $pathParts[$index] == $part) {
+            continue;
+         }
+         $relative[] = '..';
+      }
+
+      foreach ($pathParts as $index => $part) {
+         if (isset($compareToParts[$index]) && $compareToParts[$index] == $part) {
+            continue;
+         }
+         $relative[] = $part;
+      }
+         return implode('/', $relative);
+   }
+  
+	
 	
 }

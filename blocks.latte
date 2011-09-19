@@ -102,7 +102,8 @@
 	{default title = '[source]'}
 	{default line = 1}
 	{default file = __FILE__}
-	<a title="{$file}:{$line}" href="{!=$template->editlink($file, $line)}">{!$title}</a>
+	{var shortfile = \Extras\Debug\ComponentTreePanel::relativizePath($file)}
+	<a title="{$shortfile}{if $line>1} - line {$line}{/if}" href="{!=$template->editlink($file, $line)}">{!$title}</a>
 {/define}
 	
 {define #icon}
