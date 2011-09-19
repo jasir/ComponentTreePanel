@@ -65,8 +65,8 @@
 			
 
 {define #methods}
-	{default $showEmpty => FALSE}
-	{default $hideMethods => array()}
+	{default showEmpty = FALSE}
+	{default hideMethods = []}
 
 	{var $filtered = $template->filterMethods($object, $pattern, $hideMethods, $inherited)}
 
@@ -102,4 +102,4 @@
 	{default line = 1}
 	{default file = __FILE__}
 	<a title="{$file}:{$line}" href="{!=$template->editlink($file, $line)}">{!$title}</a>
- {/define}
+{/define}

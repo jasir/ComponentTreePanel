@@ -33,7 +33,7 @@
 				<i>instance of</i>{include #editlink title=>get_class($object), file=>$refl->getFileName(), line=>$refl->getStartLine()}
 				{var parent = $refl->getParentClass()}
 				<i>extends</i> 
-				{include #editlink title=>get_class($parent), file=>$parent->getFileName(), line=>$parent->getStartLine()}
+				{include #editlink title=>$parent->name, file=>$parent->getFileName(), line=>$parent->getStartLine()}
 			</li>
 
 			{* Parameters *}
