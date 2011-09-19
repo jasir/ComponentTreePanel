@@ -7,17 +7,17 @@
 
 {block #componentRender}
 
-	{default parametersOpen => TRUE}
-	{default opened => FALSE}
-	{default dumps => TRUE}
-	{default cache => NULL}
+	{default parametersOpen = TRUE}
+	{default opened = FALSE}
+	{default dumps = TRUE}
+	{default cache = NULL}
 
-	{var id => 'ctr-' . $object->lookupPath('Nette\Application\IPresenter', FALSE) . '-' . str_replace($object->name, ':', '-')}
-	{var refl => $object->getReflection()}
-	{var objectIsForm => $object instanceOf \Nette\Forms\Form}
-	{var objectIsContainer => $object instanceOf \Nette\ComponentModel\Container}
-	{var components => $objectIsContainer ? $object->getComponents() : array()}
-	{var objectHasComponents => $objectIsContainer && count($components) > 0}
+	{var id = 'ctr-' . $object->lookupPath('Nette\Application\IPresenter', FALSE) . '-' . str_replace($object->name, ':', '-')}
+	{var refl = $object->getReflection()}
+	{var objectIsForm = $object instanceOf \Nette\Forms\Form}
+	{var objectIsContainer = $object instanceOf \Nette\ComponentModel\Container}
+	{var components = $objectIsContainer ? $object->getComponents() : []}
+	{var objectHasComponents = $objectIsContainer && count($components) > 0}
 
 	<a class="nette-toggler" href="#" rel="#{!$id}">{if $objectIsForm}<span class="texticon-form">&thinsp;F&thinsp;</span>{/if}<strong>{$object->name}</strong> [{=get_class($object)}]</a>
 	
@@ -33,7 +33,7 @@
 				<a title="{$refl->getFileName()}" href="{!=$template->editlink($refl->getFileName(), $refl->getStartLine())}">
 				{=get_class($object)}
 				</a>
-				{var parent => $refl->getParentClass()}
+				{var parent = $refl->getParentClass()}
 				<i>extends</i> <a title="{$parent->getFileName()}" href="{!=$template->editlink($parent->getFileName(), $parent->getStartLine())}">{$parent->getName()}</a>
 			</li>
 
@@ -41,7 +41,7 @@
 
 			{if $object instanceOf \Nette\Application\UI\PresenterComponent}
 
-				{var params => $template->parametersInfo($object)}
+				{var params = $template->parametersInfo($object)}
 				{if count($params) > 0}
 
 					<li><span title="persistent parameters are marked with @">Parameters ({=count($params)})</span> <a class="nette-toggler" href="#" rel="next"> <abbr>{if $parametersOpen}&#x25bc{else}&#x25ba{/if};</abbr></a>
@@ -56,7 +56,7 @@
 								<a class="nette-toggler" href="#" rel="next"> <abbr>&#x25ba;</abbr></a>
 								<ul class="nette-hidden">
 									<li>
-										{var refl => new \Nette\Reflection\ClassType($param['meta']['since']) }
+										{var refl = new \Nette\Reflection\ClassType($param['meta']['since']) }
 										persistent parameter declared in
 										<a title="{$refl->getFileName()}" href="{!=$template->editlink($refl->getFileName(), 1)}">
 										{$param['meta']['since']} {if $param['meta']['since'] == get_class($object)}(this){/if}
