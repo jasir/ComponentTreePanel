@@ -14,7 +14,7 @@
 			{if $showSources}
 			<li>Source code {include #toggler}
 				<pre class="nette-hidden source">
-{!=file_get_contents($file)}
+{=file_get_contents($file)}
 				</pre>
 			{/if}
 			{? ksort($parameters)}
