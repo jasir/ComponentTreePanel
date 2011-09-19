@@ -104,3 +104,9 @@
 	{default file = __FILE__}
 	<a title="{$file}:{$line}" href="{!=$template->editlink($file, $line)}">{!$title}</a>
 {/define}
+	
+{define #icon}
+	{default type = 'F'}
+	{default title = ''}
+	<span {if $title}title="{$title}"{/if} class="texticon-{$type}">&thinsp;{$type}&thinsp;</span>
+{/define}

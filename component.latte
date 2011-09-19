@@ -20,7 +20,7 @@
 	{var components = $objectIsContainer ? $object->getComponents() : []}
 	{var objectHasComponents = $objectIsContainer && count($components) > 0}
 
-	<a class="nette-toggler" href="#" rel="#{!$id}">{if $objectIsForm}<span class="texticon-form">&thinsp;F&thinsp;</span> {/if}<strong>{$object->name}</strong> [{=get_class($object)}]</a>
+	<a class="nette-toggler" href="#" rel="#{!$id}">{if $objectIsForm}{include #icon type=>'F', title=>"Form"} {/if}<strong>{$object->name}</strong> [{=get_class($object)}]</a>
 	
 	<ul>
 		<div {if !$opened}class="nette-hidden"{/if} id = "{!$id}"style="padding:0.5em;">
@@ -48,7 +48,7 @@
 						{foreach $params as $name =>$param}
 						<li>
 							{if $param['persistent']}
-								<strong>@{$name}</strong> = <code>{?var_dump($param['value'])}</code>
+								<strong>{include #icon type=>'P', title=>"persistent"}{$name}</strong> = <code>{?var_dump($param['value'])}</code>
 								{if $param['value'] === $param['meta']['def']}
 									<strong>(default value)</strong>
 								{/if}
