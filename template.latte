@@ -33,3 +33,52 @@
 	{/if}
 {/define}
 			
+
+{define #source}
+	{default title = 'Source code'}
+	{if $showSources}
+		<li>{$title} <a class="nette-toggler" href="#" rel="next"> <abbr>&#x25ba;</abbr></a>
+		<ul class="nette-hidden">
+			<li>
+			{include #plainsource}
+		</ul>
+	{/if}
+{/define}
+			
+
+{define #plainsource}
+	<div class="source">
+	{!=$template->highlight($object)}
+	</div>
+{/define}
+			
+
+{define #methods}
+
+	{default $showEmpty => FALSE}
+	{default $hideMethods => array()}
+
+	{var $filtered = $template->filterMethods($object, $pattern, $hideMethods, $inherited)}
+
+	{if count($filtered) > 0 || $showEmpty === TRUE}
+		<li>
+			{$name} ({=count($filtered)}) <a class="nette-toggler" rel="next" href="#"><abbr>&#x25bc;</abbr></a>
+			<ul>
+				{foreach $filtered as $method}
+					<li>
+						<a title="{$method->getFileName()}:{$method->getStartLine()}"href="{!=$template->editlink($method->getFileName(), $method->getStartLine())}">
+						{!=preg_replace($pattern, '${1}<strong>${2}</strong>', $method->name)}()
+							{if $method->class !== get_class($object)}
+								<i>defined in</i> {$method->class}
+							{/if}
+						</a>
+							<a class="nette-toggler" href="#" rel="next"><abbr>&#x25ba;</abbr></a>
+							<div class="nette-hidden">
+								{include #plainsource, object => $method, showSource => TRUE}
+							</div>
+				{/foreach}
+			</ul>
+		</li>
+	{/if}
+
+{/define}

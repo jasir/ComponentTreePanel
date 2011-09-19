@@ -11,6 +11,7 @@
 	{default opened = FALSE}
 	{default dumps = TRUE}
 	{default cache = NULL}
+	{default showSources = TRUE}
 
 	{var id = 'ctr-' . $object->lookupPath('Nette\Application\IPresenter', FALSE) . '-' . str_replace($object->name, ':', '-')}
 	{var refl = $object->getReflection()}
@@ -111,35 +112,35 @@
 
 						{if $object instanceof \Nette\Application\IPresenter}
 							{include
-								methods.latte
+								#methods
 								name => "action<Action>", object => $object, inherited => TRUE, pattern => "#^(action)(.+)#"}
 							{include
-								methods.latte
+								#methods
 								name => "lifecycle", object => $object, inherited => TRUE, pattern => "~\A()(startup | beforeHandle | beforeRender |shutdown)\z~x"}
 						{/if}
 
 						<!-- render<view>, handle<signal> -->
 
 						{if $object instanceof \Nette\Application\UI\Control}
-							{include methods.latte
+							{include #methods
 								name => "render<View>", object => $object, inherited => TRUE, pattern => "#^(render)(.*)#"}
-							{include methods.latte
+							{include #methods
 								name => "handle<Signal>", object => $object, inherited => TRUE, pattern => "#^(handle)(.*)#", hideMethods => array()}
 						{/if}
 
 						<!-- createComponent -->
 
-						{include methods.latte name => "createComponent<name>", object => $object, inherited => TRUE, pattern => "#^(createComponent)(.+)#", hideMethods => array()}
+						{include #methods name => "createComponent<name>", object => $object, inherited => TRUE, pattern => "#^(createComponent)(.+)#", hideMethods => array()}
 
 						<!-- create<object>-->
-						{include methods.latte name => "create<object>", object =>$object, inherited => TRUE, pattern => "#^(create(?!Component))(\w+)#", hideMethods => array('createRequest')}
+						{include #methods name => "create<object>", object =>$object, inherited => TRUE, pattern => "#^(create(?!Component))(\w+)#", hideMethods => array('createRequest')}
 
 						<!-- get/set properties-->
 
-						{include methods.latte
+						{include #methods
 							name => "get<property>", object => $object, inherited => FALSE, pattern => "#^(get)(.+)#"}
 
-						{include methods.latte
+						{include #methods
 							name => "set<property>", object => $object, inherited => FALSE, pattern => "#^(set)(.*)#"}
 					</ul>
 				</li>
@@ -148,13 +149,7 @@
 
 
 				{if !$object instanceOf \Nette\Forms\Form}
-					<li>
-
-						Source File <a class="nette-toggler" rel="next" href="#"><abbr>&#x25ba;</abbr></a>
-						<div class="nette-hidden">
-							{include sourcefile.latte, object => $object, showSource => TRUE}
-						</div>
-					</li>
+					{include #source object => $object}
 				{/if}
 				{/if} {* /if object instanceOf BaseControl*}
 				<?php

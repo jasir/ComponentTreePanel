@@ -35,6 +35,12 @@ class ComponentTreePanel extends Object implements IBarPanel {
 	 * @var bool
 	 */
 	public static $dumps = TRUE;
+	
+	/**
+	 * Include sources in tree
+	 * @var bool
+	 */
+	public static $showSources = TRUE;
 
 
 	/**
@@ -92,6 +98,7 @@ class ComponentTreePanel extends Object implements IBarPanel {
 		$template->dumps = static::$dumps;
 		$template->parametersOpen = static::$parametersOpen;
 		$template->presenterOpen = static::$presenterOpen;
+		$template->showSources = static::$showSources;
 		$template->registerHelper('parametersInfo', callback($this, 'getParametersInfo'));
 		$template->registerHelper('editlink', callback($this, 'buildEditorLink'));
 		$template->registerHelper('highlight', callback($this, 'highlight'));
