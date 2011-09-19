@@ -11,6 +11,12 @@
 		<ul class="nette-hidden">
 			{include #dump object => $t}
 			{? ksort($parameters)}
+			{if $showSources}
+			<li>Source code {include #toggler}
+				<pre class="nette-hidden source">
+{!=file_get_contents($file)}
+				</pre>
+			{/if}
 			<li>{include #values values => $parameters, title=>'Params', open=>true}
 		</ul>
 {/define}
@@ -95,5 +101,5 @@
 	{default title = '[source]'}
 	{default line = 1}
 	{default file = __FILE__}
-	<a title="{$file}" href="{!=$template->editlink($file, $line)}">{!$title}</a>
+	<a title="{$file}:{$line}" href="{!=$template->editlink($file, $line)}">{!$title}</a>
  {/define}
