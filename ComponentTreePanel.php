@@ -35,6 +35,12 @@ class ComponentTreePanel extends Object implements IBarPanel {
 	 * @var bool
 	 */
 	public static $dumps = TRUE;
+	
+	/**
+	 * Include sources in tree
+	 * @var bool
+	 */
+	public static $showSources = TRUE;
 
 
 	/**
@@ -48,6 +54,8 @@ class ComponentTreePanel extends Object implements IBarPanel {
 	 * @var bool
 	 */
 	public static $presenterOpen = TRUE;
+	
+	public static $appDir;
 
 
 	private $response;
@@ -92,10 +100,12 @@ class ComponentTreePanel extends Object implements IBarPanel {
 		$template->dumps = static::$dumps;
 		$template->parametersOpen = static::$parametersOpen;
 		$template->presenterOpen = static::$presenterOpen;
+		$template->showSources = static::$showSources;
 		$template->registerHelper('parametersInfo', callback($this, 'getParametersInfo'));
 		$template->registerHelper('editlink', callback($this, 'buildEditorLink'));
 		$template->registerHelper('highlight', callback($this, 'highlight'));
 		$template->registerHelper('filterMethods', callback($this, 'filterMethods'));
+		$template->registerHelper('renderedTemplates', callback($this, 'getRenderedTemplates'));
 
 		ob_start();
 		$template->render();
@@ -232,5 +242,82 @@ class ComponentTreePanel extends Object implements IBarPanel {
 
 		return $params;
 	}
+	
+	/**
+	 * Returns templates used when rendering object
+	 * @param type $object
+	 * @return array
+	 */
+	public static function getRenderedTemplates($object) {
+		$arr = array();
+		foreach(\Extras\Debug\DebugTemplate::$templatesRendered as $info) {
+			if ($info['template']->control === $object) {
+				$arr[] = $info;
+			}
+		}
+		return $arr;
+	}
+	
+	public static function relativizePath($path) {
+		return static::getRelative($path, static::$appDir);
+	}
+	
+   /**
+    * Converts path to be relative to given $compartTo path
+    *
+    * @param string $path
+    * @param string $compareTo
+    * @return string
+    */
+   static public function getRelative($path, $compareTo) {
+      $path = realpath($path);
+      $path = str_replace(':', '', $path);
+      $path = str_replace('\\', '/', $path);
+      $compareTo = realpath($compareTo);
+      $compareTo = str_replace(':', '', $compareTo);
+      $compareTo = str_replace('\\', '/', $compareTo);
 
+      // clean arguments by removing trailing and prefixing slashes
+      if (substr($path, - 1) == '/') {
+         $path = substr($path, 0, - 1);
+      }
+      if (substr($path, 0, 1) == '/') {
+         $path = substr($path, 1);
+      }
+
+      if (substr($compareTo, - 1) == '/') {
+         $compareTo = substr($compareTo, 0, - 1);
+      }
+      if (substr($compareTo, 0, 1) == '/') {
+         $compareTo = substr($compareTo, 1);
+      }
+
+      // simple case: $compareTo is in $path
+      if (strpos($path, $compareTo) === 0) {
+         $offset = strlen($compareTo) + 1;
+         return substr($path, $offset);
+      }
+
+      $relative       = array();
+      $pathParts      = explode('/', $path);
+      $compareToParts = explode('/', $compareTo);
+
+      foreach ($compareToParts as $index => $part) {
+         if (isset($pathParts[$index]) && $pathParts[$index] == $part) {
+            continue;
+         }
+         $relative[] = '..';
+      }
+
+      foreach ($pathParts as $index => $part) {
+         if (isset($compareToParts[$index]) && $compareToParts[$index] == $part) {
+            continue;
+         }
+         $relative[] = $part;
+      }
+         return implode('/', $relative);
+   }
+  
+	
+	
 }

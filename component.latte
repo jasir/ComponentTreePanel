@@ -4,13 +4,14 @@
 	@param cache \Nette\Caching\Cache
 	@param dumps
 *}
-
+{includeblock 'blocks.latte'}
 {block #componentRender}
 
 	{default parametersOpen = TRUE}
 	{default opened = FALSE}
 	{default dumps = TRUE}
 	{default cache = NULL}
+	{default showSources = TRUE}
 
 	{var id = 'ctr-' . $object->lookupPath('Nette\Application\IPresenter', FALSE) . '-' . str_replace($object->name, ':', '-')}
 	{var refl = $object->getReflection()}
@@ -19,7 +20,7 @@
 	{var components = $objectIsContainer ? $object->getComponents() : []}
 	{var objectHasComponents = $objectIsContainer && count($components) > 0}
 
-	<a class="nette-toggler" href="#" rel="#{!$id}">{if $objectIsForm}<span class="texticon-form">&thinsp;F&thinsp;</span>{/if}<strong>{$object->name}</strong> [{=get_class($object)}]</a>
+	<a class="nette-toggler" href="#" rel="#{!$id}">{if $objectIsForm}{include #icon type=>'F', title=>"Form"} {/if}<strong>{$object->name}</strong> [{=get_class($object)}]</a>
 	
 	<ul>
 		<div {if !$opened}class="nette-hidden"{/if} id = "{!$id}"style="padding:0.5em;">
@@ -29,12 +30,10 @@
 
 
 			<li>
-				<i>instance of</i>
-				<a title="{$refl->getFileName()}" href="{!=$template->editlink($refl->getFileName(), $refl->getStartLine())}">
-				{=get_class($object)}
-				</a>
+				<i>instance of</i>{include #editlink title=>get_class($object), file=>$refl->getFileName(), line=>$refl->getStartLine()}
 				{var parent = $refl->getParentClass()}
-				<i>extends</i> <a title="{$parent->getFileName()}" href="{!=$template->editlink($parent->getFileName(), $parent->getStartLine())}">{$parent->getName()}</a>
+				<i>extends</i> 
+				{include #editlink title=>$parent->name, file=>$parent->getFileName(), line=>$parent->getStartLine()}
 			</li>
 
 			{* Parameters *}
@@ -44,23 +43,22 @@
 				{var params = $template->parametersInfo($object)}
 				{if count($params) > 0}
 
-					<li><span title="persistent parameters are marked with @">Parameters ({=count($params)})</span> <a class="nette-toggler" href="#" rel="next"> <abbr>{if $parametersOpen}&#x25bc{else}&#x25ba{/if};</abbr></a>
+					<li><span title="persistent parameters are marked with @">Parameters ({=count($params)})</span> {include #toggler open=>$parametersOpen}
 					<ul {if !$parametersOpen}class="nette-hidden"{/if}>
 						{foreach $params as $name =>$param}
 						<li>
 							{if $param['persistent']}
-								<strong>@{$name}</strong> = <code>{?var_dump($param['value'])}</code>
+								<strong>{include #icon type=>'P', title=>"persistent"}{$name}</strong> = <code>{?var_dump($param['value'])}</code>
 								{if $param['value'] === $param['meta']['def']}
 									<strong>(default value)</strong>
 								{/if}
-								<a class="nette-toggler" href="#" rel="next"> <abbr>&#x25ba;</abbr></a>
+								{include #toggler}
 								<ul class="nette-hidden">
 									<li>
 										{var refl = new \Nette\Reflection\ClassType($param['meta']['since']) }
 										persistent parameter declared in
-										<a title="{$refl->getFileName()}" href="{!=$template->editlink($refl->getFileName(), 1)}">
-										{$param['meta']['since']} {if $param['meta']['since'] == get_class($object)}(this){/if}
-										</a>
+										{include #editlink title=>$param['meta']['since'], file=>$refl->getFileName(), line=>1} 
+										{if $param['meta']['since'] == get_class($object)}(this){/if}
 									<li>default value: <code>{?var_dump($param['meta']['def'])}</code>
 									<li>full name: <strong>{$object->getParamId($name)}</strong>
 								</ul>
@@ -77,6 +75,17 @@
 				{/if}
 
 			{/if}
+						
+		{* Templates *}
+		{var $templates = $template->renderedTemplates($object)}
+		{if count($templates)}
+			<li>Templates (rendered) ({count($templates)}){include #toggler}
+				<ul>
+				{foreach $templates as $tinfo}
+					<li>{include #template t=>$tinfo['template'], file => $tinfo['file'], parameters =>$tinfo['params']}
+				{/foreach}
+				</ul>
+		{/if}
 
 		{* Methods *}
 
@@ -93,59 +102,40 @@
 			{if !($object instanceOf \Nette\Forms\Controls\BaseControl || $object instanceOf \Nette\Forms\Form)}
 
 				<li>
-					Methods <a class="nette-toggler" rel="next" href="#"><abbr>&#x25ba;</abbr></a>
+					Methods {include #toggler}
 					<ul class="nette-hidden">
 
-						<!-- aciton<action>, beforeRender<view>-->
-
+						{* aciton<action>, beforeRender<view> *}
 						{if $object instanceof \Nette\Application\IPresenter}
-							{include
-								methods.latte
-								name => "action<Action>", object => $object, inherited => TRUE, pattern => "#^(action)(.+)#"}
-							{include
-								methods.latte
-								name => "lifecycle", object => $object, inherited => TRUE, pattern => "~\A()(startup | beforeHandle | beforeRender |shutdown)\z~x"}
+						{include #methods name => "action<Action>", object => $object, inherited => TRUE, pattern => "#^(action)(.+)#"}
+						{include #methods name => "lifecycle", object => $object, inherited => TRUE, pattern => "~\A()(startup | beforeHandle | beforeRender |shutdown)\z~x"}
 						{/if}
 
-						<!-- render<view>, handle<signal> -->
-
+						{* render<view>, handle<signal> *}
 						{if $object instanceof \Nette\Application\UI\Control}
-							{include methods.latte
-								name => "render<View>", object => $object, inherited => TRUE, pattern => "#^(render)(.*)#"}
-							{include methods.latte
-								name => "handle<Signal>", object => $object, inherited => TRUE, pattern => "#^(handle)(.*)#", hideMethods => array()}
+						{include #methods name => "render<View>", object => $object, inherited => TRUE, pattern => "#^(render)(.*)#"}
+						{include #methods name => "handle<Signal>", object => $object, inherited => TRUE, pattern => "#^(handle)(.*)#", hideMethods => array()}
 						{/if}
 
-						<!-- createComponent -->
+						{* createComponent *}
+						{include #methods name => "createComponent<name>", object => $object, inherited => TRUE, pattern => "#^(createComponent)(.+)#", hideMethods => array()}
 
-						{include methods.latte name => "createComponent<name>", object => $object, inherited => TRUE, pattern => "#^(createComponent)(.+)#", hideMethods => array()}
+						{* create<object> *}
+						{include #methods name => "create<object>", object =>$object, inherited => TRUE, pattern => "#^(create(?!Component))(\w+)#", hideMethods => array('createRequest')}
 
-						<!-- create<object>-->
-						{include methods.latte name => "create<object>", object =>$object, inherited => TRUE, pattern => "#^(create(?!Component))(\w+)#", hideMethods => array('createRequest')}
-
-						<!-- get/set properties-->
-
-						{include methods.latte
-							name => "get<property>", object => $object, inherited => FALSE, pattern => "#^(get)(.+)#"}
-
-						{include methods.latte
-							name => "set<property>", object => $object, inherited => FALSE, pattern => "#^(set)(.*)#"}
+						{* get/set properties *}
+						{include #methods name => "get<property>", object => $object, inherited => FALSE, pattern => "#^(get)(.+)#"}
+						{include #methods name => "set<property>", object => $object, inherited => FALSE, pattern => "#^(set)(.*)#"}
 					</ul>
 				</li>
 
 		{* Source *}
 
-
 				{if !$object instanceOf \Nette\Forms\Form}
-					<li>
-
-						Source File <a class="nette-toggler" rel="next" href="#"><abbr>&#x25ba;</abbr></a>
-						<div class="nette-hidden">
-							{include sourcefile.latte, object => $object, showSource => TRUE}
-						</div>
-					</li>
+					{include #source object => $object}
 				{/if}
 				{/if} {* /if object instanceOf BaseControl*}
+
 				<?php
 						$content = ob_get_clean();
 						echo $content;
@@ -156,18 +146,15 @@
 				?>
 
 
-		{* Values *}
+		{* Form Values *}
 
 		{if $object instanceOf \Nette\Forms\Form}
-			<li>Values <a class="nette-toggler" href="#" rel="next"> <abbr>&#x25ba;</abbr></a>
-			<ul class="nette-hidden"><li>
-				<div class="ct-values">{!= \Nette\Diagnostics\Helpers::clickableDump($object->getValues())}</div>
-			</ul>
+			<li>{include #values title=>"Values", values=>$object->getValues()}
 
 		{* Form components *}
 
 			{if $objectHasComponents}
-				<li>Controls <a class="nette-toggler" href="#" rel="next"> <abbr>&#x25ba;</abbr></a>
+				<li>Controls {include #toggler}
 				<ul>
 					{foreach $components as $c}
 						<li>{include #componentRender object=>$c, opened=>false}
@@ -179,14 +166,8 @@
 
 
 		{* Dumps *}
-
-
-		{if $dumps}
-			<li>Dump <a class="nette-toggler" href="#" rel="next"> <abbr>&#x25ba;</abbr></a>
-			<ul class="nette-hidden"><li>
-				<div class="ct-dump">{!= \Nette\Diagnostics\Helpers::clickableDump($object)}</div>
-			</ul>
-		{/if}
+		{include #dump object=>$object}
+					
 
 	</ul>
 	</div>
