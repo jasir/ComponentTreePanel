@@ -1,0 +1,113 @@
+{*
+  @param $object
+  @param $inherited show Inherited Methods?
+  @param $name
+  @param $showEmpty
+  @param $hideMethods
+*}
+
+{define #template}
+	{=\Extras\Debug\ComponentTreePanel::relativizePath($file)}{include #editlink file=>$file} {include #toggler}
+		<ul class="nette-hidden">
+			<li><i>instance of </i>{include #editlink title=>get_class($t), file=>$t->getReflection()->getFileName()}
+			{include #dump object => $t}
+			{if $showSources && $t instanceOf \Nette\Templating\IFileTemplate}
+			<li>Source code {include #toggler}
+				<pre class="nette-hidden source">
+{$t->getSource()}
+				</pre>
+			{/if}
+			{? ksort($parameters)}
+			<li>{include #values values => $parameters, title=>'Params', open=>true}
+		</ul>
+{/define}
+
+	
+{define #dump}
+	{default title = 'Dump'}
+	{if $dumps}
+		<li>{$title} {include #toggler}
+		<ul class="nette-hidden"><li>
+			<div class="ct-dump">{!= \Nette\Diagnostics\Helpers::clickableDump($object)}</div>
+		</ul>
+	{/if}
+{/define}
+			
+			
+{define #values}
+	{default title = 'Values'}
+	{default open = true}
+	{$title} ({=count($values)}) {include #toggler open=>open}
+	<table>
+	{foreach $values as $name => $value}
+		<tr><th>{$name}</th><td width="80%"><div class="ct-values">{!= \Nette\Diagnostics\Helpers::clickableDump($value)}</div></td></tr>
+	{/foreach}
+	</table>			
+{/define}
+			
+
+{define #source}
+	{default title = 'Source code'}
+	{if $showSources}
+		<li>{$title} {include #toggler}
+		<ul class="nette-hidden">
+			<li>/
+			{include #plainsource}
+		</ul>
+	{/if}
+{/define}
+			
+
+{define #plainsource}
+	<div class="source">
+		{!=$template->highlight($object)}
+	</div>
+{/define}
+			
+
+{define #methods}
+	{default showEmpty = FALSE}
+	{default hideMethods = []}
+
+	{var $filtered = $template->filterMethods($object, $pattern, $hideMethods, $inherited)}
+
+	{if count($filtered) > 0 || $showEmpty === TRUE}
+		<li>
+			{$name} ({=count($filtered)}) {include #toggler open => true}
+			<ul>
+				{foreach $filtered as $method}
+					<li>
+						{include #editlink file=>$method->getFileName(), line=>$method->getStartLine(), title=>preg_replace($pattern, '${1}<strong>${2}</strong>', $method->name)}
+						{if $method->class !== get_class($object)}
+							<i>defined in</i> {$method->class}
+						{/if}
+						{include #toggler}
+						<div class="nette-hidden">
+							{include #plainsource, object => $method}
+						</div>
+				{/foreach}
+			</ul>
+		</li>
+	{/if}
+{/define}
+		
+
+{define #toggler}
+	{default open = false}
+	<a class="nette-toggler" href="#" rel="next"><abbr>{if $open}&#x25bc{else}&#x25ba{/if}</abbr></a>
+{/define}
+	
+
+{define #editlink}
+	{default title = '[source]'}
+	{default line = 1}
+	{default file = __FILE__}
+	{var shortfile = \Extras\Debug\ComponentTreePanel::relativizePath($file)}
+	<a title="{$shortfile}{if $line>1} - line {$line}{/if}" href="{!=$template->editlink($file, $line)}">{!$title}</a>
+{/define}
+	
+{define #icon}
+	{default type = 'F'}
+	{default title = ''}
+	<span {if $title}title="{$title}"{/if} class="texticon-{$type}">&thinsp;{$type}&thinsp;</span>
+{/define}
