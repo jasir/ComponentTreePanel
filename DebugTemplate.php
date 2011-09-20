@@ -39,25 +39,33 @@ class DebugTemplate implements \Nette\Templating\ITemplate, \Nette\Templating\IF
 
 			}
 		}
-		
+
 		if (count(static::$onRender)) {
 			ob_start();
 			$return = $template->render();
 			$content = ob_get_contents();
 			ob_end_clean();
 			foreach (static::$onRender as $callback) {
-				$content = call_user_func($callback, $this, $template, $content);
+				$content = call_user_func(
+					$callback,
+					$template,
+					$content,
+					$template->control !== $template->presenter
+				);
 			}
 			echo $content;
 			return $return;
 		}
 
 		return $template->render();
-		
+
 	}
-	
+
 	public static function register($template) {
-		return new static($template);
+		if ($template instanceOf \Nette\Templating\IFileTemplate) {
+			return new static($template);
+		}
+		return $template;
 	}
 
 	public function getFile() {
