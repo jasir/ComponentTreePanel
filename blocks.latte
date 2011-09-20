@@ -11,10 +11,10 @@
 		<ul class="nette-hidden">
 			<li><i>instance of </i>{include #editlink title=>get_class($t), file=>$t->getReflection()->getFileName()}
 			{include #dump object => $t}
-			{if $showSources}
+			{if $showSources && $t instanceOf \Nette\Templating\IFileTemplate}
 			<li>Source code {include #toggler}
 				<pre class="nette-hidden source">
-{=file_get_contents($file)}
+{$t->getSource()}
 				</pre>
 			{/if}
 			{? ksort($parameters)}
