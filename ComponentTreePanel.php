@@ -35,7 +35,7 @@ class ComponentTreePanel extends Object implements IBarPanel {
 	 * @var bool
 	 */
 	public static $dumps = TRUE;
-	
+
 	/**
 	 * Include sources in tree
 	 * @var bool
@@ -54,7 +54,7 @@ class ComponentTreePanel extends Object implements IBarPanel {
 	 * @var bool
 	 */
 	public static $presenterOpen = TRUE;
-	
+
 	public static $appDir;
 
 
@@ -242,7 +242,7 @@ class ComponentTreePanel extends Object implements IBarPanel {
 
 		return $params;
 	}
-	
+
 	/**
 	 * Returns templates used when rendering object
 	 * @param type $object
@@ -257,67 +257,71 @@ class ComponentTreePanel extends Object implements IBarPanel {
 		}
 		return $arr;
 	}
-	
-	public static function relativizePath($path) {
-		return static::getRelative($path, static::$appDir);
+
+	public static function relativizePath($path, $tag = NULL) {
+		$relative = static::getRelative($path, static::$appDir);
+		if ($tag) {
+			$relative = \Nette\Utils\Strings::replace($relative, '#('.pathinfo($relative, PATHINFO_FILENAME).')(\.(latte|phtml))#', "<$tag>\$1</$tag>\$2");
+		}
+		return $relative;
 	}
-	
-   /**
-    * Converts path to be relative to given $compartTo path
-    *
-    * @param string $path
-    * @param string $compareTo
-    * @return string
-    */
-   static public function getRelative($path, $compareTo) {
-      $path = realpath($path);
-      $path = str_replace(':', '', $path);
-      $path = str_replace('\\', '/', $path);
-      $compareTo = realpath($compareTo);
-      $compareTo = str_replace(':', '', $compareTo);
-      $compareTo = str_replace('\\', '/', $compareTo);
 
-      // clean arguments by removing trailing and prefixing slashes
-      if (substr($path, - 1) == '/') {
-         $path = substr($path, 0, - 1);
-      }
-      if (substr($path, 0, 1) == '/') {
-         $path = substr($path, 1);
-      }
+	/**
+	 * Converts path to be relative to given $compartTo path
+	 *
+	 * @param string $path
+	 * @param string $compareTo
+	 * @return string
+	 */
+	static public function getRelative($path, $compareTo) {
+		$path = realpath($path);
+		$path = str_replace(':', '', $path);
+		$path = str_replace('\\', '/', $path);
+		$compareTo = realpath($compareTo);
+		$compareTo = str_replace(':', '', $compareTo);
+		$compareTo = str_replace('\\', '/', $compareTo);
 
-      if (substr($compareTo, - 1) == '/') {
-         $compareTo = substr($compareTo, 0, - 1);
-      }
-      if (substr($compareTo, 0, 1) == '/') {
-         $compareTo = substr($compareTo, 1);
-      }
+		// clean arguments by removing trailing and prefixing slashes
+		if (substr($path, - 1) == '/') {
+			$path = substr($path, 0, - 1);
+		}
+		if (substr($path, 0, 1) == '/') {
+			$path = substr($path, 1);
+		}
 
-      // simple case: $compareTo is in $path
-      if (strpos($path, $compareTo) === 0) {
-         $offset = strlen($compareTo) + 1;
-         return substr($path, $offset);
-      }
+		if (substr($compareTo, - 1) == '/') {
+			$compareTo = substr($compareTo, 0, - 1);
+		}
+		if (substr($compareTo, 0, 1) == '/') {
+			$compareTo = substr($compareTo, 1);
+		}
 
-      $relative       = array();
-      $pathParts      = explode('/', $path);
-      $compareToParts = explode('/', $compareTo);
+		// simple case: $compareTo is in $path
+		if (strpos($path, $compareTo) === 0) {
+			$offset = strlen($compareTo) + 1;
+			return substr($path, $offset);
+		}
 
-      foreach ($compareToParts as $index => $part) {
-         if (isset($pathParts[$index]) && $pathParts[$index] == $part) {
-            continue;
-         }
-         $relative[] = '..';
-      }
+		$relative       = array();
+		$pathParts      = explode('/', $path);
+		$compareToParts = explode('/', $compareTo);
 
-      foreach ($pathParts as $index => $part) {
-         if (isset($compareToParts[$index]) && $compareToParts[$index] == $part) {
-            continue;
-         }
-         $relative[] = $part;
-      }
-         return implode('/', $relative);
-   }
-  
-	
-	
+		foreach ($compareToParts as $index => $part) {
+			if (isset($pathParts[$index]) && $pathParts[$index] == $part) {
+				continue;
+			}
+			$relative[] = '..';
+		}
+
+		foreach ($pathParts as $index => $part) {
+			if (isset($compareToParts[$index]) && $compareToParts[$index] == $part) {
+				continue;
+			}
+			$relative[] = $part;
+		}
+			return implode('/', $relative);
+	}
+
+
+
 }
