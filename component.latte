@@ -21,7 +21,7 @@
 	{var objectHasComponents = $objectIsContainer && count($components) > 0}
 
 	<a class="nette-toggler" href="#" rel="#{!$id}">{if $objectIsForm}{include #icon type=>'F', title=>"Form"} {/if}<strong>{$object->name}</strong> [{=get_class($object)}]</a>
-	
+
 	<ul>
 		<div {if !$opened}class="nette-hidden"{/if} id = "{!$id}"style="padding:0.5em;">
 			<ul>
@@ -32,7 +32,7 @@
 			<li>
 				<i>instance of</i>{include #editlink title=>get_class($object), file=>$refl->getFileName(), line=>$refl->getStartLine()}
 				{var parent = $refl->getParentClass()}
-				<i>extends</i> 
+				<i>extends</i>
 				{include #editlink title=>$parent->name, file=>$parent->getFileName(), line=>$parent->getStartLine()}
 			</li>
 
@@ -57,13 +57,13 @@
 									<li>
 										{var refl = new \Nette\Reflection\ClassType($param['meta']['since']) }
 										persistent parameter declared in
-										{include #editlink title=>$param['meta']['since'], file=>$refl->getFileName(), line=>1} 
+										{include #editlink title=>$param['meta']['since'], file=>$refl->getFileName(), line=>1}
 										{if $param['meta']['since'] == get_class($object)}(this){/if}
 									<li>default value: <code>{?var_dump($param['meta']['def'])}</code>
 									<li>full name: <strong>{$object->getParameterId($name)}</strong>
 								</ul>
 							{else}
-								<strong>{$name}</strong> = <code>{?var_dump($param['value'])}</code> <a class="nette-toggler" href="#" rel="next"> <abbr>&#x25ba;</abbr></a>
+								<strong>{$name}</strong> = <code>{?var_dump($param['value'])}</code> {include #toggler}
 								<ul class="nette-hidden">
 									<li>full name: <strong>{$object->getParameterId($name)}</strong>
 								</ul>
@@ -75,7 +75,7 @@
 				{/if}
 
 			{/if}
-						
+
 		{* Templates *}
 		{var $templates = $template->renderedTemplates($object)}
 		{if count($templates)}
@@ -167,7 +167,7 @@
 
 		{* Dumps *}
 		{include #dump object=>$object}
-					
+
 
 	</ul>
 	</div>
