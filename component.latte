@@ -60,12 +60,12 @@
 										{include #editlink title=>$param['meta']['since'], file=>$refl->getFileName(), line=>1} 
 										{if $param['meta']['since'] == get_class($object)}(this){/if}
 									<li>default value: <code>{?var_dump($param['meta']['def'])}</code>
-									<li>full name: <strong>{$object->getParamId($name)}</strong>
+									<li>full name: <strong>{$object->getParameterId($name)}</strong>
 								</ul>
 							{else}
 								<strong>{$name}</strong> = <code>{?var_dump($param['value'])}</code> <a class="nette-toggler" href="#" rel="next"> <abbr>&#x25ba;</abbr></a>
 								<ul class="nette-hidden">
-									<li>full name: <strong>{$object->getParamId($name)}</strong>
+									<li>full name: <strong>{$object->getParameterId($name)}</strong>
 								</ul>
 
 							{/if}
