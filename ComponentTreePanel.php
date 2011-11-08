@@ -296,6 +296,9 @@ class ComponentTreePanel extends Object implements IBarPanel {
 			$compareTo = substr($compareTo, 1);
 		}
 
+		if ($compareTo == '')
+			return $path;
+
 		// simple case: $compareTo is in $path
 		if (strpos($path, $compareTo) === 0) {
 			$offset = strlen($compareTo) + 1;
