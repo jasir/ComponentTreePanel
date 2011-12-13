@@ -32,7 +32,7 @@ class DebugTemplate implements \Nette\Templating\ITemplate, \Nette\Templating\IF
 			if (!array_key_exists($template->getFile(), self::$templatesRendered)) {
 				self::$templatesRendered[] = array(
 					'template' => $template,
-					'params' => $template->getParams(),
+					'params' => $template->getParameters(),
 					'file' => $template->getFile(),
 					'trace' => debug_backtrace()
 				);

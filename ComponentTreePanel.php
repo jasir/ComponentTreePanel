@@ -220,7 +220,7 @@ class ComponentTreePanel extends Object implements IBarPanel {
 	public static function getParametersInfo($presenterComponent) {
 		$params = array();
 
-		$normalParameters = $presenterComponent->getParam();
+		$normalParameters = $presenterComponent->getParameter();
 		ksort($normalParameters);
 		foreach ($normalParameters as $name => $value) {
 			$params[$name] = array(
