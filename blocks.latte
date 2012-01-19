@@ -18,7 +18,7 @@
 				</pre>
 			{/if}
 			{? ksort($parameters)}
-			<li>{include #values values => $parameters, title=>'Params', open=>true}
+			<li>{include #values values => $parameters, title=>'Parameters', open=>true}
 		</ul>
 {/define}
 
@@ -40,7 +40,11 @@
 	{$title} ({=count($values)}) {include #toggler open=>open}
 	<table>
 	{foreach $values as $name => $value}
-		<tr><th>{$name}</th><td width="80%"><div class="ct-values">{!= \Nette\Diagnostics\Helpers::clickableDump($value)}</div></td></tr>
+		{if !(\Nette\Utils\Strings::startsWith($name, '_') || in_array($name, array('presenter', 'control', 'netteCacheStorage', 'netteHttpResponse', 'template', 'user')))}
+			<tr><th>{$name}</th><td width="80%"><div class="ct-values">{!= \Nette\Diagnostics\Helpers::clickableDump($value)}</div></td></tr>
+		{else}
+			<tr><th>{$name}</th><td><i>not dumped</i></td></tr>
+		{/if}
 	{/foreach}
 	</table>
 {/define}
