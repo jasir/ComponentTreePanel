@@ -85,10 +85,12 @@
 						{if $method->class !== get_class($object)}
 							<i>defined in</i> {$method->class}
 						{/if}
-						{include #toggler}
-						<div class="nette-hidden">
-							{include #plainsource, object => $method}
-						</div>
+						{if $showSources}
+							{include #toggler}
+							<div class="nette-hidden">
+								{include #plainsource, object => $method}
+							</div>
+						{/if}
 				{/foreach}
 			</ul>
 		</li>
