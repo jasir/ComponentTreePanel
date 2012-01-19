@@ -325,6 +325,4 @@ class ComponentTreePanel extends Object implements IBarPanel {
 			return implode('/', $relative);
 	}
 
-
-
 }

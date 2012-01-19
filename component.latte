@@ -149,8 +149,6 @@
 		{* Form Values *}
 
 		{if $object instanceOf \Nette\Forms\Form}
-			<li>{include #values title=>"Values", values=>$object->getValues()}
-
 		{* Form components *}
 
 			{if $objectHasComponents}
@@ -161,6 +159,9 @@
 					{/foreach}
 				</ul>
 			{/if}
+
+			<li>{include #values title=>"Values", values=>$object->getValues()}
+
 
 		{/if}
 
