@@ -43,7 +43,7 @@
 		{if !(\Nette\Utils\Strings::startsWith($name, '_') || in_array($name, array('presenter', 'control', 'netteCacheStorage', 'netteHttpResponse', 'template', 'user')))}
 			<tr><th>{$name}</th><td width="80%"><div class="ct-values">{!= \Nette\Diagnostics\Helpers::clickableDump($value)}</div></td></tr>
 		{else}
-			<tr><th>{$name}</th><td><i>not dumped</i></td></tr>
+			<tr><th>{$name}</th><td><i>{if is_object($value)}{!get_class($value)} - not dumped{else}{!= \Nette\Diagnostics\Helpers::clickableDump($value)}{/if}</i></td></tr>
 		{/if}
 	{/foreach}
 	</table>
