@@ -91,7 +91,7 @@ class ComponentTreePanel extends Object implements IBarPanel {
 
 		/** @var Template */
 		$template = new FileTemplate;
-		$template->setCacheStorage(Environment::getContext()->templateCacheStorage);
+		$template->setCacheStorage(Environment::getContext()->nette->templateCacheStorage);
 		$template->setFile(dirname(__FILE__) . "/bar.latte");
 		$template->registerFilter(new Engine());
 		$template->presenter = $template->control = $template->rootComponent = Environment::getApplication()->getPresenter();
