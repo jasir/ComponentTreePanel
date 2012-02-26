@@ -42,7 +42,6 @@ class ComponentTreePanel extends Object implements IBarPanel {
 	 */
 	public static $showSources = TRUE;
 
-
 	/**
 	 * Should be paremeters section open by default?
 	 * @var bool
@@ -55,14 +54,28 @@ class ComponentTreePanel extends Object implements IBarPanel {
 	 */
 	public static $presenterOpen = TRUE;
 
+	/**
+	 * Application dir
+	 * @var sring
+	 */
 	public static $appDir;
 
+	/**
+	 * Templates variables that should be not dumped (performance reasons)
+	 * @var array
+	 */
+
+	public static $omittedTemplateVariables = array('presenter', 'control', 'netteCacheStorage', 'netteHttpResponse', 'template', 'user');
+
+
+
+	/* --- Private --- */
 
 	private $response;
 
 	static private $isRegistered = FALSE;
 
-	/* --- Properties --- */
+
 
 	/* --- Public Methods--- */
 
@@ -101,6 +114,7 @@ class ComponentTreePanel extends Object implements IBarPanel {
 		$template->parametersOpen = static::$parametersOpen;
 		$template->presenterOpen = static::$presenterOpen;
 		$template->showSources = static::$showSources;
+		$template->omittedVariables = static::$omittedTemplateVariables;
 		$template->registerHelper('parametersInfo', callback($this, 'getParametersInfo'));
 		$template->registerHelper('editlink', callback($this, 'buildEditorLink'));
 		$template->registerHelper('highlight', callback($this, 'highlight'));
