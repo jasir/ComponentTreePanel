@@ -154,7 +154,7 @@
 		{* Form components *}
 
 			{if $objectHasComponents}
-				<li>Controls {include #toggler}
+				<li>Form Controls ({count($components)}){include #toggler}
 				<ul>
 					{foreach $components as $c}
 						<li>{include #componentRender object=>$c, opened=>false}
