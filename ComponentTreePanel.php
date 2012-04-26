@@ -120,10 +120,25 @@ class ComponentTreePanel extends Object implements IBarPanel {
 		$template->registerHelper('highlight', callback($this, 'highlight'));
 		$template->registerHelper('filterMethods', callback($this, 'filterMethods'));
 		$template->registerHelper('renderedTemplates', callback($this, 'getRenderedTemplates'));
+		$template->registerHelper('isPersistent', callback($this, 'isPersistent'));
 
 		ob_start();
 		$template->render();
 		return ob_get_clean();
+	}
+
+	public function isPersistent(\Nette\ComponentModel\Component $object) {
+		static $persistentParameters = NULL;
+		if ($persistentParameters === NULL) {
+			$presenter = $object instanceOf \Nette\Application\IPresenter ? $object :$object->lookupPath('Nette\Application\IPresenter', FALSE);
+			if ($presenter) {
+				$persistentParameters = $presenter::getPersistentComponents();
+			}
+		}
+		if (is_array($persistentParameters)) {
+			return in_array($object->getName(), $persistentParameters);
+		}
+		return FALSE;
 	}
 
 	/**

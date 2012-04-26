@@ -4,6 +4,7 @@
 	@param cache \Nette\Caching\Cache
 	@param dumps
 *}
+
 {includeblock 'blocks.latte'}
 {block #componentRender}
 
@@ -19,8 +20,9 @@
 	{var objectIsContainer = $object instanceOf \Nette\ComponentModel\Container}
 	{var components = $objectIsContainer ? $object->getComponents() : []}
 	{var objectHasComponents = $objectIsContainer && count($components) > 0}
+	{var objectIsPersistent = $template->isPersistent($object)}
 
-	<a class="nette-toggler" href="#" rel="#{!$id}">{if $objectIsForm}{include #icon type=>'F', title=>"Form"} {/if}<strong>{$object->name}</strong> [{=get_class($object)}]</a>
+	<a class="nette-toggler" href="#" rel="#{!$id}"><strong>{$object->name}</strong>{if $objectIsPersistent}{include #icon type=>'P', title=>"persistent component"}{/if}{if $objectIsForm}{include #icon type=>'F', title=>"Form"}{/if} [{=get_class($object)}]</a>
 
 	<ul>
 		<div {if !$opened}class="nette-hidden"{/if} id = "{!$id}"style="padding:0.5em;">
