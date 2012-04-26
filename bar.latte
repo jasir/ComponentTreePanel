@@ -85,7 +85,7 @@
 		margin-left:-4px;
 		background: #fff url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAUAQMAAACK1e4oAAAABlBMVEUAAwCIiIgd2JB2AAAAAXRSTlMAQObYZgAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9YIBhQIIhs+gc8AAAAQSURBVAjXY2hgQIf/GbAAAKCTBYBUjWvCAAAAAElFTkSuQmCC') no-repeat;
 	}
-	
+
 	#componentsTreeComponent .texticon-F {
 		font-size: 9px;
 		font-weight: bold;
@@ -98,9 +98,9 @@
 		background: darkgreen;
 		color: white;
 	}
-	
-</style>
 
+</style>
+{? \Nette\Diagnostics\Debugger::timer('component-tree-panel')}
 <h1>Component Tree</h1>
 
 <div class="nette-inner">
@@ -110,8 +110,14 @@
 		</ul>
 	</div>
 
+	{var $elapsed = \Nette\Diagnostics\Debugger::timer('component-tree-panel') }
+	<p>
+	Time to render panel: <strong>{=number_format($elapsed,3)}</strong> secs
+	</p>
+
 	{* fixes strange width problems*}
 	<div style="font-size: 2px;">&nbsp;</div>
 </div>
+
 
 
