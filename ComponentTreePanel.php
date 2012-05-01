@@ -81,9 +81,17 @@ class ComponentTreePanel extends Object implements IBarPanel {
 
 	public static function register() {
 		if (!self::$isRegistered) {
-			Debugger::$bar->addPanel(new self);
+			$panel = new self;
+			Debugger::$bar->addPanel($panel);
 			self::$isRegistered = TRUE;
+			$application = Environment::getApplication();
+			$application->onResponse[] = callback(array($panel, 'getResponseCb'));
+
 		}
+	}
+
+	public function getResponseCb($application, $response) {
+		$this->response = $response;
 	}
 
 	/**
@@ -101,6 +109,12 @@ class ComponentTreePanel extends Object implements IBarPanel {
 	 * @see IDebugPanel::getPanel()
 	 */
 	public function getPanel() {
+
+		if ($this->response instanceOf \Nette\Application\Responses\ForwardResponse
+			 || $this->response instanceOf \Nette\Application\Responses\RedirectResponse) {
+			 return '';
+		}
+
 
 		/** @var Template */
 		$template = new FileTemplate;
