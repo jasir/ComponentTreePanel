@@ -1,5 +1,5 @@
 {
-	"name": "jasir/ComponentTreePanel",
+	"name": "jasir/component-tree-panel",
 	"description": "Debug panel for Nette Framework. Displays presenter and components hiearchy.",
 	"keywords": ["nette", "debugging", "presenter", "component"],
 	"require": {
