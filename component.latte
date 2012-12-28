@@ -104,8 +104,16 @@
 				else {
 					ob_start();
 			?>
+
 				<li>
-					Methods {include #toggler}
+					CreateComponent&gt;name&lt; methods
+					<ul>
+						{* createComponent *}
+						{include #methods name => "createComponent<name>", object => $object, inherited => TRUE, pattern => "#^(createComponent)(.+)#", hideMethods => array()}
+					</ul>
+				</li>
+				<li>
+					Other methods {include #toggler}
 					<ul class="nette-hidden">
 
 						{* aciton<action>, beforeRender<view> *}
@@ -120,8 +128,6 @@
 						{include #methods name => "handle<Signal>", object => $object, inherited => TRUE, pattern => "#^(handle)(.*)#", hideMethods => array()}
 						{/if}
 
-						{* createComponent *}
-						{include #methods name => "createComponent<name>", object => $object, inherited => TRUE, pattern => "#^(createComponent)(.+)#", hideMethods => array()}
 
 						{* create<object> *}
 						{include #methods name => "create<object>", object =>$object, inherited => TRUE, pattern => "#^(create(?!Component))(\w+)#", hideMethods => array('createRequest')}
