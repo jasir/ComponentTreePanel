@@ -55,8 +55,8 @@
 	{if $showSources}
 		<li>{$title} {include #toggler}
 		<ul class="nette-hidden">
-			<li>/
-			{include #plainsource}
+			<li>
+			{include #plainsource object => $object}
 		</ul>
 	{/if}
 {/define}
