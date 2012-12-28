@@ -34,7 +34,7 @@ class ComponentTreePanel extends Object implements IBarPanel {
 	 * Include dumps in tree
 	 * @var bool
 	 */
-	public static $dumps = TRUE;
+	public static $dumps = FALSE;
 
 	/**
 	 * Include sources in tree
