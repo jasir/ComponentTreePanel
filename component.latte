@@ -91,18 +91,19 @@
 
 		{* Methods *}
 
+
+			{if !($object instanceOf \Nette\Forms\Controls\BaseControl || $object instanceOf \Nette\Forms\Form)}
 			<?php
 
-				if ($cache && isset($cache[$object->name])) {
-					$cached = $cache[$object->name];
+				$key = $object->reflection->name . '|' . $object->name . '|' . $object->presenter->name;
+
+				if ($cache && isset($cache[$key])) {
+					$cached = $cache[$key];
 					echo $cached;
 				}
 				else {
 					ob_start();
 			?>
-
-			{if !($object instanceOf \Nette\Forms\Controls\BaseControl || $object instanceOf \Nette\Forms\Form)}
-
 				<li>
 					Methods {include #toggler}
 					<ul class="nette-hidden">
@@ -136,16 +137,17 @@
 				{if !$object instanceOf \Nette\Forms\Form}
 					{include #source object => $object}
 				{/if}
-				{/if} {* /if object instanceOf BaseControl*}
+		<?php
+				$content = ob_get_clean();
+				echo $content;
+				if ($cache) {
+					$cache->save($key, $content, array('files'=>array($refl->getFileName())));
+				}
+			}
+		?>
 
-				<?php
-						$content = ob_get_clean();
-						echo $content;
-						if ($cache) {
-							$cache->save($object->name, $content, array('files'=>array($refl->getFileName())));
-						}
-					}
-				?>
+		{/if} {* /if object instanceOf BaseControl*}
+
 
 
 		{* Form Values *}
