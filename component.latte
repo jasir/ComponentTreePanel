@@ -22,10 +22,10 @@
 	{var objectHasComponents = $objectIsContainer && count($components) > 0}
 	{var objectIsPersistent = $template->isPersistent($object)}
 
-	<a class="nette-toggler" href="#" rel="#{!$id}"><strong>{$object->name}</strong>{if $objectIsPersistent}{include #icon type=>'P', title=>"persistent component"}{/if}{if $objectIsForm}{include #icon type=>'F', title=>"Form"}{/if} [{=get_class($object)}]</a>
+	<a class="nette-toggle{if !$opened}-collapsed{/if}" href="#" rel="#{!$id}"><strong>{$object->name}</strong>{if $objectIsPersistent}{include #icon type=>'P', title=>"persistent component"}{/if}{if $objectIsForm}{include #icon type=>'F', title=>"Form"}{/if} [{=get_class($object)}]</a>
 
-	<ul>
-		<div {if !$opened}class="nette-hidden"{/if} id = "{!$id}"style="padding:0.5em;">
+	<ul {if !$opened}class="hide"{/if} id="{!$id}">
+		<div style="padding:0.5em;">
 			<ul>
 
 			{* object info *}
@@ -46,7 +46,7 @@
 				{if count($params) > 0}
 
 					<li><span title="persistent parameters are marked with P icon">Parameters ({=count($params)})</span> {include #toggler open=>$parametersOpen}
-					<ul {if !$parametersOpen}class="nette-hidden"{/if}>
+					<ul {if !$parametersOpen}class="hide"{/if}>
 						{foreach $params as $name =>$param}
 						<li>
 							{if $param['persistent']}
@@ -55,7 +55,7 @@
 									<strong>(default value)</strong>
 								{/if}
 								{include #toggler}
-								<ul class="nette-hidden">
+								<ul class="hide">
 									<li>
 										{var refl = new \Nette\Reflection\ClassType($param['meta']['since']) }
 										persistent parameter declared in
@@ -66,7 +66,7 @@
 								</ul>
 							{else}
 								<strong>{$name}</strong> = <code>{?var_dump($param['value'])}</code> {include #toggler}
-								<ul class="nette-hidden">
+								<ul class="hide">
 									<li>full name: <strong>{$object->getParameterId($name)}</strong>
 								</ul>
 
@@ -107,7 +107,7 @@
 			?>
 
 				<li>
-					CreateComponent&gt;name&lt; methods
+					CreateComponent&lt;name&gt; methods
 					<ul>
 						{* createComponent *}
 						{include #methods name => "createComponent<name>", object => $object, inherited => TRUE, pattern => "#^(createComponent)(.+)#", hideMethods => array()}
@@ -115,7 +115,7 @@
 				</li>
 				<li>
 					Other methods {include #toggler}
-					<ul class="nette-hidden">
+					<ul class="hide">
 
 						{* aciton<action>, beforeRender<view> *}
 						{if $object instanceof \Nette\Application\IPresenter}

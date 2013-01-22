@@ -8,12 +8,12 @@
 
 {define #template}
 	{!=\Extras\Debug\ComponentTreePanel::relativizePath($file, 'strong')}{include #editlink file=>$file} {include #toggler}
-		<ul class="nette-hidden">
+		<ul class="hide">
 			<li><i>instance of </i>{include #editlink title=>get_class($t), file=>$t->getReflection()->getFileName()}
 			{include #dump object => $t}
 			{if $showSources && $t instanceOf \Nette\Templating\IFileTemplate}
 			<li>Source code {include #toggler}
-				<pre class="nette-hidden source">
+				<pre class="hide source">
 {$t->getSource()}
 				</pre>
 			{/if}
@@ -27,7 +27,7 @@
 	{default title = 'Dump'}
 	{if $dumps}
 		<li>{$title} {include #toggler}
-		<ul class="nette-hidden"><li>
+		<ul class="hide"><li>
 			<div class="ct-dump">{!= \Nette\Diagnostics\Helpers::clickableDump($object)}</div>
 		</ul>
 	{/if}
@@ -54,7 +54,7 @@
 	{default title = 'Source code'}
 	{if $showSources}
 		<li>{$title} {include #toggler}
-		<ul class="nette-hidden">
+		<ul class="hide">
 			<li>
 			{include #plainsource object => $object}
 		</ul>
@@ -87,7 +87,7 @@
 						{/if}
 						{if $showSources}
 							{include #toggler}
-							<div class="nette-hidden">
+							<div class="hide">
 								{include #plainsource, object => $method}
 							</div>
 						{/if}
@@ -100,7 +100,7 @@
 
 {define #toggler}
 	{default open = false}
-	<a class="nette-toggler" href="#" rel="next"><abbr>{if $open}&#x25bc{else}&#x25ba{/if}</abbr></a>
+	<a class="nette-toggle{if !$open}-collapsed{/if}" href="#" rel="next"></a>
 {/define}
 
 
