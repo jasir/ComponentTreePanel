@@ -28,7 +28,7 @@
 	{if $dumps}
 		<li>{$title} {include #toggler}
 		<ul class="hide"><li>
-			<div class="ct-dump">{!= \Nette\Diagnostics\Helpers::clickableDump($object)}</div>
+			<div class="ct-dump">{!= Nette\Diagnostics\Dumper::toHtml($object)}</div>
 		</ul>
 	{/if}
 {/define}
@@ -41,9 +41,9 @@
 	<table>
 	{foreach $values as $name => $value}
 		{if !(\Nette\Utils\Strings::startsWith($name, '_') || in_array($name, $omittedVariables))}
-			<tr><th>{$name}</th><td width="80%"><div class="ct-values">{!= \Nette\Diagnostics\Helpers::clickableDump($value)}</div></td></tr>
+			<tr><th>{$name}</th><td width="80%"><div class="ct-values">{!= Nette\Diagnostics\Dumper::toHtml($value)}</div></td></tr>
 		{else}
-			<tr><th>{$name}</th><td><i>{if is_object($value)}{!get_class($value)} - not dumped{else}{!= \Nette\Diagnostics\Helpers::clickableDump($value)}{/if}</i></td></tr>
+			<tr><th>{$name}</th><td><i>{if is_object($value)}{!get_class($value)} - not dumped{else}{!= Nette\Diagnostics\Dumper::toHtml($value)}{/if}</i></td></tr>
 		{/if}
 	{/foreach}
 	</table>
