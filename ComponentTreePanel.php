@@ -122,6 +122,9 @@ class ComponentTreePanel extends Object implements IBarPanel {
 		$template->setFile(dirname(__FILE__) . "/bar.latte");
 		$template->registerFilter(new Engine());
 		$template->presenter = $template->control = $template->rootComponent = Environment::getApplication()->getPresenter();
+		if ($template->presenter === NULL) {
+			return NULL;
+		}
 		$template->wrap = static::$wrap;
 		$template->cache = static::$cache ? Environment::getCache('Debugger.Panels.ComponentTree') : NULL;
 		$template->dumps = static::$dumps;
