@@ -96,7 +96,7 @@
 				  || $object instanceOf \Nette\Forms\Container)}
 			<?php
 
-				$key = $object->reflection->name . '|' . $object->name . '|' . $object->presenter->name;
+				$key = $object->reflection->name . '|' . $object->name . '|' . $presenter->name;
 
 				if ($cache && isset($cache[$key])) {
 					$cached = $cache[$key];
