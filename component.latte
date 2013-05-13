@@ -92,7 +92,8 @@
 		{* Methods *}
 
 
-			{if !($object instanceOf \Nette\Forms\Controls\BaseControl || $object instanceOf \Nette\Forms\Form)}
+			{if !($object instanceOf \Nette\Forms\Controls\BaseControl || $object instanceOf \Nette\Forms\Form
+				  || $object instanceOf \Nette\Forms\Container)}
 			<?php
 
 				$key = $object->reflection->name . '|' . $object->name . '|' . $object->presenter->name;
