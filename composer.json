@@ -1,12 +1,12 @@
 {
-	"name": "jasir/component-tree-panel",
-	"description": "Debug panel for Nette Framework. Displays presenter and components hiearchy.",
-	"keywords": ["nette", "debugging", "presenter", "component"],
-	"require": {
-		"php": ">= 5.3.0",
-		"nette/nette": "dev-master"
-	},
-	"autoload": {
-        	"classmap": ["ComponentTreePanel.php", "DebugTemplate.php"]
-	}
+    "name": "jasir/component-tree-panel",
+    "description": "Debug panel for Nette Framework. Displays presenter and components hiearchy.",
+    "keywords": ["nette", "debugging", "presenter", "component"],
+    "require": {
+        "php": ">= 5.3.0",
+        "nette/nette": "2.1"
+    },
+    "autoload": {
+            "classmap": ["ComponentTreePanel.php", "DebugTemplate.php"]
+    }
 }
