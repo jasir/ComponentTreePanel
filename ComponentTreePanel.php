@@ -18,7 +18,7 @@ use Nette\PhpGenerator\ClassType;
  * Displays current presenter and component
  * tree hiearchy
  */
-class ComponentTreePanel extends Object implements IBarPanel {
+class ComponentTreePanel extends CompilerExtension implements IBarPanel {
 
 	/**
 	 * Use wrapping in output
@@ -80,13 +80,19 @@ class ComponentTreePanel extends Object implements IBarPanel {
 
 
 	/* --- Public Methods--- */
+	
+	public function afterCompile(ClassType $class) {
+		$container = $this->getContainerBuilder();
+		$initialize = $class->methods['initialize'];
+		$initialize->addBody('\jasir\ComponentTreePanel::register($this);');
+	}
 
-	public static function register() {
+	public static function register($container) {
 		if (!self::$isRegistered) {
 			$panel = new self;
 			Debugger::$bar->addPanel($panel);
 			self::$isRegistered = TRUE;
-			$application = Environment::getApplication();
+			$application = $container->getService('application');
 			$application->onResponse[] = callback(array($panel, 'getResponseCb'));
 
 		}
