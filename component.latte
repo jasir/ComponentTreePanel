@@ -1,10 +1,3 @@
-{*
-	@param object mixed
-	@param parametersOpen
-	@param cache \Nette\Caching\Cache
-	@param dumps
-*}
-
 {includeblock 'blocks.latte'}
 
 {block #componentRender}
@@ -23,14 +16,19 @@
 	{var objectHasComponents = $objectIsContainer && count($components) > 0}
 	{var objectIsPersistent = $template->isPersistent($object)}
 
-	<a class="nette-toggle{if !$opened}-collapsed{/if}" href="#" rel="#{$id |noescape}"><strong>{$object->name}</strong>{if $objectIsPersistent}{include #icon type=>'P', title=>"persistent component"}{/if}{if $objectIsForm}{include #icon type=>'F', title=>"Form"}{/if} [{=get_class($object)}]</a>
+	<a class="nette-toggle{if !$opened}-collapsed{/if}" href="#" rel="#{$id |noescape}">
+		<strong>{$object->name}</strong>
+		{if $objectIsPersistent}{include #icon type=>'P', title=>"persistent component"}{/if}
+		{if $objectIsForm}{include #icon type=>'F', title=>"Form"}{/if}
+		[{=get_class($object)}]
+	</a>
 
 	<ul {if !$opened}class="hide"{/if} id="{$id |noescape}">
 		<div style="padding:0.5em;">
 			<ul>
 
-			{* object info *}
 
+			{* object info *}
 
 			<li>
 				<i>instance of</i>{include #editlink title=>get_class($object), file=>$refl->getFileName(), line=>$refl->getStartLine()}
@@ -39,6 +37,7 @@
 				{include #editlink title=>$parent->name, file=>$parent->getFileName(), line=>$parent->getStartLine()}
 			</li>
 
+
 			{* Parameters *}
 
 			{if $object instanceOf \Nette\Application\UI\PresenterComponent}
@@ -46,8 +45,8 @@
 				{var params = $template->parametersInfo($object)}
 				{if count($params) > 0}
 
-					<li><span title="persistent parameters are marked with P icon">Parameters ({=count($params)})</span> {include #toggler open=>$parametersOpen}
-					<ul {if !$parametersOpen}class="hide"{/if}>
+					<li><span title="persistent parameters are marked with P icon">Parameters ({=count($params)})</span>{include #toggler open=>$parametersOpen}
+					<ul n:class="!$parametersOpen ? hide">
 						{foreach $params as $name =>$param}
 						<li>
 							{if $param['persistent']}
@@ -79,111 +78,112 @@
 
 			{/if}
 
-		{* Templates *}
-		{var $templates = $template->renderedTemplates($object)}
-		{if count($templates)}
-			<li>Templates (rendered) ({count($templates)}){include #toggler}
-				<ul>
-				{foreach $templates as $tinfo}
-					<li>{include #template t=>$tinfo['template'], file => $tinfo['file'], parameters =>$tinfo['params']}
-				{/foreach}
-				</ul>
-		{/if}
+			{* Templates *}
 
-		{* Methods *}
-
-
-			{if !($object instanceOf \Nette\Forms\Controls\BaseControl || $object instanceOf \Nette\Forms\Form
-				  || $object instanceOf \Nette\Forms\Container)}
-			<?php
-
-				$key = $object->reflection->name . '|' . $object->name . '|' . $presenter->name;
-
-				if ($cache && isset($cache[$key])) {
-					$cached = $cache[$key];
-					echo $cached;
-				}
-				else {
-					ob_start();
-			?>
-
-				<li>
-					CreateComponent&lt;name&gt; methods
+			{var $templates = $template->renderedTemplates($object)}
+			{if count($templates)}
+				<li>Templates (rendered) ({count($templates)}){include #toggler}
 					<ul>
-						{* createComponent *}
-						{include #methods name => "createComponent<name>", object => $object, inherited => TRUE, pattern => "#^(createComponent)(.+)#", hideMethods => array()}
-					</ul>
-				</li>
-				<li>
-					Other methods {include #toggler}
-					<ul class="hide">
-
-						{* aciton<action>, beforeRender<view> *}
-						{if $object instanceof \Nette\Application\IPresenter}
-						{include #methods name => "action<Action>", object => $object, inherited => TRUE, pattern => "#^(action)(.+)#"}
-						{include #methods name => "lifecycle", object => $object, inherited => TRUE, pattern => "~\A()(startup | beforeHandle | beforeRender |shutdown)\z~x"}
-						{/if}
-
-						{* render<view>, handle<signal> *}
-						{if $object instanceof \Nette\Application\UI\Control}
-						{include #methods name => "render<View>", object => $object, inherited => TRUE, pattern => "#^(render)(.*)#"}
-						{include #methods name => "handle<Signal>", object => $object, inherited => TRUE, pattern => "#^(handle)(.*)#", hideMethods => array()}
-						{/if}
-
-
-						{* create<object> *}
-						{include #methods name => "create<object>", object =>$object, inherited => TRUE, pattern => "#^(create(?!Component))(\w+)#", hideMethods => array('createRequest')}
-
-						{* get/set properties *}
-						{include #methods name => "get<property>", object => $object, inherited => FALSE, pattern => "#^(get)(.+)#"}
-						{include #methods name => "set<property>", object => $object, inherited => FALSE, pattern => "#^(set)(.*)#"}
-					</ul>
-				</li>
-
-		{* Source *}
-
-				{if !$object instanceOf \Nette\Forms\Form}
-					{include #source object => $object}
-				{/if}
-		<?php
-				$content = ob_get_clean();
-				echo $content;
-				if ($cache) {
-					$cache->save($key, $content, array('files'=>array($refl->getFileName())));
-				}
-			}
-		?>
-
-		{/if} {* /if object instanceOf BaseControl*}
-
-
-
-		{* Form Values *}
-
-		{if $object instanceOf \Nette\Forms\Form}
-		{* Form components *}
-
-			{if $objectHasComponents}
-				<li>Form Controls ({count($components)}){include #toggler}
-				<ul>
-					{foreach $components as $c}
-						<li>{include #componentRender object=>$c, opened=>false}
+					{foreach $templates as $tinfo}
+						<li>{include #template t=>$tinfo['template'], file => $tinfo['file'], parameters =>$tinfo['params']}
 					{/foreach}
-				</ul>
+					</ul>
 			{/if}
 
-			<li>{include #values title=>"Values", values=>$object->getValues()}
+			{* Methods *}
 
 
-		{/if}
+				{if !($object instanceOf \Nette\Forms\Controls\BaseControl || $object instanceOf \Nette\Forms\Form
+					  || $object instanceOf \Nette\Forms\Container)}
+				<?php
+
+					$key = $object->reflection->name . '|' . $object->name . '|' . $presenter->name;
+
+					if ($cache && isset($cache[$key])) {
+						$cached = $cache[$key];
+						echo $cached;
+					}
+					else {
+						ob_start();
+				?>
+
+					<li>
+						CreateComponent&lt;name&gt; methods
+						<ul>
+							{* createComponent *}
+							{include #methods name => "createComponent<name>", object => $object, inherited => TRUE, pattern => "#^(createComponent)(.+)#", hideMethods => []}
+						</ul>
+					</li>
+					<li>
+						Other methods {include #toggler}
+						<ul class="hide">
+
+							{* aciton<action>, beforeRender<view> *}
+							{if $object instanceof \Nette\Application\IPresenter}
+							{include #methods name => "action<Action>", object => $object, inherited => TRUE, pattern => "#^(action)(.+)#"}
+							{include #methods name => "lifecycle", object => $object, inherited => TRUE, pattern => "~\A()(startup | beforeHandle | beforeRender |shutdown)\z~x"}
+							{/if}
+
+							{* render<view>, handle<signal> *}
+							{if $object instanceof \Nette\Application\UI\Control}
+							{include #methods name => "render<View>", object => $object, inherited => TRUE, pattern => "#^(render)(.*)#"}
+							{include #methods name => "handle<Signal>", object => $object, inherited => TRUE, pattern => "#^(handle)(.*)#", hideMethods => []}
+							{/if}
 
 
-		{* Dumps *}
-		{include #dump object=>$object}
+							{* create<object> *}
+							{include #methods name => "create<object>", object =>$object, inherited => TRUE, pattern => "#^(create(?!Component))(\w+)#", hideMethods => array('createRequest')}
+
+							{* get/set properties *}
+							{include #methods name => "get<property>", object => $object, inherited => FALSE, pattern => "#^(get)(.+)#"}
+							{include #methods name => "set<property>", object => $object, inherited => FALSE, pattern => "#^(set)(.*)#"}
+						</ul>
+					</li>
+
+			{* Source - do not show Nette\Forms\Form sources *}
+
+					{if !$object instanceOf \Nette\Forms\Form}
+						{include #source object => $object}
+					{/if}
+			
+			<?php
+					$content = ob_get_clean();
+					echo $content;
+					if ($cache) {
+						$cache->save($key, $content, array('files'=>array($refl->getFileName())));
+					}
+				}
+			?>
+
+			{/if} {* /if object instanceOf BaseControl*}
+
+			{* Form *}
+
+			{if $object instanceOf \Nette\Forms\Form}
+				
+				{* Form components *}
+
+				{if $objectHasComponents}
+					<li>Form Controls ({count($components)}){include #toggler}
+					<ul>
+						{foreach $components as $c}
+							<li>{include #componentRender object=>$c, opened=>false}
+						{/foreach}
+					</ul>
+				{/if}
+
+				<li>{include #values title=>"Values", values=>$object->getValues()}
+
+			{/if}
 
 
-	</ul>
-	</div>
+			{* Dumps *}
+			{include #dump object=>$object}
+
+
+			</ul>
+		</div>
+
 
 
 	{* Components *}

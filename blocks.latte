@@ -100,7 +100,7 @@
 
 {define #toggler}
 	{default open = false}
-	<a class="nette-toggle{if !$open}-collapsed{/if}" href="#" rel="next"></a>
+	<a n:class="$open ? nette-toggle : nette-toggle-collapsed" href="#" rel="next"></a>
 {/define}
 
 
