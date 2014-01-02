@@ -1,9 +1,6 @@
 <?php
-/**
-* @package    Extras\Debug
-**/
 
-namespace Extras\Debug;
+namespace jasir;
 
 class DebugTemplate implements \Nette\Templating\ITemplate, \Nette\Templating\IFileTemplate {
 

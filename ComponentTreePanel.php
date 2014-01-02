@@ -3,7 +3,7 @@
  * @author jasir
  * @license WTFPL (http://en.wikipedia.org/wiki/WTFPL)
  */
-namespace Extras\Debug;
+namespace jasir;
 
 use Nette\Object;
 use Nette\Diagnostics\IBarPanel;
@@ -11,6 +11,8 @@ use Nette\Templating\FileTemplate;
 use Nette\Latte\Engine;
 use Nette\Diagnostics\Debugger;
 use Nette\Environment;
+use Nette\DI\CompilerExtension;
+use Nette\PhpGenerator\ClassType;
 
 /**
  * Displays current presenter and component
