@@ -22,9 +22,9 @@
 	{var objectHasComponents = $objectIsContainer && count($components) > 0}
 	{var objectIsPersistent = $template->isPersistent($object)}
 
-	<a class="nette-toggle{if !$opened}-collapsed{/if}" href="#" rel="#{!$id}"><strong>{$object->name}</strong>{if $objectIsPersistent}{include #icon type=>'P', title=>"persistent component"}{/if}{if $objectIsForm}{include #icon type=>'F', title=>"Form"}{/if} [{=get_class($object)}]</a>
+	<a class="nette-toggle{if !$opened}-collapsed{/if}" href="#" rel="#{$id |noescape}"><strong>{$object->name}</strong>{if $objectIsPersistent}{include #icon type=>'P', title=>"persistent component"}{/if}{if $objectIsForm}{include #icon type=>'F', title=>"Form"}{/if} [{=get_class($object)}]</a>
 
-	<ul {if !$opened}class="hide"{/if} id="{!$id}">
+	<ul {if !$opened}class="hide"{/if} id="{$id |noescape}">
 		<div style="padding:0.5em;">
 			<ul>
 

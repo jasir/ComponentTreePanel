@@ -7,7 +7,7 @@
 *}
 
 {define #template}
-	{!=\Extras\Debug\ComponentTreePanel::relativizePath($file, 'strong')}{include #editlink file=>$file} {include #toggler}
+	{=jasir\ComponentTreePanel::relativizePath($file, 'strong') |noescape}{include #editlink file=>$file} {include #toggler}
 		<ul class="hide">
 			<li><i>instance of </i>{include #editlink title=>get_class($t), file=>$t->getReflection()->getFileName()}
 			{include #dump object => $t}
@@ -28,7 +28,7 @@
 	{if $dumps}
 		<li>{$title} {include #toggler}
 		<ul class="hide"><li>
-			<div class="ct-dump">{!= Nette\Diagnostics\Dumper::toHtml($object)}</div>
+			<div class="ct-dump">{= Nette\Diagnostics\Dumper::toHtml($object) |noescape}</div>
 		</ul>
 	{/if}
 {/define}
@@ -41,9 +41,9 @@
 	<table>
 	{foreach $values as $name => $value}
 		{if !(\Nette\Utils\Strings::startsWith($name, '_') || in_array($name, $omittedVariables))}
-			<tr><th>{$name}</th><td width="80%"><div class="ct-values">{!= Nette\Diagnostics\Dumper::toHtml($value)}</div></td></tr>
+			<tr><th>{$name}</th><td width="80%"><div class="ct-values">{= Nette\Diagnostics\Dumper::toHtml($value) |noescape}</div></td></tr>
 		{else}
-			<tr><th>{$name}</th><td><i>{if is_object($value)}{!get_class($value)} - not dumped{else}{!= Nette\Diagnostics\Dumper::toHtml($value)}{/if}</i></td></tr>
+			<tr><th>{$name}</th><td><i>{if is_object($value)}{get_class($value) |noescape} - not dumped{else}{= Nette\Diagnostics\Dumper::toHtml($value) |noescape}{/if}</i></td></tr>
 		{/if}
 	{/foreach}
 	</table>
@@ -64,7 +64,7 @@
 
 {define #plainsource}
 	<div class="source">
-		{!=$template->highlight($object)}
+		{=$template->highlight($object) |noescape}
 	</div>
 {/define}
 
@@ -108,8 +108,8 @@
 	{default title = '[source]'}
 	{default line = 1}
 	{default file = __FILE__}
-	{var shortfile = \Extras\Debug\ComponentTreePanel::relativizePath($file)}
-	<a title="{$shortfile}{if $line>1} - line {$line}{/if}" href="{!=$template->editlink($file, $line)}">{!$title}</a>
+	{var shortfile = jasir\ComponentTreePanel::relativizePath($file)}
+	<a title="{$shortfile}{if $line>1} - line {$line}{/if}" href="{=$template->editlink($file, $line) |noescape}">{$title |noescape}</a>
 {/define}
 
 {define #icon}
