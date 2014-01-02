@@ -75,12 +75,9 @@ class ComponentTreePanel extends CompilerExtension implements IBarPanel {
 
 	private $response;
 
-	static private $isRegistered = FALSE;
-
-
 
 	/* --- Public Methods--- */
-	
+
 	public function afterCompile(ClassType $class) {
 		$container = $this->getContainerBuilder();
 		$initialize = $class->methods['initialize'];
@@ -88,14 +85,10 @@ class ComponentTreePanel extends CompilerExtension implements IBarPanel {
 	}
 
 	public static function register($container) {
-		if (!self::$isRegistered) {
-			$panel = new self;
-			Debugger::$bar->addPanel($panel);
-			self::$isRegistered = TRUE;
-			$application = $container->getService('application');
-			$application->onResponse[] = callback(array($panel, 'getResponseCb'));
-
-		}
+		$panel = new self;
+		Debugger::$bar->addPanel($panel);
+		$application = $container->getService('application');
+		$application->onResponse[] = callback(array($panel, 'getResponseCb'));
 	}
 
 	public function getResponseCb($application, $response) {
@@ -146,6 +139,7 @@ class ComponentTreePanel extends CompilerExtension implements IBarPanel {
 		$template->registerHelper('filterMethods', callback($this, 'filterMethods'));
 		$template->registerHelper('renderedTemplates', callback($this, 'getRenderedTemplates'));
 		$template->registerHelper('isPersistent', callback($this, 'isPersistent'));
+		$template->registerHelperLoader('Nette\Templating\Helpers::loader');
 
 		ob_start();
 		$template->render();
@@ -304,7 +298,7 @@ class ComponentTreePanel extends CompilerExtension implements IBarPanel {
 	 */
 	public static function getRenderedTemplates($object) {
 		$arr = array();
-		foreach(\Extras\Debug\DebugTemplate::$templatesRendered as $info) {
+		foreach(DebugTemplate::$templatesRendered as $info) {
 			if ($info['template']->control === $object) {
 				$arr[] = $info;
 			}
