@@ -4,7 +4,7 @@
     "keywords": ["nette", "debugging", "presenter", "component"],
     "require": {
         "php": ">= 5.3.0",
-        "nette/nette": "2.1"
+        "nette/nette": "2.1.*"
     },
     "autoload": {
             "classmap": ["ComponentTreePanel.php", "DebugTemplate.php"]
