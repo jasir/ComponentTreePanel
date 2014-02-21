@@ -23,7 +23,7 @@
 		[{=get_class($object)}]
 	</a>
 
-	<ul {if !$opened}class="hide"{/if} id="{$id |noescape}">
+	<ul {if !$opened}class="nette-collapsed"{/if} id="{$id |noescape}">
 		<div style="padding:0.5em;">
 			<ul>
 
@@ -46,7 +46,7 @@
 				{if count($params) > 0}
 
 					<li><span title="persistent parameters are marked with P icon">Parameters ({=count($params)})</span>{include #toggler open=>$parametersOpen}
-					<ul n:class="!$parametersOpen ? hide">
+					<ul n:class="!$parametersOpen ? nette-collapsed">
 						{foreach $params as $name =>$param}
 						<li>
 							{if $param['persistent']}
@@ -55,7 +55,7 @@
 									<strong>(default value)</strong>
 								{/if}
 								{include #toggler}
-								<ul class="hide">
+								<ul class="nette-collapsed">
 									<li>
 										{var refl = new \Nette\Reflection\ClassType($param['meta']['since']) }
 										persistent parameter declared in
@@ -66,7 +66,7 @@
 								</ul>
 							{else}
 								<strong>{$name}</strong> = <code>{?var_dump($param['value'])}</code> {include #toggler}
-								<ul class="hide">
+								<ul class="nette-collapsed">
 									<li>full name: <strong>{$object->getParameterId($name)}</strong>
 								</ul>
 
@@ -116,7 +116,7 @@
 					</li>
 					<li>
 						Other methods {include #toggler}
-						<ul class="hide">
+						<ul class="nette-collapsed">
 
 							{* aciton<action>, beforeRender<view> *}
 							{if $object instanceof \Nette\Application\IPresenter}
