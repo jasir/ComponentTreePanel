@@ -87,7 +87,7 @@ class ComponentTreePanel extends CompilerExtension implements IBarPanel {
 	public static function register($container) {
 		$panel = new self;
 		Debugger::$bar->addPanel($panel);
-		$application = $container->getService('application');
+		$application = $container->getContext()->getService('application');
 		$application->onResponse[] = callback(array($panel, 'getResponseCb'));
 	}
 
