@@ -70,7 +70,6 @@
 
 
 {define #methods}
-{dump $object}
 	{default showEmpty = FALSE}
 	{default hideMethods = []}
 
@@ -110,7 +109,7 @@
 	{default line = 1}
 	{default file = __FILE__}
 	{var shortfile = jasir\ComponentTreePanel::relativizePath($file)}
-	<a title="{$shortfile}{if $line>1} - line {$line}{/if}" href="{=$template->editlink($file, $line) |noescape}">{$title |noescape}</a>
+	<a title="{$shortfile}{if $line>1} - line {$line}{/if}" href="{=$template->editlink($file, $line) |noescape|nosafeurl}">{$title |noescape}</a>
 {/define}
 
 {define #icon}
