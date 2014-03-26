@@ -8,12 +8,12 @@
 
 {define #template}
 	{=jasir\ComponentTreePanel::relativizePath($file, 'strong') |noescape}{include #editlink file=>$file} {include #toggler}
-		<ul class="hide">
+		<ul class="nette-collapsed">
 			<li><i>instance of </i>{include #editlink title=>get_class($t), file=>$t->getReflection()->getFileName()}
 			{include #dump object => $t}
 			{if $showSources && $t instanceOf \Nette\Templating\IFileTemplate}
 			<li>Source code {include #toggler}
-				<pre class="hide source">
+				<pre class="nette-collapsed source">
 {$t->getSource()}
 				</pre>
 			{/if}
@@ -27,7 +27,7 @@
 	{default title = 'Dump'}
 	{if $dumps}
 		<li>{$title} {include #toggler}
-		<ul class="hide"><li>
+		<ul class="nette-collapsed"><li>
 			<div class="ct-dump">{= Nette\Diagnostics\Dumper::toHtml($object) |noescape}</div>
 		</ul>
 	{/if}
@@ -54,7 +54,7 @@
 	{default title = 'Source code'}
 	{if $showSources}
 		<li>{$title} {include #toggler}
-		<ul class="hide">
+		<ul class="nette-collapsed">
 			<li>
 			{include #plainsource object => $object}
 		</ul>
@@ -87,7 +87,7 @@
 						{/if}
 						{if $showSources}
 							{include #toggler}
-							<div class="hide">
+							<div class="nette-collapsed">
 								{include #plainsource, object => $method}
 							</div>
 						{/if}
@@ -109,7 +109,7 @@
 	{default line = 1}
 	{default file = __FILE__}
 	{var shortfile = jasir\ComponentTreePanel::relativizePath($file)}
-	<a title="{$shortfile}{if $line>1} - line {$line}{/if}" href="{=$template->editlink($file, $line) |noescape}">{$title |noescape}</a>
+	<a title="{$shortfile}{if $line>1} - line {$line}{/if}" href="{=$template->editlink($file, $line) |noescape|nosafeurl}">{$title |noescape}</a>
 {/define}
 
 {define #icon}
