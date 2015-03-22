@@ -99,8 +99,7 @@
 
 					$key = $object->reflection->name . '|' . $object->name . '|' . $presenter->name;
 
-					if ($cache && isset($cache[$key])) {
-						$cached = $cache[$key];
+					if ($cache && $cached = $cache->load($key)) {
 						echo $cached;
 					}
 					else {
@@ -145,7 +144,7 @@
 					{if !$object instanceOf \Nette\Forms\Form}
 						{include #source object => $object}
 					{/if}
-			
+
 			<?php
 					$content = ob_get_clean();
 					echo $content;
@@ -160,7 +159,7 @@
 			{* Form *}
 
 			{if $object instanceOf \Nette\Forms\Form}
-				
+
 				{* Form components *}
 
 				{if $objectHasComponents}

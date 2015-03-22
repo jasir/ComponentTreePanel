@@ -86,7 +86,7 @@ class ComponentTreePanel extends CompilerExtension implements IBarPanel {
 
 	public static function register($container) {
 		$panel = new self;
-		Debugger::$bar->addPanel($panel);
+		Debugger::addPanel($panel);
 		$application = $container->getService('application');
 		$application->onResponse[] = callback(array($panel, 'getResponseCb'));
 	}
@@ -119,7 +119,7 @@ class ComponentTreePanel extends CompilerExtension implements IBarPanel {
 
 		/** @var Template */
 		$template = new FileTemplate;
-		$template->setCacheStorage(Environment::getContext()->getService('nette.templateCacheStorage'));
+		$template->setCacheStorage(Environment::getContext()->getService('cache.storage'));
 		$template->setFile(dirname(__FILE__) . "/bar.latte");
 		$template->registerFilter(new Engine());
 		$template->presenter = $template->control = $template->rootComponent = Environment::getApplication()->getPresenter();
