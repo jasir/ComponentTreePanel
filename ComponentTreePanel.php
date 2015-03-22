@@ -48,7 +48,7 @@ class ComponentTreePanel extends CompilerExtension implements IBarPanel {
 	 * Should be paremeters section open by default?
 	 * @var bool
 	 */
-	public static $parametersOpen = TRUE;
+	public static $parametersOpen = FALSE;
 
 	/**
 	 * Parameters section open by default?
@@ -68,6 +68,8 @@ class ComponentTreePanel extends CompilerExtension implements IBarPanel {
 	 */
 
 	public static $omittedTemplateVariables = array('presenter', 'control', 'netteCacheStorage', 'netteHttpResponse', 'template', 'user');
+
+	private static $_dumpCache = array();
 
 
 
@@ -119,7 +121,6 @@ class ComponentTreePanel extends CompilerExtension implements IBarPanel {
 
 		/** @var Template */
 		$template = new FileTemplate;
-		$template->setCacheStorage(Environment::getContext()->getService('cache.storage'));
 		$template->setFile(dirname(__FILE__) . "/bar.latte");
 		$template->registerFilter(new Engine());
 		$template->presenter = $template->control = $template->rootComponent = Environment::getApplication()->getPresenter();
@@ -371,6 +372,23 @@ class ComponentTreePanel extends CompilerExtension implements IBarPanel {
 			$relative[] = $part;
 		}
 			return implode('/', $relative);
+	}
+
+	static public function dumpToHtmlCached($object)
+	{
+		if (is_object($object)) {
+			$id = spl_object_hash($object);
+			if (!isset(self::$_dumpCache[$id])) {
+				self::$_dumpCache[$id] = self::dumpToHtml($object);
+			}
+			return self::$_dumpCache[$id];
+		}
+		return self::dumpToHtml($object);
+	}
+
+	static public function dumpToHtml($object)
+	{
+		return \Tracy\Dumper::toHtml($object, [\Tracy\Dumper::DEPTH => 3]);
 	}
 
 }

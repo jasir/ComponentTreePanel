@@ -11,14 +11,14 @@
 		<ul class="nette-collapsed">
 			<li><i>instance of </i>{include #editlink title=>get_class($t), file=>$t->getReflection()->getFileName()}
 			{include #dump object => $t}
-			{if $showSources && $t instanceOf \Nette\Templating\IFileTemplate}
+			{if $showSources}
 			<li>Source code {include #toggler}
 				<pre class="nette-collapsed source">
-{$t->getSource()}
+{=file_get_contents($t->getFile())}
 				</pre>
 			{/if}
 			{? ksort($parameters)}
-			<li>{include #values values => $parameters, title=>'Parameters', open=>true}
+			<li>{include #values values => $parameters, title=>'Parameters', open=>false}
 		</ul>
 {/define}
 
@@ -28,7 +28,7 @@
 	{if $dumps}
 		<li>{$title} {include #toggler}
 		<ul class="nette-collapsed"><li>
-			<div class="ct-dump">{= Nette\Diagnostics\Dumper::toHtml($object) |noescape}</div>
+			<div class="ct-dump">{= \jasir\ComponentTreePanel::dumpToHtmlCached($object) |noescape}</div>
 		</ul>
 	{/if}
 {/define}
@@ -36,14 +36,14 @@
 
 {define #values}
 	{default title = 'Values'}
-	{default open = true}
-	{$title} ({=count($values)}) {include #toggler open=>open}
+	{default open = false}
+	{$title} ({=count($values)}) {include #toggler open=>$open}
 	<table>
 	{foreach $values as $name => $value}
 		{if !(\Nette\Utils\Strings::startsWith($name, '_') || in_array($name, $omittedVariables))}
-			<tr><th>{$name}</th><td width="80%"><div class="ct-values">{= Nette\Diagnostics\Dumper::toHtml($value) |noescape}</div></td></tr>
+			<tr><th>{$name}</th><td width="80%"><div class="ct-values">{= \jasir\ComponentTreePanel::dumpToHtmlCached($value) |noescape}</div></td></tr>
 		{else}
-			<tr><th>{$name}</th><td><i>{if is_object($value)}{get_class($value) |noescape} - not dumped{else}{= Nette\Diagnostics\Dumper::toHtml($value) |noescape}{/if}</i></td></tr>
+			<tr><th>{$name}</th><td><i>{if is_object($value)}{get_class($value) |noescape} - not dumped{else}{= \jasir\ComponentTreePanel::dumpToHtmlCached($value) |noescape}{/if}</i></td></tr>
 		{/if}
 	{/foreach}
 	</table>
