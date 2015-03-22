@@ -2,7 +2,7 @@
 
 namespace jasir;
 
-class DebugTemplate implements \Nette\Templating\ITemplate, \Nette\Templating\IFileTemplate {
+class DebugTemplate implements \Nette\Application\UI\ITemplate, \Nette\Templating\IFileTemplate {
 
 
 	/**
@@ -19,22 +19,19 @@ class DebugTemplate implements \Nette\Templating\ITemplate, \Nette\Templating\IF
 
 	private $template;
 
-	public function __construct(\Nette\Templating\ITemplate $template) {
+	public function __construct(\Nette\Application\UI\ITemplate $template) {
 		$this->template = $template;
 	}
 
 	public function render() {
 		$template = $this->template;
-		if ($template instanceOf \Nette\Templating\FileTemplate) {
-			if (!array_key_exists($template->getFile(), self::$templatesRendered)) {
-				self::$templatesRendered[] = array(
-					'template' => $template,
-					'params' => $template->getParameters(),
-					'file' => $template->getFile(),
-					'trace' => debug_backtrace()
-				);
-
-			}
+		if (!array_key_exists($template->getFile(), self::$templatesRendered)) {
+			self::$templatesRendered[] = array(
+				'template' => $template,
+				'params' => $template->getParameters(),
+				'file' => $template->getFile(),
+				'trace' => debug_backtrace()
+			);
 		}
 
 		if (count(static::$onRender)) {
@@ -59,10 +56,7 @@ class DebugTemplate implements \Nette\Templating\ITemplate, \Nette\Templating\IF
 	}
 
 	public static function register($template) {
-		if ($template instanceOf \Nette\Templating\IFileTemplate) {
-			return new static($template);
-		}
-		return $template;
+		return new static($template);
 	}
 
 	public function getFile() {
