@@ -54,7 +54,7 @@ class ComponentTreePanel extends CompilerExtension implements IBarPanel {
 	 * Parameters section open by default?
 	 * @var bool
 	 */
-	public static $presenterOpen = TRUE;
+	public static $presenterOpen = FALSE;
 
 	/**
 	 * Application dir
@@ -89,6 +89,9 @@ class ComponentTreePanel extends CompilerExtension implements IBarPanel {
 	public static function register($container) {
 		$panel = new self;
 		Debugger::addPanel($panel);
+		if (static::$appDir === null) {
+			static::$appDir = \jasir\FileHelpers\File::simplifyPath(__DIR__ . '/../../../../app');
+		}
 		$application = $container->getService('application');
 		$application->onResponse[] = callback(array($panel, 'getResponseCb'));
 	}
@@ -308,71 +311,13 @@ class ComponentTreePanel extends CompilerExtension implements IBarPanel {
 	}
 
 	public static function relativizePath($path, $tag = NULL) {
-		$relative = static::getRelative($path, static::$appDir);
+		$relative = \jasir\FileHelpers\File::getRelative($path, static::$appDir);
 		if ($tag) {
 			$relative = \Nette\Utils\Strings::replace($relative, '#('.pathinfo($relative, PATHINFO_FILENAME).')(\.(latte|phtml))#', "<$tag>\$1</$tag>\$2");
 		}
 		return $relative;
 	}
 
-	/**
-	 * Converts path to be relative to given $compartTo path
-	 *
-	 * @param string $path
-	 * @param string $compareTo
-	 * @return string
-	 */
-	static public function getRelative($path, $compareTo) {
-		$path = realpath($path);
-		$path = str_replace(':', '', $path);
-		$path = str_replace('\\', '/', $path);
-		$compareTo = realpath($compareTo);
-		$compareTo = str_replace(':', '', $compareTo);
-		$compareTo = str_replace('\\', '/', $compareTo);
-
-		// clean arguments by removing trailing and prefixing slashes
-		if (substr($path, - 1) == '/') {
-			$path = substr($path, 0, - 1);
-		}
-		if (substr($path, 0, 1) == '/') {
-			$path = substr($path, 1);
-		}
-
-		if (substr($compareTo, - 1) == '/') {
-			$compareTo = substr($compareTo, 0, - 1);
-		}
-		if (substr($compareTo, 0, 1) == '/') {
-			$compareTo = substr($compareTo, 1);
-		}
-
-		if ($compareTo == '')
-			return $path;
-
-		// simple case: $compareTo is in $path
-		if (strpos($path, $compareTo) === 0) {
-			$offset = strlen($compareTo) + 1;
-			return substr($path, $offset);
-		}
-
-		$relative       = array();
-		$pathParts      = explode('/', $path);
-		$compareToParts = explode('/', $compareTo);
-
-		foreach ($compareToParts as $index => $part) {
-			if (isset($pathParts[$index]) && $pathParts[$index] == $part) {
-				continue;
-			}
-			$relative[] = '..';
-		}
-
-		foreach ($pathParts as $index => $part) {
-			if (isset($compareToParts[$index]) && $compareToParts[$index] == $part) {
-				continue;
-			}
-			$relative[] = $part;
-		}
-			return implode('/', $relative);
-	}
 
 	static public function dumpToHtmlCached($object)
 	{

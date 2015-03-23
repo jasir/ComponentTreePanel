@@ -72,12 +72,13 @@
 {define #methods}
 	{default showEmpty = FALSE}
 	{default hideMethods = []}
+	{default open = false}
 
 	{var $filtered = $template->filterMethods($object, $pattern, $hideMethods, $inherited)}
 
 	{if count($filtered) > 0 || $showEmpty === TRUE}
 		<li>
-			{$name} ({=count($filtered)}) {include #toggler open => true}
+			{$name} ({=count($filtered)}) {include #toggler open => $open}
 			<ul>
 				{foreach $filtered as $method}
 					<li>

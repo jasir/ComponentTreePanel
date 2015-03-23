@@ -17,10 +17,13 @@
 	{var objectIsPersistent = $template->isPersistent($object)}
 
 	<a class="nette-toggle{if !$opened}-collapsed{/if}" href="#" rel="#{$id |noescape}">
+
 		<strong>{$object->name}</strong>
 		{if $objectIsPersistent}{include #icon type=>'P', title=>"persistent component"}{/if}
 		{if $objectIsForm}{include #icon type=>'F', title=>"Form"}{/if}
-		[{=get_class($object)}]
+
+		{=get_class($object)}
+
 	</a>
 
 	<ul {if !$opened}class="nette-collapsed"{/if} id="{$id |noescape}">
@@ -107,15 +110,10 @@
 				?>
 
 					<li>
-						CreateComponent&lt;name&gt; methods
+						Methods
 						<ul>
 							{* createComponent *}
 							{include #methods name => "createComponent<name>", object => $object, inherited => TRUE, pattern => "#^(createComponent)(.+)#", hideMethods => []}
-						</ul>
-					</li>
-					<li>
-						Other methods {include #toggler}
-						<ul class="nette-collapsed">
 
 							{* aciton<action>, beforeRender<view> *}
 							{if $object instanceof \Nette\Application\IPresenter}
