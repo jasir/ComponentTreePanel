@@ -79,4 +79,9 @@ class DebugTemplate implements \Nette\Application\UI\ITemplate, \Nette\Templatin
 		return call_user_func_array(array($this->template,$method), $params);
 	}
 
+	public function __toString()
+	{
+		return (string) $this->template;
+	}
+
 }
