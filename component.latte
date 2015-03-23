@@ -182,14 +182,16 @@
 
 			</ul>
 		</div>
+	</ul>
 
 
 
 	{* Components *}
 		{if ($objectIsForm === FALSE) && $object instanceOf \Nette\ComponentModel\Container}
+			<ul>
 			{foreach $components as $com}
 				<li>{include #componentRender object=>$com, opened=>false}</li>
 			{/foreach}
+			</ul>
 		{/if}
-	</ul>
 {/block}
