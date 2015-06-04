@@ -40,6 +40,12 @@
 				{include #editlink title=>$parent->name, file=>$parent->getFileName(), line=>$parent->getStartLine()}
 			</li>
 
+			{if method_exists($object, '__componentTreeInfo')}
+			<li>{var data = $object->__componentTreeInfo()}{include #dump 'title' => 'Custom info', 'dumps' => true, 'object' => $data}</li>
+
+
+			{/if}
+
 
 			{* Parameters *}
 
