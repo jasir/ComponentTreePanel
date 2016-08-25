@@ -5,6 +5,8 @@
  */
 namespace jasir;
 
+use Nette\Bridges\ApplicationLatte\TemplateFactory;
+use Nette\Caching\Storages\FileStorage;
 use Nette\Object;
 use Nette\Diagnostics\IBarPanel;
 use Nette\Templating\FileTemplate;
@@ -18,7 +20,7 @@ use Nette\PhpGenerator\ClassType;
  * Displays current presenter and component
  * tree hiearchy
  */
-class ComponentTreePanel extends CompilerExtension implements IBarPanel {
+class ComponentTreePanel extends CompilerExtension implements \Tracy\IBarPanel {
 
 	/**
 	 * Use wrapping in output
@@ -88,7 +90,7 @@ class ComponentTreePanel extends CompilerExtension implements IBarPanel {
 
 	public static function register($container) {
 		$panel = new self;
-		Debugger::addPanel($panel);
+		Debugger::getBar()->addPanel($panel);
 		if (static::$appDir === null) {
 			static::$appDir = \jasir\FileHelpers\File::simplifyPath(__DIR__ . '/../../../../app');
 		}
@@ -122,10 +124,13 @@ class ComponentTreePanel extends CompilerExtension implements IBarPanel {
 		}
 
 
-		/** @var Template */
-		$template = new FileTemplate;
+		/** @var TemplateFactory $factory */
+		$factory = Environment::getService('latte.templateFactory');
+
+		$template = $factory->createTemplate();
+		
 		$template->setFile(dirname(__FILE__) . "/bar.latte");
-		$template->registerFilter(new Engine());
+
 		$template->presenter = $template->control = $template->rootComponent = Environment::getApplication()->getPresenter();
 		if ($template->presenter === NULL) {
 			return NULL;
@@ -143,7 +148,8 @@ class ComponentTreePanel extends CompilerExtension implements IBarPanel {
 		$template->registerHelper('filterMethods', callback($this, 'filterMethods'));
 		$template->registerHelper('renderedTemplates', callback($this, 'getRenderedTemplates'));
 		$template->registerHelper('isPersistent', callback($this, 'isPersistent'));
-		$template->registerHelperLoader('Nette\Templating\Helpers::loader');
+		//$template->registerHelperLoader('Nette\Templating\Helpers::loader');
+		//$template->getLatte()->addFilter(null, $callback)
 
 		ob_start();
 		$template->render();

@@ -16,7 +16,7 @@
 	{var objectHasComponents = $objectIsContainer && count($components) > 0}
 	{var objectIsPersistent = $template->isPersistent($object)}
 
-	<a class="nette-toggle{if !$opened}-collapsed{/if}" href="#" rel="#{$id |noescape}">
+	<a class="tracy-toggle {if !$opened}tracy-collapsed{/if}" href="#" rel="#{$id |noescape}">
 
 		<strong>{$object->name}</strong>
 		{if $objectIsPersistent}{include #icon type=>'P', title=>"persistent component"}{/if}
@@ -26,7 +26,7 @@
 
 	</a>
 
-	<ul {if !$opened}class="nette-collapsed"{/if} id="{$id |noescape}">
+	<ul {if !$opened}class="tracy-collapsed"{/if} id="{$id |noescape}">
 		<div style="padding:0.5em;">
 			<ul>
 
@@ -55,7 +55,7 @@
 				{if count($params) > 0}
 
 					<li><span title="persistent parameters are marked with P icon">Parameters ({=count($params)})</span>{include #toggler open=>$parametersOpen}
-					<ul n:class="!$parametersOpen ? nette-collapsed">
+					<ul n:class="!$parametersOpen ? tracy-collapsed">
 						{foreach $params as $name =>$param}
 						<li>
 							{if $param['persistent']}
@@ -64,7 +64,7 @@
 									<strong>(default value)</strong>
 								{/if}
 								{include #toggler}
-								<ul class="nette-collapsed">
+								<ul class="tracy-collapsed">
 									<li>
 										{var refl = new \Nette\Reflection\ClassType($param['meta']['since']) }
 										persistent parameter declared in
@@ -75,7 +75,7 @@
 								</ul>
 							{else}
 								<strong>{$name}</strong> = <code>{?var_dump($param['value'])}</code> {include #toggler}
-								<ul class="nette-collapsed">
+								<ul class="tracy-collapsed">
 									<li>full name: <strong>{$object->getParameterId($name)}</strong>
 								</ul>
 

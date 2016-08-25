@@ -8,12 +8,12 @@
 
 {define #template}
 	{=jasir\ComponentTreePanel::relativizePath($file, 'strong') |noescape}{include #editlink file=>$file} {include #toggler}
-		<ul class="nette-collapsed">
+		<ul class="tracy-collapsed">
 			<li><i>instance of </i>{include #editlink title=>get_class($t), file=>$t->getReflection()->getFileName()}
 			{include #dump object => $t}
 			{if $showSources}
 			<li>Source code {include #toggler}
-				<pre class="nette-collapsed source">
+				<pre class="tracy-collapsed source">
 {=file_get_contents($t->getFile())}
 				</pre>
 			{/if}
@@ -27,7 +27,7 @@
 	{default title = 'Dump'}
 	{if $dumps}
 		<li>{$title} {include #toggler}
-		<ul class="nette-collapsed"><li>
+		<ul class="tracy-collapsed"><li>
 			<div class="ct-dump">{= \jasir\ComponentTreePanel::dumpToHtmlCached($object) |noescape}</div>
 		</ul>
 	{/if}
@@ -54,7 +54,7 @@
 	{default title = 'Source code'}
 	{if $showSources}
 		<li>{$title} {include #toggler}
-		<ul class="nette-collapsed">
+		<ul class="tracy-collapsed">
 			<li>
 			{include #plainsource object => $object}
 		</ul>
@@ -88,7 +88,7 @@
 						{/if}
 						{if $showSources}
 							{include #toggler}
-							<div class="nette-collapsed">
+							<div class="tracy-collapsed">
 								{include #plainsource, object => $method}
 							</div>
 						{/if}
@@ -101,7 +101,7 @@
 
 {define #toggler}
 	{default open = false}
-	<a n:class="$open ? nette-toggle : nette-toggle-collapsed" href="#" rel="next"></a>
+	<a n:class="tracy-toggle, !$open ? tracy-collapsed" href="#" rel="next"></a>
 {/define}
 
 
