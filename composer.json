@@ -1,12 +1,20 @@
 {
-    "name": "jasir/component-tree-panel",
-    "description": "Debug panel for Nette Framework. Displays presenter and components hiearchy.",
-    "keywords": ["nette", "debugging", "presenter", "component"],
-    "require": {
-        "nette/nette": "~2.4",
-        "jasir/file-helpers": "dev-master"
-    },
-    "autoload": {
-            "classmap": ["src/"]
-    }
+  "name": "jasir/component-tree-panel",
+  "description": "Debug panel for Nette Framework. Displays presenter and components hiearchy.",
+  "keywords": [
+    "nette",
+    "debugging",
+    "presenter",
+    "component"
+  ],
+  "license": "MIT",
+  "require": {
+    "nette/nette": "^2.4",
+    "jasir/file-helpers": "^1.0"
+  },
+  "autoload": {
+    "classmap": [
+      "src/"
+    ]
+  }
 }
