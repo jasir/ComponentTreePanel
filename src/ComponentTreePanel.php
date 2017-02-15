@@ -95,7 +95,7 @@ class ComponentTreePanel extends CompilerExtension implements \Tracy\IBarPanel {
 			static::$appDir = \jasir\FileHelpers\File::simplifyPath(__DIR__ . '/../../../../app');
 		}
 		$application = $container->getService('application');
-		$application->onResponse[] = callback(array($panel, 'getResponseCb'));
+		$application->onResponse[] = array($panel, 'getResponseCb');
 	}
 
 	public function getResponseCb($application, $response) {

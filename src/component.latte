@@ -1,4 +1,4 @@
-{includeblock 'blocks.latte'}
+{import 'blocks.latte'}
 
 {block #componentRender}
 
@@ -59,7 +59,7 @@
 						{foreach $params as $name =>$param}
 						<li>
 							{if $param['persistent']}
-								<strong>{$name}</strong> {include #icon type=>'P', title=>"persistent"} = <code>{?var_dump($param['value'])}</code>
+								<strong>{$name}</strong> {include #icon type=>'P', title=>"persistent"} = <code>{php var_dump($param['value'])}</code>
 								{if $param['value'] === $param['meta']['def']}
 									<strong>(default value)</strong>
 								{/if}
@@ -70,11 +70,11 @@
 										persistent parameter declared in
 										{include #editlink title=>$param['meta']['since'], file=>$refl->getFileName(), line=>1}
 										{if $param['meta']['since'] == get_class($object)}(this){/if}
-									<li>default value: <code>{?var_dump($param['meta']['def'])}</code>
+									<li>default value: <code>{php var_dump($param['meta']['def'])}</code>
 									<li>full name: <strong>{$object->getParameterId($name)}</strong>
 								</ul>
 							{else}
-								<strong>{$name}</strong> = <code>{?var_dump($param['value'])}</code> {include #toggler}
+								<strong>{$name}</strong> = <code>{php var_dump($param['value'])}</code> {include #toggler}
 								<ul class="tracy-collapsed">
 									<li>full name: <strong>{$object->getParameterId($name)}</strong>
 								</ul>

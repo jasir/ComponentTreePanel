@@ -17,7 +17,7 @@
 {=file_get_contents($t->getFile())}
 				</pre>
 			{/if}
-			{? ksort($parameters)}
+			{php ksort($parameters)}
 			<li>{include #values values => $parameters, title=>'Parameters', open=>false}
 		</ul>
 {/define}
