@@ -7,7 +7,7 @@ class DebugTemplate implements \Nette\Application\UI\ITemplate, \Nette\Templatin
 
 	/**
 	 * Array of all rendered templates
-	 * @var mixed
+	 * @var array
 	 */
 	static public $templatesRendered = array();
 

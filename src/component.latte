@@ -16,7 +16,7 @@
 	{var objectHasComponents = $objectIsContainer && count($components) > 0}
 	{var objectIsPersistent = $helpers->isPersistent($object)}
 
-	<a class="tracy-toggle {if !$opened}tracy-collapsed{/if}" href="#" rel="#{$id |noescape}">
+	<span class="tracy-toggle {if !$opened}tracy-collapsed{/if}" href="#" rel="#{$id |noescape}">
 
 		<strong>{$object->name}</strong>
 		{if $objectIsPersistent}{include #icon type=>'P', title=>"persistent component"}{/if}
@@ -24,7 +24,7 @@
 
 		{=get_class($object)}
 
-	</a>
+	</span>
 
 	<ul {if !$opened}class="tracy-collapsed"{/if} id="{$id |noescape}">
 		<div style="padding:0.5em;">
@@ -113,8 +113,8 @@
 					{php ob_start()}
 
 					<li>
-						Methods
-						<ul>
+						Methods {include #toggler open=>false}
+						<ul n:class="tracy-collapsed">
 							{* createComponent *}
 							{include #methods name => "createComponent<name>", object => $object, inherited => TRUE, pattern => "#^(createComponent)(.+)#", hideMethods => []}
 

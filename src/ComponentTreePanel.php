@@ -9,6 +9,8 @@ namespace jasir;
 use ArrayIterator;
 use LimitIterator;
 use Nette\Application\Application;
+use Nette\Application\Responses\ForwardResponse;
+use Nette\Application\Responses\RedirectResponse;
 use Nette\Application\UI\Presenter;
 use Nette\Application\UI\PresenterComponent;
 use Nette\Bridges\ApplicationLatte\TemplateFactory;
@@ -16,18 +18,17 @@ use Nette\Caching\Cache;
 use Nette\Caching\IStorage;
 use Nette\ComponentModel\IComponent;
 use Nette\DI\Container;
-use Nette\Environment;
-use Nette\DI\CompilerExtension;
-use Nette\PhpGenerator\ClassType;
+use Nette\Reflection\ClassType;
 use Nette\Reflection\Method;
 use Nette\Utils\Strings;
 use Tracy\Debugger;
 use Tracy\Dumper;
 use Tracy\IBarPanel;
+use Nette\Application\IPresenter;
 
 /**
  * Displays current presenter and component
- * tree hiearchy
+ * tree hierarchy
  */
 class ComponentTreePanel implements IBarPanel
 {
@@ -57,7 +58,7 @@ class ComponentTreePanel implements IBarPanel
 	public static $showSources = true;
 
 	/**
-	 * Should be paremeters section open by default?
+	 * Should be parameters section open by default?
 	 * @var bool
 	 */
 	public static $parametersOpen = false;
@@ -106,17 +107,6 @@ class ComponentTreePanel implements IBarPanel
 	}
 
 
-	public function register()
-	{
-		Debugger::getBar()->addPanel($this);
-		if (static::$appDir === null) {
-			static::$appDir = FileHelpers\File::simplifyPath(__DIR__ . '/../../../../app');
-		}
-		$application = $this->container->getService('application');
-		$application->onResponse[] = array($this, 'getResponseCb');
-	}
-
-
 	/**
 	 * Returns link to open file in editor
 	 *
@@ -144,7 +134,7 @@ class ComponentTreePanel implements IBarPanel
 
 		if (!in_array($fileName, $sources, true)) {
 			$txt = file_get_contents($fileName);
-			$txt = str_replace(["\r\n", "\r"], ["\n", "\n"], $txt);
+			$txt = str_replace(["\r\n", "\r"], "\n", $txt);
 			$sources[$fileName] = explode("\n", $txt);
 		}
 
@@ -154,7 +144,7 @@ class ComponentTreePanel implements IBarPanel
 
 
 	/**
-	 * Highligts PHP source code of object
+	 * Highlights PHP source code of object
 	 *
 	 * @param mixed $object
 	 * @return string
@@ -162,7 +152,7 @@ class ComponentTreePanel implements IBarPanel
 	public static function highlight($object)
 	{
 
-		if (!($object instanceOf \Nette\Reflection\Method || $object instanceof \Nette\Reflection\ClassType)) {
+		if (!($object instanceOf Method || $object instanceof ClassType)) {
 			$object = self::getReflection($object);
 		}
 
@@ -186,7 +176,7 @@ class ComponentTreePanel implements IBarPanel
 		}
 		$source = str_replace(
 			['<span style="color: #0000BB">&lt;?php<br />&nbsp;&nbsp;&nbsp;&nbsp;</span>', '<span style="color: #0000BB">&lt;?php<br /></span>'],
-			['', ''],
+			'',
 			highlight_string("<?php\n" . $source, true)
 		);
 		$source = '&nbsp;&nbsp;&nbsp;' . $source;
@@ -208,7 +198,7 @@ class ComponentTreePanel implements IBarPanel
 	 */
 	public static function filterMethods($object, $pattern, $hideMethods, $inherited)
 	{
-		$reflection = \Nette\Reflection\ClassType::from($object);
+		$reflection = ClassType::from($object);
 		$methods = $reflection->getMethods();
 		$filtered = array();
 		/** @var Method $method */
@@ -269,6 +259,7 @@ class ComponentTreePanel implements IBarPanel
 	public static function getRenderedTemplates($object)
 	{
 		$arr = array();
+		/** @var array $info */
 		foreach (DebugTemplate::$templatesRendered as $info) {
 			if ($info['template']->control === $object) {
 				$arr[] = $info;
@@ -320,13 +311,35 @@ class ComponentTreePanel implements IBarPanel
 	}
 
 
+	/**
+	 * @param $object
+	 * @return mixed
+	 */
+	public static function getReflection($object)
+	{
+		$class = class_exists(ClassType::class) ? ClassType::class : \ReflectionClass::class;
+		return new $class($object);
+	}
+
+
+	public function register()
+	{
+		Debugger::getBar()->addPanel($this);
+		if (static::$appDir === null) {
+			static::$appDir = FileHelpers\File::simplifyPath(__DIR__ . '/../../../../app');
+		}
+		$application = $this->container->getService('application');
+		$application->onResponse[] = array($this, 'getResponseCb');
+	}
+
 
 	/**
 	 * @param $application
 	 * @param $response
 	 * @internal
 	 */
-	public function getResponseCb($application, $response)
+	public function getResponseCb(/** @noinspection PhpUnusedParameterInspection */
+		$application, $response)
 	{
 		$this->response = $response;
 	}
@@ -350,37 +363,35 @@ class ComponentTreePanel implements IBarPanel
 	 */
 	public function getPanel()
 	{
-
-		if ($this->response instanceOf \Nette\Application\Responses\ForwardResponse
-			|| $this->response instanceOf \Nette\Application\Responses\RedirectResponse
-		) {
+		$presenter = $this->container->getByType(Application::class)->getPresenter();
+		if ($presenter === null || $this->response instanceOf ForwardResponse || $this->response instanceOf RedirectResponse) {
 			return '';
 		}
 
+		if (static::$cache) {
+			/** @var IStorage $storage */
+			$storage = $this->container->getByType(IStorage::class);
+			$cache = new Cache($storage, 'Debugger.Panels.ComponentTree');
+		} else {
+			$cache = null;
+		}
 
 		/** @var TemplateFactory $factory */
 		$factory = $this->container->getService('latte.templateFactory');
 		$template = $factory->createTemplate();
 
-		$template->setFile(__DIR__ . "/bar.latte");
+		$template->setFile(__DIR__ . '/bar.latte');
+		$template->add('presenter', $presenter);
+		$template->add('rootComponent', $presenter);
+		$template->add('wrap',static::$wrap);
+		$template->add('cache', $cache);
+		$template->add('dumps', static::$dumps);
 
-		$template->presenter = $template->control = $template->rootComponent = $this->container->getByType(Application::class)->getPresenter();
-		if ($template->presenter === null) {
-			return null;
-		}
-		$template->wrap = static::$wrap;
-
-		/** @var IStorage $storage */
-		$storage = $this->container->getByType(IStorage::class);
-		$cache = new Cache($storage, 'Debugger.Panels.ComponentTree');
-
-		$template->cache = static::$cache ? $cache : null;
-		$template->dumps = static::$dumps;
-		$template->parametersOpen = static::$parametersOpen;
-		$template->presenterOpen = static::$presenterOpen;
-		$template->showSources = static::$showSources;
-		$template->omittedVariables = static::$omittedTemplateVariables;
-		$template->helpers = $this;
+		$template->add('parametersOpen', static::$parametersOpen);
+		$template->add('presenterOpen', static::$presenterOpen);
+		$template->add('showSources',static::$showSources);
+		$template->add('omittedVariables',static::$omittedTemplateVariables);
+		$template->add('helpers',$this);
 
 		//$template->registerHelperLoader('Nette\Templating\Helpers::loader');
 		//$template->getLatte()->addFilter(null, $callback)
@@ -400,26 +411,15 @@ class ComponentTreePanel implements IBarPanel
 		static $persistentParameters = null;
 		if ($persistentParameters === null) {
 			/** @noinspection PhpUndefinedMethodInspection */
-			$presenter = $object instanceOf Presenter ? $object : $object->lookupPath('Nette\Application\IPresenter', false);
+			$presenter = $object instanceOf Presenter ? $object : $object->lookupPath(IPresenter::class, false);
 			if ($presenter) {
 				$persistentParameters = $presenter::getPersistentComponents();
 			}
 		}
 		if (is_array($persistentParameters)) {
-			return in_array($object->getName(), $persistentParameters);
+			return in_array($object->getName(), $persistentParameters, true);
 		}
 		return false;
-	}
-
-
-	/**
-	 * @param $object
-	 * @return mixed
-	 */
-	public static function getReflection($object)
-	{
-		$class = class_exists(\Nette\Reflection\ClassType::class) ? \Nette\Reflection\ClassType::class : \ReflectionClass::class;
-		return new $class($object);
 	}
 
 
