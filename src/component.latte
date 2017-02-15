@@ -150,7 +150,7 @@
 						$content = ob_get_clean();
 						echo $content;
 						if ($cache) {
-							$cache->save($key, $content, array('files'=>array($refl->getFileName())));
+							$cache->save($key, $content, array('files'=>array($refl->getFileName(), $helpers->getReflection($this)->getFileName())));
 						}
 					}
 				{/if}
