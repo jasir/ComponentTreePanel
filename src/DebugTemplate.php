@@ -2,7 +2,12 @@
 
 namespace jasir;
 
-class DebugTemplate implements \Nette\Application\UI\ITemplate, \Nette\Templating\IFileTemplate {
+use Nette\Application\UI\ITemplate;
+use Nette\Bridges\ApplicationLatte\Template;
+use Nette\Templating\IFileTemplate;
+
+class DebugTemplate extends Template implements ITemplate, IFileTemplate
+{
 
 
 	/**
@@ -19,11 +24,35 @@ class DebugTemplate implements \Nette\Application\UI\ITemplate, \Nette\Templatin
 
 	private $template;
 
-	public function __construct(\Nette\Application\UI\ITemplate $template) {
+
+	/**
+	 * DebugTemplate constructor.
+	 * @param ITemplate $template
+	 */
+	public function __construct(ITemplate $template)
+	{
 		$this->template = $template;
 	}
 
-	public function render() {
+
+	public function getLatte()
+	{
+		return $this->template->getLatte();
+	}
+
+
+	/**
+	 * @param $template
+	 * @return static
+	 */
+	public static function register($template)
+	{
+		return new static($template);
+	}
+
+
+	public function render()
+	{
 		$template = $this->template;
 		if (!array_key_exists($template->getFile(), self::$templatesRendered)) {
 			self::$templatesRendered[] = array(
@@ -55,29 +84,56 @@ class DebugTemplate implements \Nette\Application\UI\ITemplate, \Nette\Templatin
 
 	}
 
-	public static function register($template) {
-		return new static($template);
-	}
 
-	public function getFile() {
+
+	public function getFile()
+	{
 		return $this->template->getFile();
 	}
 
-	public function setFile($file) {
+
+	public function setFile($file)
+	{
 		$this->template->setFile($file);
 	}
 
-	public function __get($property) {
-		return $this->template->$property;
+
+	public function & __get($property)
+	{
+		$a = $this->template->$property;
+		return $a;
 	}
 
-	public function __set($property, $value) {
+
+	public function __set($property, $value)
+	{
 		$this->template->$property = $value;
 	}
 
-	public function __call($method, $params) {
-		return call_user_func_array(array($this->template,$method), $params);
+
+	public function __call($method, $params)
+	{
+		return call_user_func_array(array($this->template, $method), $params);
 	}
+
+
+	public function setParameters(array $parameters)
+	{
+		$this->template->setParameters($parameters);
+	}
+
+	public function add($name, $value)
+	{
+		return $this->template->add($name, $value);
+	}
+
+
+	public function getParameters()
+	{
+		return $this->template->getParameters();
+	}
+
+
 
 	public function __toString()
 	{
