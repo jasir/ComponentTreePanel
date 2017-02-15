@@ -5,8 +5,10 @@ namespace jasir;
 use Latte\Engine;
 use Nette\Application\UI\ITemplate;
 use Nette\Bridges\ApplicationLatte\Template;
-use Nette\Templating\IFileTemplate;
+use Nette\Localization\ITranslator;
+use /** @noinspection PhpDeprecationInspection */ Nette\Templating\IFileTemplate;
 
+/** @noinspection PhpDeprecationInspection */
 class DebugTemplate extends Template implements IFileTemplate
 {
 
@@ -82,12 +84,77 @@ class DebugTemplate extends Template implements IFileTemplate
 			$content = ob_get_contents();
 			ob_end_clean();
 			foreach (static::$onRender as $callback) {
+				/** @noinspection PhpUndefinedFieldInspection */
 				$content = $callback($this->template, $content, $this->template->control !== $this->template->presenter);
 			}
 			echo $content;
 			return;
 		}
 		$this->template->render($file, $params);
+	}
+
+
+	/**
+	 * Registers run-time filter.
+	 * @param  string|NULL
+	 * @param  callable
+	 * @return static
+	 */
+	public function addFilter($name, $callback)
+	{
+		$this->template->addFilter($name, $callback);
+		return $this;
+	}
+
+
+	/**
+	 * Alias for addFilter()
+	 * @deprecated
+	 * @param $name
+	 * @param $callback
+	 * @return static
+	 */
+	public function registerHelper($name, $callback)
+	{
+		/** @noinspection PhpDeprecationInspection */
+		$this->template->registerHelper($name, $callback);
+		return $this;
+	}
+
+
+	/**
+	 * Sets translate adapter.
+	 * @param ITranslator $translator
+	 * @return static
+	 */
+	public function setTranslator(ITranslator $translator = null)
+	{
+		$this->template->setTranslator($translator);
+		return $this;
+	}
+
+
+	/**
+	 * Determines whether parameter is defined. Do not call directly.
+	 * @param $name
+	 * @return bool
+	 */
+	public function __isset($name)
+	{
+		/** @noinspection ImplicitMagicMethodCallInspection */
+		return $this->template->__isset($name);
+	}
+
+
+	/**
+	 * Removes a template parameter. Do not call directly.
+	 * @param  string $name
+	 * @return void
+	 */
+	public function __unset($name)
+	{
+		/** @noinspection ImplicitMagicMethodCallInspection */
+		$this->template->__unset($name);
 	}
 
 
@@ -172,7 +239,6 @@ class DebugTemplate extends Template implements IFileTemplate
 
 
 	/** @noinspection OverridingDeprecatedMethodInspection
-
 	 * @param $method
 	 * @param $params
 	 * @return mixed
