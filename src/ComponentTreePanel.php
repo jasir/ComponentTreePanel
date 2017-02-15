@@ -29,7 +29,7 @@ use Tracy\IBarPanel;
  * Displays current presenter and component
  * tree hiearchy
  */
-class ComponentTreePanel extends CompilerExtension implements IBarPanel
+class ComponentTreePanel implements IBarPanel
 {
 
 	/**
@@ -163,7 +163,7 @@ class ComponentTreePanel extends CompilerExtension implements IBarPanel
 	{
 
 		if (!($object instanceOf \Nette\Reflection\Method || $object instanceof \Nette\Reflection\ClassType)) {
-			$object = $object->getReflection();
+			$object = self::getReflection($object);
 		}
 
 		$sourceLines = static::getSource($object->getFileName(), $object->getStartLine() - 1, $object->getEndLine() - 1);
@@ -410,5 +410,17 @@ class ComponentTreePanel extends CompilerExtension implements IBarPanel
 		}
 		return false;
 	}
+
+
+	/**
+	 * @param $object
+	 * @return mixed
+	 */
+	public static function getReflection($object)
+	{
+		$class = class_exists(\Nette\Reflection\ClassType::class) ? \Nette\Reflection\ClassType::class : \ReflectionClass::class;
+		return new $class($object);
+	}
+
 
 }

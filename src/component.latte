@@ -9,7 +9,7 @@
 	{default showSources = TRUE}
 
 	{var id = 'ctr-' . $object->lookupPath('Nette\Application\IPresenter', FALSE) . '-' . str_replace($object->name, ':', '-')}
-	{var refl = $object->getReflection()}
+	{var refl = $helpers->getReflection($object)}
 	{var objectIsForm = $object instanceOf \Nette\Forms\Form}
 	{var objectIsContainer = $object instanceOf \Nette\ComponentModel\Container}
 	{var components = $objectIsContainer ? $object->getComponents() : []}
@@ -104,7 +104,7 @@
 
 				{if !($object instanceOf \Nette\Forms\Controls\BaseControl || $object instanceOf \Nette\Forms\Form
 					  || $object instanceOf \Nette\Forms\Container)}
-				{php $key = $object->getReflection()->getName() . '|' . $object->getName() . '|' . $presenter->getName()}
+				{php $key = get_class($object) . '|' . $object->getName() . '|' . $presenter->getName()}
 
 				{if ($cache && $cached = $cache->load($key))}
 					{php echo $cached}

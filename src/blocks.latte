@@ -9,7 +9,7 @@
 {define #template}
 	{=jasir\ComponentTreePanel::relativePath($file, 'strong') |noescape}{include #editlink file=>$file} {include #toggler}
 		<ul class="tracy-collapsed">
-			<li><i>instance of </i>{include #editlink title=>get_class($t), file=>$t->getReflection()->getFileName()}
+			<li><i>instance of </i>{include #editlink title=>get_class($t), file=>($helpers->getReflection($t))->getFileName()}
 			{include #dump object => $t}
 			{if $showSources}
 			<li>Source code {include #toggler}
