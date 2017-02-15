@@ -7,7 +7,7 @@
 *}
 
 {define #template}
-	{=jasir\ComponentTreePanel::relativizePath($file, 'strong') |noescape}{include #editlink file=>$file} {include #toggler}
+	{=jasir\ComponentTreePanel::relativePath($file, 'strong') |noescape}{include #editlink file=>$file} {include #toggler}
 		<ul class="tracy-collapsed">
 			<li><i>instance of </i>{include #editlink title=>get_class($t), file=>$t->getReflection()->getFileName()}
 			{include #dump object => $t}
@@ -64,7 +64,7 @@
 
 {define #plainsource}
 	<div class="source">
-		{=$template->highlight($object) |noescape}
+		{$helpers->highlight($object) |noescape}
 	</div>
 {/define}
 
@@ -74,7 +74,7 @@
 	{default hideMethods = []}
 	{default open = false}
 
-	{var $filtered = $template->filterMethods($object, $pattern, $hideMethods, $inherited)}
+	{var $filtered = $helpers->filterMethods($object, $pattern, $hideMethods, $inherited)}
 
 	{if count($filtered) > 0 || $showEmpty === TRUE}
 		<li>
@@ -109,8 +109,8 @@
 	{default title = '[source]'}
 	{default line = 1}
 	{default file = __FILE__}
-	{var shortfile = jasir\ComponentTreePanel::relativizePath($file)}
-	<a title="{$shortfile}{if $line>1} - line {$line}{/if}" href="{=$template->editlink($file, $line) |noescape|nosafeurl}">{$title |noescape}</a>
+	{var shortfile = $helpers::relativePath($file)}
+	<a title="{$shortfile}{if $line>1} - line {$line}{/if}" href="{$helpers->buildEditorLink($file, $line) |noescape|nocheck}">{$title |noescape}</a>
 {/define}
 
 {define #icon}

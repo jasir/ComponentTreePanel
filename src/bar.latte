@@ -1,16 +1,5 @@
-<?php
-/**
-* @param $rootComponent
-* @param $presenter
-* @param $template
-*
-* @param $wrap
-* @param $fullTree
-*
-* @todo Refactor: přénést PHP z šablon @component.latte a @methods.latte do helperů
-*/
-?>
 <style>
+
 	#componentsTreeComponent {
 		white-space:{= $wrap ? 'normal' : 'nowrap'};
 		width:auto;
@@ -105,6 +94,7 @@
 	}
 
 </style>
+
 {php \Nette\Diagnostics\Debugger::timer('component-tree-panel')}
 <h1>Component Tree</h1>
 

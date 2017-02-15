@@ -14,7 +14,7 @@
 	{var objectIsContainer = $object instanceOf \Nette\ComponentModel\Container}
 	{var components = $objectIsContainer ? $object->getComponents() : []}
 	{var objectHasComponents = $objectIsContainer && count($components) > 0}
-	{var objectIsPersistent = $template->isPersistent($object)}
+	{var objectIsPersistent = $helpers->isPersistent($object)}
 
 	<a class="tracy-toggle {if !$opened}tracy-collapsed{/if}" href="#" rel="#{$id |noescape}">
 
@@ -51,7 +51,7 @@
 
 			{if $object instanceOf \Nette\Application\UI\PresenterComponent}
 
-				{var params = $template->parametersInfo($object)}
+				{var params = $helpers->getParametersInfo($object)}
 				{if count($params) > 0}
 
 					<li><span title="persistent parameters are marked with P icon">Parameters ({=count($params)})</span>{include #toggler open=>$parametersOpen}
@@ -89,7 +89,7 @@
 
 			{* Templates *}
 
-			{var $templates = $template->renderedTemplates($object)}
+			{var $templates = $helpers->getRenderedTemplates($object)}
 			{if count($templates)}
 				<li>Templates (rendered) ({count($templates)}){include #toggler}
 					<ul>
@@ -104,16 +104,13 @@
 
 				{if !($object instanceOf \Nette\Forms\Controls\BaseControl || $object instanceOf \Nette\Forms\Form
 					  || $object instanceOf \Nette\Forms\Container)}
-				<?php
+				{php $key = $object->getReflection()->getName() . '|' . $object->getName() . '|' . $presenter->getName()}
 
-					$key = $object->reflection->name . '|' . $object->name . '|' . $presenter->name;
+				{if ($cache && $cached = $cache->load($key))}
+					{php echo $cached}
+				{else}
 
-					if ($cache && $cached = $cache->load($key)) {
-						echo $cached;
-					}
-					else {
-						ob_start();
-				?>
+					{php ob_start()}
 
 					<li>
 						Methods
@@ -143,20 +140,21 @@
 						</ul>
 					</li>
 
-			{* Source - do not show Nette\Forms\Form sources *}
+					{* Source - do not show Nette\Forms\Form sources *}
 
 					{if !$object instanceOf \Nette\Forms\Form}
 						{include #source object => $object}
 					{/if}
 
-			<?php
-					$content = ob_get_clean();
-					echo $content;
-					if ($cache) {
-						$cache->save($key, $content, array('files'=>array($refl->getFileName())));
+					{php
+						$content = ob_get_clean();
+						echo $content;
+						if ($cache) {
+							$cache->save($key, $content, array('files'=>array($refl->getFileName())));
+						}
 					}
-				}
-			?>
+				{/if}
+
 
 			{/if} {* /if object instanceOf BaseControl*}
 
