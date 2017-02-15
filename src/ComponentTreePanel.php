@@ -9,6 +9,7 @@ namespace jasir;
 use ArrayIterator;
 use LimitIterator;
 use Nette\Application\Application;
+use Nette\Application\IPresenter;
 use Nette\Application\Responses\ForwardResponse;
 use Nette\Application\Responses\RedirectResponse;
 use Nette\Application\UI\Presenter;
@@ -24,7 +25,6 @@ use Nette\Utils\Strings;
 use Tracy\Debugger;
 use Tracy\Dumper;
 use Tracy\IBarPanel;
-use Nette\Application\IPresenter;
 
 /**
  * Displays current presenter and component
@@ -383,15 +383,15 @@ class ComponentTreePanel implements IBarPanel
 		$template->setFile(__DIR__ . '/bar.latte');
 		$template->add('presenter', $presenter);
 		$template->add('rootComponent', $presenter);
-		$template->add('wrap',static::$wrap);
+		$template->add('wrap', static::$wrap);
 		$template->add('cache', $cache);
 		$template->add('dumps', static::$dumps);
 
 		$template->add('parametersOpen', static::$parametersOpen);
 		$template->add('presenterOpen', static::$presenterOpen);
-		$template->add('showSources',static::$showSources);
-		$template->add('omittedVariables',static::$omittedTemplateVariables);
-		$template->add('helpers',$this);
+		$template->add('showSources', static::$showSources);
+		$template->add('omittedVariables', static::$omittedTemplateVariables);
+		$template->add('helpers', $this);
 
 		//$template->registerHelperLoader('Nette\Templating\Helpers::loader');
 		//$template->getLatte()->addFilter(null, $callback)
