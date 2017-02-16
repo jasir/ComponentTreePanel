@@ -132,7 +132,7 @@
 
 
 							{* create<object> *}
-							{include #methods name => "create<object>", object =>$object, inherited => TRUE, pattern => "#^(create(?!Component))(\w+)#", hideMethods => array('createRequest')}
+							{include #methods name => "create<object>", object =>$object, inherited => TRUE, pattern => "#^(create(?!Component))(\w+)#", hideMethods => ['createRequest']}
 
 							{* get/set properties *}
 							{include #methods name => "get<property>", object => $object, inherited => FALSE, pattern => "#^(get)(.+)#"}
@@ -150,7 +150,7 @@
 						$content = ob_get_clean();
 						echo $content;
 						if ($cache) {
-							$cache->save($key, $content, array('files'=>array($refl->getFileName(), $helpers->getReflection($this)->getFileName())));
+							$cache->save($key, $content, ['files'=>[$refl->getFileName(), $helpers->getReflection($this)->getFileName()]]);
 						}
 					}
 				{/if}

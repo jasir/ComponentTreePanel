@@ -80,9 +80,9 @@ class ComponentTreePanel implements IBarPanel
 	 * @var array
 	 */
 
-	public static $omittedTemplateVariables = array('presenter', 'control', 'netteCacheStorage', 'netteHttpResponse', 'template', 'user');
+	public static $omittedTemplateVariables = ['presenter', 'control', 'netteCacheStorage', 'netteHttpResponse', 'template', 'user'];
 
-	private static $_dumpCache = array();
+	private static $_dumpCache = [];
 
 
 	/* --- Private --- */
@@ -116,7 +116,7 @@ class ComponentTreePanel implements IBarPanel
 	 */
 	public static function buildEditorLink($file, $line)
 	{
-		return strtr(Debugger::$editor, array('%file' => urlencode(realpath($file)), '%line' => $line));
+		return strtr(Debugger::$editor, ['%file' => urlencode(realpath($file)), '%line' => $line]);
 	}
 
 
@@ -130,7 +130,7 @@ class ComponentTreePanel implements IBarPanel
 	 */
 	public static function getSource($fileName, $startLine = null, $endLine = null)
 	{
-		static $sources = array(); /* --- simple caching --- */
+		static $sources = []; /* --- simple caching --- */
 
 		if (!in_array($fileName, $sources, true)) {
 			$txt = file_get_contents($fileName);
@@ -159,7 +159,7 @@ class ComponentTreePanel implements IBarPanel
 		$sourceLines = static::getSource($object->getFileName(), $object->getStartLine() - 1, $object->getEndLine() - 1);
 
 		$phpDocTxt = $object->getDocComment();
-		$phpDoc = array();
+		$phpDoc = [];
 		if (strlen($phpDocTxt) > 0) {
 			$phpDoc = explode("\n", $phpDocTxt);
 		}
@@ -200,7 +200,7 @@ class ComponentTreePanel implements IBarPanel
 	{
 		$reflection = ClassType::from($object);
 		$methods = $reflection->getMethods();
-		$filtered = array();
+		$filtered = [];
 		/** @var Method $method */
 		foreach ($methods as $method) {
 			if (!preg_match($pattern, $method->getName(), $matches)) {
@@ -225,26 +225,26 @@ class ComponentTreePanel implements IBarPanel
 	 */
 	public static function getParametersInfo(PresenterComponent $presenterComponent)
 	{
-		$params = array();
+		$params = [];
 
 		$normalParameters = $presenterComponent->getParameters();
 		ksort($normalParameters);
 		foreach ($normalParameters as $name => $value) {
-			$params[$name] = array(
+			$params[$name] = [
 				'value' => $value,
 				'persistent' => false,
 				'meta' => null,
-			);
+			];
 		}
 
 		$persistentParameters = $presenterComponent->getReflection()->getPersistentParams();
 		ksort($persistentParameters);
 		foreach ($persistentParameters as $name => $meta) {
-			$params[$name] = array(
+			$params[$name] = [
 				'value' => $presenterComponent->$name,
 				'persistent' => true,
 				'meta' => $meta,
-			);
+			];
 		}
 
 		return $params;
@@ -258,7 +258,7 @@ class ComponentTreePanel implements IBarPanel
 	 */
 	public static function getRenderedTemplates($object)
 	{
-		$arr = array();
+		$arr = [];
 		/** @var array $info */
 		foreach (DebugTemplate::$templatesRendered as $info) {
 			if ($info['template']->control === $object) {
@@ -329,7 +329,7 @@ class ComponentTreePanel implements IBarPanel
 			static::$appDir = FileHelpers\File::simplifyPath(__DIR__ . '/../../../../app');
 		}
 		$application = $this->container->getService('application');
-		$application->onResponse[] = array($this, 'getResponseCb');
+		$application->onResponse[] = [$this, 'getResponseCb'];
 	}
 
 

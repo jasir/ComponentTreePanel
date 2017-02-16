@@ -6,7 +6,7 @@ use Latte\Engine;
 use Nette\Application\UI\ITemplate;
 use Nette\Bridges\ApplicationLatte\Template;
 use Nette\Localization\ITranslator;
-use /** @noinspection PhpDeprecationInspection */ Nette\Templating\IFileTemplate;
+use Nette\Templating\IFileTemplate;
 
 /** @noinspection PhpDeprecationInspection */
 class DebugTemplate extends Template implements IFileTemplate
@@ -17,13 +17,13 @@ class DebugTemplate extends Template implements IFileTemplate
 	 * Array of all rendered templates
 	 * @var array
 	 */
-	static public $templatesRendered = array();
+	static public $templatesRendered = [];
 
 	/**
 	 * Callbacks get called with parameters
 	 * @var array of callbacks
 	 */
-	public static $onRender = array();
+	public static $onRender = [];
 
 	/** @var Template|ITemplate */
 	private $template;
@@ -70,12 +70,12 @@ class DebugTemplate extends Template implements IFileTemplate
 	public function render($file = null, array $params = [])
 	{
 		if (!array_key_exists($this->template->getFile(), self::$templatesRendered)) {
-			self::$templatesRendered[] = array(
+			self::$templatesRendered[] = [
 				'template' => $this->template,
 				'params' => $this->template->getParameters(),
 				'file' => $this->template->getFile(),
 				'trace' => debug_backtrace()
-			);
+			];
 		}
 
 		if (count(static::$onRender)) {
