@@ -175,7 +175,7 @@ class ComponentTreePanel implements IBarPanel
 			$source .= $line . "\n";
 		}
 		$source = str_replace(
-			['<span style="color: #0000BB">&lt;?php<br />&nbsp;&nbsp;&nbsp;&nbsp;</span>', '<span style="color: #0000BB">&lt;?php<br /></span>'],
+			['<span style="color: rgb(0,0,187)">&lt;?php<br />&nbsp;&nbsp;&nbsp;&nbsp;</span>', '<span style="color: rgb(0,0,187)">&lt;?php<br /></span>'],
 			'',
 			highlight_string("<?php\n" . $source, true)
 		);
@@ -241,7 +241,7 @@ class ComponentTreePanel implements IBarPanel
 		ksort($persistentParameters);
 		foreach ($persistentParameters as $name => $meta) {
 			$params[$name] = [
-				'value' => $presenterComponent->$name,
+				'value' => $presenterComponent->{$name},
 				'persistent' => true,
 				'meta' => $meta,
 			];

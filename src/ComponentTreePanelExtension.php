@@ -15,7 +15,6 @@ class ComponentTreePanelExtension extends CompilerExtension
 	public function afterCompile(ClassType $class)
 	{
 		$initialize = $class->methods['initialize'];
-		//(new ComponentTreePanel($this))->register();
 		$initialize->addBody('(new \jasir\ComponentTreePanel($this))->register();');
 	}
 

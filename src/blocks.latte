@@ -38,7 +38,7 @@
 	{default title = 'Values'}
 	{default open = false}
 	{$title} ({=count($values)}) {include #toggler open=>$open}
-	<table>
+	<table n:class="$open ?: tracy-collapsed">
 	{foreach $values as $name => $value}
 		{if !(\Nette\Utils\Strings::startsWith($name, '_') || in_array($name, $omittedVariables))}
 			<tr><th>{$name}</th><td width="80%"><div class="ct-values">{= \jasir\ComponentTreePanel::dumpToHtmlCached($value) |noescape}</div></td></tr>
