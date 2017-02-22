@@ -11,14 +11,19 @@
 		<ul class="tracy-collapsed">
 			<li><i>instance of </i>{include #editlink title=>get_class($t), file=>($helpers->getReflection($t))->getFileName()}
 			{include #dump object => $t}
+			{php ksort($parameters)}
+			<li>{include #values values => $parameters, title=>'Parameters', open=>false}</li>
 			{if $showSources}
 			<li>Source code {include #toggler}
 				<pre class="tracy-collapsed source">
 {=file_get_contents($t->getFile())}
 				</pre>
 			{/if}
-			{php ksort($parameters)}
-			<li>{include #values values => $parameters, title=>'Parameters', open=>false}
+			<li>Rendered {include #toggler}
+				<pre class="tracy-collapsed source">
+					{$rendered}
+				</pre>
+			</li>
 		</ul>
 {/define}
 
@@ -43,7 +48,7 @@
 		{if !(\Nette\Utils\Strings::startsWith($name, '_') || in_array($name, $omittedVariables))}
 			<tr><th>{$name}</th><td width="80%"><div class="ct-values">{= \jasir\ComponentTreePanel::dumpToHtmlCached($value) |noescape}</div></td></tr>
 		{else}
-			<tr><th>{$name}</th><td><i>{if is_object($value)}{get_class($value) |noescape} - not dumped{else}{= \jasir\ComponentTreePanel::dumpToHtmlCached($value) |noescape}{/if}</i></td></tr>
+			<tr><th>{$name}</th><td><i>{if is_object($value)}{get_class($value) |noescape} - dump skipped{else}{= \jasir\ComponentTreePanel::dumpToHtmlCached($value) |noescape}{/if}</i></td></tr>
 		{/if}
 	{/foreach}
 	</table>

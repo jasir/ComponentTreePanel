@@ -313,6 +313,7 @@ class ComponentTreePanel implements IBarPanel
 
 	/**
 	 * @param $object
+	 *
 	 * @return mixed
 	 */
 	public static function getReflection($object)

@@ -94,7 +94,7 @@
 				<li>Templates (rendered) ({count($templates)}){include #toggler}
 					<ul>
 					{foreach $templates as $tinfo}
-						<li>{include #template t=>$tinfo['template'], file => $tinfo['file'], parameters =>$tinfo['params']}
+						<li>{include #template t=>$tinfo['template'], file => $tinfo['file'], parameters =>$tinfo['params'], rendered => $tinfo['rendered']}
 					{/foreach}
 					</ul>
 			{/if}
