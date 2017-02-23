@@ -1,0 +1,10 @@
+{define #source}
+    {default title = 'Source code'}
+    {if $showSources}
+        <li><i>{$title}</i> {include #toggler}
+        <ul class="tracy-collapsed">
+            <li>
+                {include #plainsource object => $object}
+        </ul>
+    {/if}
+{/define}

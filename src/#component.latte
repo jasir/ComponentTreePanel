@@ -1,6 +1,4 @@
-{import 'blocks.latte'}
-
-{block #componentRender}
+{block #component}
 
 	{default parametersOpen = TRUE}
 	{default opened = FALSE}
@@ -22,8 +20,7 @@
 		{if $objectIsPersistent}{include #icon type=>'P', title=>"persistent component"}{/if}
 		{if $objectIsForm}{include #icon type=>'F', title=>"Form"}{/if}
 
-		{=get_class($object)}
-
+		{include #class-title class=>get_class($object)}
 	</span>
 
 	<ul {if !$opened}class="tracy-collapsed"{/if} id="{$id |noescape}">
@@ -185,7 +182,7 @@
                     {include #toggler}
 					<ul>
 						{foreach $components as $c}
-							<li>{include #componentRender object=>$c, opened=>false}
+							<li>{include #component object=>$c, opened=>false}
 						{/foreach}
 					</ul>
 				{/if}
@@ -209,7 +206,7 @@
 		{if ($objectIsForm === FALSE) && $object instanceOf \Nette\ComponentModel\Container}
 			<ul>
 			{foreach $components as $com}
-				<li>{include #componentRender object=>$com, opened=>false}</li>
+				<li>{include #component object=>$com, opened=>false}</li>
 			{/foreach}
 			</ul>
 		{/if}

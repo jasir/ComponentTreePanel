@@ -1,0 +1,12 @@
+{define #dump}
+    {default title = 'Dump'}
+    {if $dumps}
+        <li>
+        <i>{$title}</i>
+    {include #toggler}
+        <ul class="tracy-collapsed">
+            <li>
+                <div class="ct-dump">{= \jasir\ComponentTreePanel::dumpToHtmlCached($object) |noescape}</div>
+        </ul>
+    {/if}
+{/define}

@@ -1,0 +1,8 @@
+{define #editlink}
+    {default title = '[source]'}
+    {default line = 1}
+    {default file = __FILE__}
+    {var shortfile = $helpers::relativePath($file)}
+    <a title="{$shortfile}{if $line>1} - line {$line}{/if}"
+       href="{$helpers->buildEditorLink($file, $line) |noescape|nocheck}">{$title |noescape}</a>
+{/define}
