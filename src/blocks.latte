@@ -9,20 +9,24 @@
 {define #template}
 	{=jasir\ComponentTreePanel::relativePath($file, 'strong') |noescape}{include #editlink file=>$file} {include #toggler}
 		<ul class="tracy-collapsed">
-			<li><i>instance of </i>{include #editlink title=>get_class($t), file=>($helpers->getReflection($t))->getFileName()}
+        <li><i>instance
+                of </i>{include #editlink title=>get_class($t), file=>($helpers->getReflection($t))->getFileName()}
 			{include #dump object => $t}
 			{php ksort($parameters)}
-			<li>{include #values values => $parameters, title=>'Parameters', open=>false}</li>
+        <li>{include #values values => $parameters, title=>'template parameters', open=>false}</li>
 			{if $showSources}
-			<li>Source code {include #toggler}
+        <li><i>latte code </i>{include #toggler}
 				<pre class="tracy-collapsed source">
-{=file_get_contents($t->getFile())}
+{=file_get_contents($t->getFile()) |trim}
 				</pre>
 			{/if}
-			<li>Rendered {include #toggler}
+        <li><i>output ({strlen($rendered)} bytes)</i>
+            {if strlen($rendered) > 0}
+                {include #toggler}
 				<pre class="tracy-collapsed source">
 					{$rendered}
 				</pre>
+            {/if}
 			</li>
 		</ul>
 {/define}
@@ -31,8 +35,11 @@
 {define #dump}
 	{default title = 'Dump'}
 	{if $dumps}
-		<li>{$title} {include #toggler}
-		<ul class="tracy-collapsed"><li>
+<li>
+    <i>{$title}</i>
+    {include #toggler}
+    <ul class="tracy-collapsed">
+        <li>
 			<div class="ct-dump">{= \jasir\ComponentTreePanel::dumpToHtmlCached($object) |noescape}</div>
 		</ul>
 	{/if}
@@ -42,13 +49,23 @@
 {define #values}
 	{default title = 'Values'}
 	{default open = false}
-	{$title} ({=count($values)}) {include #toggler open=>$open}
+        <i>{$title} ({=count($values)})</i> {include #toggler open=>$open}
 	<table n:class="$open ?: tracy-collapsed">
 	{foreach $values as $name => $value}
 		{if !(\Nette\Utils\Strings::startsWith($name, '_') || in_array($name, $omittedVariables))}
-			<tr><th>{$name}</th><td width="80%"><div class="ct-values">{= \jasir\ComponentTreePanel::dumpToHtmlCached($value) |noescape}</div></td></tr>
+                    <tr>
+                        <th>{$name}</th>
+                        <td width="80%">
+                            <div class="ct-values">{= \jasir\ComponentTreePanel::dumpToHtmlCached($value) |noescape}</div>
+                        </td>
+                    </tr>
 		{else}
-			<tr><th>{$name}</th><td><i>{if is_object($value)}{get_class($value) |noescape} - dump skipped{else}{= \jasir\ComponentTreePanel::dumpToHtmlCached($value) |noescape}{/if}</i></td></tr>
+                    <tr>
+                        <th>{$name}</th>
+                        <td>
+                            <i>{if is_object($value)}{get_class($value) |noescape} - dump skipped{else}{= \jasir\ComponentTreePanel::dumpToHtmlCached($value) |noescape}{/if}</i>
+                        </td>
+                    </tr>
 		{/if}
 	{/foreach}
 	</table>
@@ -58,7 +75,7 @@
 {define #source}
 	{default title = 'Source code'}
 	{if $showSources}
-		<li>{$title} {include #toggler}
+<li><i>{$title}</i> {include #toggler}
 		<ul class="tracy-collapsed">
 			<li>
 			{include #plainsource object => $object}
@@ -115,11 +132,12 @@
 	{default line = 1}
 	{default file = __FILE__}
 	{var shortfile = $helpers::relativePath($file)}
-	<a title="{$shortfile}{if $line>1} - line {$line}{/if}" href="{$helpers->buildEditorLink($file, $line) |noescape|nocheck}">{$title |noescape}</a>
+    <a title="{$shortfile}{if $line>1} - line {$line}{/if}"
+       href="{$helpers->buildEditorLink($file, $line) |noescape|nocheck}">{$title |noescape}</a>
 {/define}
 
 {define #icon}
 	{default type = 'F'}
 	{default title = ''}
-	<span {if $title}title="{$title}"{/if} class="texticon-{$type}">&thinsp;{$type}&thinsp;</span>
+    <span {if $title}title="{$title}"{/if} class="texticon texticon-{$type}">&thinsp;{$type}&thinsp;</span>
 {/define}

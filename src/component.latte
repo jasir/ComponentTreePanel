@@ -34,16 +34,22 @@
 			{* object info *}
 
 			<li>
-				<i>instance of</i>{include #editlink title=>get_class($object), file=>$refl->getFileName(), line=>$refl->getStartLine()}
+                    <i>instance
+                        of</i>{include #editlink title=>get_class($object), file=>$refl->getFileName(), line=>$refl->getStartLine()}
 				{var parent = $refl->getParentClass()}
 				<i>extends</i>
 				{include #editlink title=>$parent->name, file=>$parent->getFileName(), line=>$parent->getStartLine()}
 			</li>
 
+                <li n:if="method_exists($object, 'lookupPath') && $object->getParent()">
+                    <i>path: </i><code>{$object->lookupPath(\Nette\Application\IPresenter::class)}</code>
+                </li>
+
 			{if method_exists($object, '__componentTreeInfo')}
-			<li>{var data = $object->__componentTreeInfo()}{include #dump 'title' => 'Custom info', 'dumps' => true, 'object' => $data}</li>
-
-
+                    <li>
+                        {var data = $object->__componentTreeInfo()}
+                        {include #dump 'title' => 'own info (output of __componentTreeInfo())', 'dumps' => true, 'object' => $data}
+                    </li>
 			{/if}
 
 
@@ -54,12 +60,19 @@
 				{var params = $helpers->getParametersInfo($object)}
 				{if count($params) > 0}
 
-					<li><span title="persistent parameters are marked with P icon">Parameters ({=count($params)})</span>{include #toggler open=>$parametersOpen}
+                <li>
+                    <i>
+                    <span title="persistent parameters are marked with P icon">
+                        url parameters ({=count($params)})
+                    </span>
+                    </i>
+                    {include #toggler open=>$parametersOpen}
 					<ul n:class="!$parametersOpen ? tracy-collapsed">
 						{foreach $params as $name =>$param}
 						<li>
 							{if $param['persistent']}
-								<strong>{$name}</strong> {include #icon type=>'P', title=>"persistent"} = <code>{php var_dump($param['value'])}</code>
+                                <strong>{$name}</strong> {include #icon type=>'P', title=>"persistent"} =
+                                <code>{php var_dump($param['value'])}</code>
 								{if $param['value'] === $param['meta']['def']}
 									<strong>(default value)</strong>
 								{/if}
@@ -74,7 +87,8 @@
 									<li>full name: <strong>{$object->getParameterId($name)}</strong>
 								</ul>
 							{else}
-								<strong>{$name}</strong> = <code>{php var_dump($param['value'])}</code> {include #toggler}
+                                <strong>{$name}</strong> =
+                                <code>{php var_dump($param['value'])}</code> {include #toggler}
 								<ul class="tracy-collapsed">
 									<li>full name: <strong>{$object->getParameterId($name)}</strong>
 								</ul>
@@ -91,7 +105,8 @@
 
 			{var $templates = $helpers->getRenderedTemplates($object)}
 			{if count($templates)}
-				<li>Templates (rendered) ({count($templates)}){include #toggler}
+                <li>
+                    <i>templates output ({count($templates)})</i> {include #toggler}
 					<ul>
 					{foreach $templates as $tinfo}
 						<li>{include #template t=>$tinfo['template'], file => $tinfo['file'], parameters =>$tinfo['params'], rendered => $tinfo['rendered']}
@@ -113,7 +128,7 @@
 					{php ob_start()}
 
 					<li>
-						Methods {include #toggler open=>false}
+                    <i>component methods (PHP)</i>{include #toggler open=>false}
 						<ul n:class="tracy-collapsed">
 							{* createComponent *}
 							{include #methods name => "createComponent<name>", object => $object, inherited => TRUE, pattern => "#^(createComponent)(.+)#", hideMethods => []}
@@ -143,7 +158,7 @@
 					{* Source - do not show Nette\Forms\Form sources *}
 
 					{if !$object instanceOf \Nette\Forms\Form}
-						{include #source object => $object}
+                    {include #source object => $object, title => "full component source (PHP)"}
 					{/if}
 
 					{php
@@ -165,7 +180,9 @@
 				{* Form components *}
 
 				{if $objectHasComponents}
-					<li>Form Controls ({count($components)}){include #toggler}
+                <li>
+                    <i title="inputs aka form controls">inputs ({count($components)})</i>
+                    {include #toggler}
 					<ul>
 						{foreach $components as $c}
 							<li>{include #componentRender object=>$c, opened=>false}
