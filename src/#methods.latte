@@ -13,7 +13,7 @@
                 <li>
                     {include #editlink file=>$method->getFileName(), line=>$method->getStartLine(), title=>preg_replace($pattern, '${1}<strong>${2}</strong>', $method->name)}
                     {if $method->class !== get_class($object)}
-                        <i>defined in</i> {$method->class}
+                        <i>inherited from</i> {$method->class}
                     {/if}
                     {if $showSources}
                         {include #toggler}

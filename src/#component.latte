@@ -35,9 +35,9 @@
 				{include #editlink title=>$parent->name, file=>$parent->getFileName(), line=>$parent->getStartLine()}
 			</li>
 
-                <li n:if="method_exists($object, 'lookupPath') && $object->getParent()">
-                    <i>path: </i><code>{$object->lookupPath(\Nette\Application\IPresenter::class)}</code>
-                </li>
+			<li n:if="method_exists($object, 'lookupPath') && $object->getParent()">
+				<i>path: </i><code>{$object->lookupPath(\Nette\Application\IPresenter::class)}</code>
+			</li>
 
 			{* Parameters *}
 
@@ -106,8 +106,8 @@
 			{* Methods *}
 
 
-				{if !($object instanceOf \Nette\Forms\Controls\BaseControl || $object instanceOf \Nette\Forms\Form
-					  || $object instanceOf \Nette\Forms\Container)}
+			{if !($object instanceOf \Nette\Forms\Controls\BaseControl || $object instanceOf \Nette\Forms\Form
+				  || $object instanceOf \Nette\Forms\Container)}
 				{php $key = get_class($object) . '|' . $object->getName() . '|' . $presenter->getName()}
 
 				{if ($cache && $cached = $cache->load($key))}
@@ -147,7 +147,7 @@
 					{* Source - do not show Nette\Forms\Form sources *}
 
 					{if !$object instanceOf \Nette\Forms\Form}
-                    {include #source object => $object, title => "full component source (PHP)"}
+                    	{include #source object => $object, title => "full component source (PHP)"}
 					{/if}
 
 					{php
@@ -158,7 +158,6 @@
 						}
 					}
 				{/if}
-
 
 			{/if} {* /if object instanceOf BaseControl*}
 
@@ -185,7 +184,10 @@
 
 
 			{* Dumps *}
-			{include #dump object=>$object}
+
+			{include #dump title=>"dump", object=>$object}
+
+			{* Custom info *}
 
             {if method_exists($object, '__componentTreeInfo')}
                 <li>
