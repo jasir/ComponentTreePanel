@@ -394,9 +394,6 @@ class ComponentTreePanel implements IBarPanel
 		$template->add('omittedVariables', static::$omittedTemplateVariables);
 		$template->add('helpers', $this);
 
-		//$template->registerHelperLoader('Nette\Templating\Helpers::loader');
-		//$template->getLatte()->addFilter(null, $callback)
-
 		ob_start();
 		$template->render();
 		return ob_get_clean();
