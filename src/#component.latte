@@ -15,11 +15,9 @@
 	{var objectIsPersistent = $helpers->isPersistent($object)}
 
 	<span class="tracy-toggle {if !$opened}tracy-collapsed{/if}" href="#" rel="#{$id |noescape}">
-
 		<strong>{$object->name}</strong>
 		{if $objectIsPersistent}{include #icon type=>'P', title=>"persistent component"}{/if}
 		{if $objectIsForm}{include #icon type=>'F', title=>"Form"}{/if}
-
 		{include #class-title class=>get_class($object)}
 	</span>
 
@@ -27,12 +25,11 @@
 		<div style="padding:0.5em;">
 			<ul>
 
-
 			{* object info *}
 
 			<li>
-                    <i>instance
-                        of</i>{include #editlink title=>get_class($object), file=>$refl->getFileName(), line=>$refl->getStartLine()}
+				<i>instance of</i>
+				{include #editlink title=>get_class($object), file=>$refl->getFileName(), line=>$refl->getStartLine()}
 				{var parent = $refl->getParentClass()}
 				<i>extends</i>
 				{include #editlink title=>$parent->name, file=>$parent->getFileName(), line=>$parent->getStartLine()}
@@ -41,14 +38,6 @@
                 <li n:if="method_exists($object, 'lookupPath') && $object->getParent()">
                     <i>path: </i><code>{$object->lookupPath(\Nette\Application\IPresenter::class)}</code>
                 </li>
-
-			{if method_exists($object, '__componentTreeInfo')}
-                    <li>
-                        {var data = $object->__componentTreeInfo()}
-                        {include #dump 'title' => 'own info (output of __componentTreeInfo())', 'dumps' => true, 'object' => $data}
-                    </li>
-			{/if}
-
 
 			{* Parameters *}
 
@@ -198,6 +187,12 @@
 			{* Dumps *}
 			{include #dump object=>$object}
 
+            {if method_exists($object, '__componentTreeInfo')}
+                <li>
+                    {var data = $object->__componentTreeInfo()}
+                    {include #dump 'title' => 'own info (output of __componentTreeInfo())', 'dumps' => true, 'object' => $data}
+                </li>
+            {/if}
 
 			</ul>
 		</div>

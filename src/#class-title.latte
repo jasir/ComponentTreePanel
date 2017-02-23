@@ -1,4 +1,6 @@
 {define #class-title}
     {default class=>'Yoy forgot to definee parameter class'}
-    {$class}
+    {php $exploded = explode('\\', $class)}
+    {php $className = end($exploded)}
+    <code title="{$class}">{$className}</code>
 {/define}
