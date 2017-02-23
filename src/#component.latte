@@ -60,7 +60,10 @@
                 <li>
                     <i>
                     <span title="persistent parameters are marked with P icon">
-                        url parameters ({=count($params)})
+                        url parameters:
+						<code>
+							({php echo implode(', ', array_keys($params))})
+						</code>
                     </span>
                     </i>
                     {include #toggler open=>$parametersOpen}
