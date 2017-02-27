@@ -4,9 +4,10 @@
     {default title = 'Values'}
     {default open = false}
     {default blacklist = []}
+    {default whitelist = null}
     {default omittedVariables = []}
 
-    {var $filtered = $helpers->blacklistArray($values, $blacklist)}
+    {var $filtered = $helpers->blacklistArray($values, $blacklist, $whitelist)}
 
 
 
@@ -20,7 +21,7 @@
                         <div class="ct-values">{$helpers->dumpToHtmlCached($value) |noescape}</div>
                     </td>
                 </tr>
-            {elseif in_array($name, $omittedVariables, true)}
+            {else}
                 <tr>
                     <th>{$name}</th>
                     <td>

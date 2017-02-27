@@ -287,14 +287,17 @@ class ComponentTreePanel implements IBarPanel
 	/**
 	 * @param array $values
 	 * @param array $blacklist
+	 * @param array|null $whitelist
 	 * @return array
 	 */
-	public static function blacklistArray($values, array $blacklist)
+	public static function blacklistArray($values, array $blacklist, array $whitelist = null)
 	{
 		$filtered = [];
 		foreach ($values as $key => $value) {
 			if (!in_array($key, $blacklist, true)) {
-				$filtered[$key] = $value;
+				if ($whitelist === null || in_array($key, $whitelist, true)) {
+					$filtered[$key] = $value;
+				}
 			}
 		}
 		return $filtered;

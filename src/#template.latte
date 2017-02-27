@@ -1,5 +1,5 @@
 {define #template}
-    {=jasir\ComponentTreePanel::relativePath($file, 'strong') |noescape}{include #editlink file=>$file} {include #toggler}
+    {$helpers->relativePath($file, 'strong') |noescape}{include #editlink file=>$file} {include #toggler}
     <ul class="tracy-collapsed">
 
         <li>
@@ -9,22 +9,22 @@
             {php ksort($parameters)}
         <li>
 
-
-            {include #values values => $parameters, title=>'template parameters', open=>false}</li>
+            template parameters
+            {var coreParameters = $info['debugTemplate']->initialTemplateParametersKeys}
+            {include #values values => $parameters, title=>'own defined', open=>false, blacklist => $coreParameters}
+            {include #values values => $parameters, title=>'factory defined', open=>false, whitelist => $coreParameters}
+        </li>
 
         {if $showSources}
-            <li><i>latte code </i>{include #toggler}
-                <pre class="tracy-collapsed source">
-{=file_get_contents($t->getFile()) |trim}
-                    </pre>
-        {/if}
+            <li><i>latte code
+                </i>{include #toggler}
+                <pre class="tracy-collapsed source">{=file_get_contents($t->getFile()) |trim}</pre>
+                {/if}
 
         <li><i>output ({strlen($rendered)} bytes)</i>
             {if strlen($rendered) > 0}
                 {include #toggler}
-                <pre class="tracy-collapsed source">
-					{$rendered}
-				</pre>
+                <pre class="tracy-collapsed source">{$rendered}</pre>
             {/if}
         </li>
     </ul>

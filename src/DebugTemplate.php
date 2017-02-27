@@ -25,6 +25,8 @@ class DebugTemplate extends Template implements IFileTemplate
 	 */
 	public static $onRender = [];
 
+	public $initialTemplateParametersKeys = [];
+
 	/** @var Template|ITemplate */
 	private $template;
 
@@ -38,6 +40,7 @@ class DebugTemplate extends Template implements IFileTemplate
 	public function __construct(ITemplate $template)
 	{
 		$this->template = $template;
+		$this->initialTemplateParametersKeys = array_keys($template->getParameters());
 	}
 
 
@@ -80,15 +83,15 @@ class DebugTemplate extends Template implements IFileTemplate
 				$content = $callback($this->template, $content, $this->template->control !== $this->template->presenter);
 			}
 		}
-		if (!array_key_exists($this->template->getFile(), self::$templatesRendered)) {
-			self::$templatesRendered[] = [
-				'template' => $this->template,
-				'params' => $this->template->getParameters(),
-				'file' => $this->template->getFile(),
-				'trace' => debug_backtrace(),
-				'rendered' => $content,
-			];
-		}
+
+		self::$templatesRendered[] = [
+			'debugTemplate' => $this,
+			'template' => $this->template,
+			'params' => $this->template->getParameters(),
+			'file' => $this->template->getFile(),
+			'trace' => debug_backtrace(),
+			'rendered' => $content,
+		];
 
 		echo $content;
 	}
