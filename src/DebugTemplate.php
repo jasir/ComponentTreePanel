@@ -74,13 +74,18 @@ class DebugTemplate extends Template implements IFileTemplate
 	{
 		ob_start();
 		$this->template->render($file, $params);
-		$content = ob_get_contents();
+		$content = $originalContent = ob_get_contents();
 		ob_end_clean();
 
 		if (count(static::$onRender)) {
 			foreach (static::$onRender as $callback) {
 				/** @noinspection PhpUndefinedFieldInspection */
-				$content = $callback($this->template, $content, $this->template->control !== $this->template->presenter);
+				$content = $callback(
+					$originalContent,
+					$this->template->control,
+					$this->template,
+					$this->template->control !== $this->template->presenter
+				);
 			}
 		}
 
@@ -90,7 +95,7 @@ class DebugTemplate extends Template implements IFileTemplate
 			'params' => $this->template->getParameters(),
 			'file' => $this->template->getFile(),
 			'trace' => debug_backtrace(),
-			'rendered' => $content,
+			'rendered' => $originalContent,
 		];
 
 		echo $content;

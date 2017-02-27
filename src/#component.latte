@@ -1,3 +1,17 @@
+{define #component-head}
+	<span n:class="tracy-toggle, !$opened ? tracy-collapsed" href="#" rel="#{$id |noescape}">
+		<strong>{$object->name}</strong>
+        {if $objectIsPersistent}{include #icon type=>'P', title=>"persistent component"}{/if}
+        {if $objectIsForm}{include #icon type=>'F', title=>"Form"}{/if}
+        {include #class-title class=>get_class($object)}
+		{var bytes = $helpers->getOutputCount($object)}
+		{if $bytes !== null}
+			<strong {if $bytes>0}style="color:green"{/if}>({$bytes} bytes)</strong>
+		{/if}
+	</span>
+{/define}
+
+
 {block #component}
 
 	{default parametersOpen = TRUE}
@@ -14,12 +28,8 @@
 	{var objectHasComponents = $objectIsContainer && count($components) > 0}
 	{var objectIsPersistent = $helpers->isPersistent($object)}
 
-	<span class="tracy-toggle {if !$opened}tracy-collapsed{/if}" href="#" rel="#{$id |noescape}">
-		<strong>{$object->name}</strong>
-		{if $objectIsPersistent}{include #icon type=>'P', title=>"persistent component"}{/if}
-		{if $objectIsForm}{include #icon type=>'F', title=>"Form"}{/if}
-		{include #class-title class=>get_class($object)}
-	</span>
+	{include #component-head}
+
 
 	<ul {if !$opened}class="tracy-collapsed"{/if} id="{$id |noescape}">
 		<div style="padding:0.5em;">
@@ -35,11 +45,13 @@
 				{include #editlink title=>$parent->name, file=>$parent->getFileName(), line=>$parent->getStartLine()}
 			</li>
 
+			{* path *}
+
 			<li n:if="method_exists($object, 'lookupPath') && $object->getParent()">
 				<i>path: </i><code>{$object->lookupPath(\Nette\Application\IPresenter::class)}</code>
 			</li>
 
-			{* Parameters *}
+			{* parameters *}
 
 			{if $object instanceOf \Nette\Application\UI\PresenterComponent}
 
@@ -90,19 +102,6 @@
 
 			{/if}
 
-			{* Templates *}
-
-			{var $templates = $helpers->getRenderedTemplates($object)}
-			{if count($templates)}
-                <li>
-                    <i>templates output ({count($templates)})</i> {include #toggler}
-
-					<ul>
-					{foreach $templates as $tinfo}
-						<li>{include #template info => $tinfo, t => $tinfo['template'], file => $tinfo['file'], parameters => $tinfo['params'], rendered => $tinfo['rendered']}
-					{/foreach}
-					</ul>
-			{/if}
 
 			{* Methods *}
 
@@ -162,7 +161,19 @@
 
 			{/if} {* /if object instanceOf BaseControl*}
 
-			{* Form *}
+			{* Templates *}
+
+			{var $templates = $helpers->getRenderedTemplates($object)}
+			{if count($templates)}
+				<li n:foreach="$templates as $tinfo">
+				<li>
+					{include #template info => $tinfo, t => $tinfo['template'], file => $tinfo['file'], parameters => $tinfo['params'], rendered => $tinfo['rendered']}
+				</li>
+				</li>
+			{/if}
+
+
+                {* Form *}
 
 			{if $object instanceOf \Nette\Forms\Form}
 
@@ -204,11 +215,11 @@
 
 
 	{* Components *}
-		{if ($objectIsForm === FALSE) && $object instanceOf \Nette\ComponentModel\Container}
-			<ul>
+	{if ($objectIsForm === FALSE) && $object instanceOf \Nette\ComponentModel\Container}
+		<ul>
 			{foreach $components as $com}
 				<li>{include #component object=>$com, opened=>false}</li>
 			{/foreach}
-			</ul>
-		{/if}
+		</ul>
+	{/if}
 {/block}

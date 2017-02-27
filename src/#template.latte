@@ -1,5 +1,15 @@
+{define #template-head}
+    {$helpers->relativePath($file, 'strong') |noescape}
+    <strong>({$renderedBytes} bytes)</strong>
+    {include #editlink file=>$file}
+{/define}
+
 {define #template}
-    {$helpers->relativePath($file, 'strong') |noescape}{include #editlink file=>$file} {include #toggler}
+    {var renderedBytes => strlen($rendered)}
+
+    {include #template-head}
+    {include #toggler}
+
     <ul class="tracy-collapsed">
 
         <li>
@@ -21,8 +31,8 @@
                 <pre class="tracy-collapsed source">{=file_get_contents($t->getFile()) |trim}</pre>
                 {/if}
 
-        <li><i>output ({strlen($rendered)} bytes)</i>
-            {if strlen($rendered) > 0}
+        <li><i>output ({$renderedBytes} bytes)</i>
+            {if $renderedBytes > 0}
                 {include #toggler}
                 <pre class="tracy-collapsed source">{$rendered}</pre>
             {/if}

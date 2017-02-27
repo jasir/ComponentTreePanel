@@ -270,6 +270,21 @@ class ComponentTreePanel implements IBarPanel
 
 
 	/**
+	 * @param $object
+	 * @return int|null
+	 */
+	public static function getOutputCount($object)
+	{
+		$templates = self::getRenderedTemplates($object);
+		$bytes = null;
+		foreach ($templates as $template) {
+			$bytes = strlen($template['rendered']);
+		}
+		return $bytes;
+	}
+
+
+	/**
 	 * @param $path
 	 * @param null $tag
 	 * @return string
