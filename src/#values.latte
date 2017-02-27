@@ -1,24 +1,34 @@
 {define #values}
+
+    {default values = []}
     {default title = 'Values'}
     {default open = false}
-    <i>{$title} ({=count($values)})</i> {include #toggler open=>$open}
+    {default blacklist = []}
+    {default omittedVariables = []}
+
+    {var $filtered = $helpers->blacklistArray($values, $blacklist)}
+
+
+
+    <i>{$title} ({=count($filtered)})</i> {include #toggler open=>$open}
     <table n:class="$open ?: tracy-collapsed">
-        {foreach $values as $name => $value}
-            {if !(\Nette\Utils\Strings::startsWith($name, '_') || in_array($name, $omittedVariables))}
+        {foreach $filtered as $name => $value}
+            {if ! (\Nette\Utils\Strings::startsWith($name, '_') || in_array($name, $omittedVariables, true))}
                 <tr>
                     <th>{$name}</th>
                     <td width="80%">
-                        <div class="ct-values">{= \jasir\ComponentTreePanel::dumpToHtmlCached($value) |noescape}</div>
+                        <div class="ct-values">{$helpers->dumpToHtmlCached($value) |noescape}</div>
                     </td>
                 </tr>
-            {else}
+            {elseif in_array($name, $omittedVariables, true)}
                 <tr>
                     <th>{$name}</th>
                     <td>
-                        <i>{if is_object($value)}{get_class($value) |noescape} - dump skipped{else}{= \jasir\ComponentTreePanel::dumpToHtmlCached($value) |noescape}{/if}</i>
+                        <i>{if is_object($value)}{get_class($value) |noescape} - dump skipped{else}{$helpers->dumpToHtmlCached($value) |noescape}{/if}</i>
                     </td>
                 </tr>
             {/if}
         {/foreach}
     </table>
+
 {/define}
