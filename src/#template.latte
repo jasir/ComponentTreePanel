@@ -1,7 +1,7 @@
 {define #template-head}
-    {$helpers->relativePath($file, 'strong') |noescape}
+
+    {include #editlink label=>basename($file), file=>$file}
     <strong>({$renderedBytes} bytes)</strong>
-    {include #editlink file=>$file}
 {/define}
 
 {define #template}
