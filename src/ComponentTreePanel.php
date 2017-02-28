@@ -467,6 +467,6 @@ class ComponentTreePanel implements IBarPanel
 		return false;
 	}
 
-	
+
 
 }

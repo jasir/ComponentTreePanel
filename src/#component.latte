@@ -1,224 +1,212 @@
 {define #component-head}
-	<span n:class="tracy-toggle, !$opened ? tracy-collapsed" href="#" rel="#{$id |noescape}">
+    <span n:class="tracy-toggle, !$opened ? tracy-collapsed" href="#" rel="#{$id |noescape}">
         {if $objectIsPersistent}{include #icon type=>'P', title=>"persistent component"}{/if}
         {if $objectIsForm}{include #icon type=>'F', title=>"Form"}{/if}
         {include #class-title class=>get_class($object)}
-		<strong>{$object->name}</strong>
+        <strong>{$object->name}</strong>
         {if $object instanceOf \Nette\Forms\Controls\BaseControl}
             <code>{$helpers->simpleDump($object->getValue()) |truncate:120}</code>
         {/if}
-		{var bytes = $helpers->getOutputCount($object)}
-		{if $bytes !== null}
+        {var bytes = $helpers->getOutputCount($object)}
+        {if $bytes !== null}
             <strong style="{if $bytes>0}color:rgba(0,147,0,0.96){else}color:rgba(0,170,0,0.51){/if}">({$bytes}
                 bytes)</strong>
-		{/if}
+        {/if}
 	</span>
 {/define}
 
 
 {block #component}
 
-	{default parametersOpen = TRUE}
-	{default opened = FALSE}
-	{default dumps = TRUE}
-	{default cache = NULL}
-	{default showSources = TRUE}
+    {default parametersOpen = TRUE}
+    {default opened = FALSE}
+    {default dumps = TRUE}
+    {default cache = NULL}
+    {default showSources = TRUE}
 
-	{var id = 'ctr-' . $object->lookupPath('Nette\Application\IPresenter', FALSE) . '-' . str_replace($object->name, ':', '-')}
-	{var refl = $helpers->getReflection($object)}
+    {var id = 'ctr-' . $object->lookupPath('Nette\Application\IPresenter', FALSE) . '-' . str_replace($object->name, ':', '-')}
+    {var refl = $helpers->getReflection($object)}
     {var objectIsForm = $object instanceOf \Nette\Forms\Container}
-	{var objectIsContainer = $object instanceOf \Nette\ComponentModel\Container}
-	{var components = $objectIsContainer ? $object->getComponents() : []}
-	{var objectHasComponents = $objectIsContainer && count($components) > 0}
-	{var objectIsPersistent = $helpers->isPersistent($object)}
+    {var objectIsContainer = $object instanceOf \Nette\ComponentModel\Container}
+    {var components = $objectIsContainer ? $object->getComponents() : []}
+    {var objectHasComponents = $objectIsContainer && count($components) > 0}
+    {var objectIsPersistent = $helpers->isPersistent($object)}
 
-	{include #component-head}
+    {include #component-head}
 
-
-	<ul {if !$opened}class="tracy-collapsed"{/if} id="{$id |noescape}">
-		<div style="padding:0.5em;">
-			<ul>
-
-			{* object info *}
-
-			<li>
-				<i>instance of</i>
-				{include #editlink title=>get_class($object), file=>$refl->getFileName(), line=>$refl->getStartLine()}
-				{var parent = $refl->getParentClass()}
-				<i>extends</i>
-				{include #editlink title=>$parent->name, file=>$parent->getFileName(), line=>$parent->getStartLine()}
-			</li>
-
-			{* path *}
-
-			<li n:if="method_exists($object, 'lookupPath') && $object->getParent()">
-				<i>path: </i><code>{$object->lookupPath(\Nette\Application\IPresenter::class)}</code>
-			</li>
-
-			{* parameters *}
-
-			{if $object instanceOf \Nette\Application\UI\PresenterComponent}
-
-				{var params = $helpers->getParametersInfo($object)}
-				{if count($params) > 0}
-
+    <ul {if !$opened}class="tracy-collapsed"{/if} id="{$id |noescape}">
+        <div style="padding:0.5em;">
+            <ul>
+                {* object info *}
                 <li>
-                    <i>
-                    <span title="persistent parameters are marked with P icon">
-                        url parameters:
-						<code>
-							({php echo implode(', ', array_keys($params))})
-						</code>
-                    </span>
-                    </i>
-                    {include #toggler open=>$parametersOpen}
-					<ul n:class="!$parametersOpen ? tracy-collapsed">
-						{foreach $params as $name =>$param}
-						<li>
-							{if $param['persistent']}
-                                <strong>{$name}</strong> {include #icon type=>'P', title=>"persistent"} =
-                                <code>{$helpers->simpleDump($param['value'])}</code>
-								{if $param['value'] === $param['meta']['def']}
-									<strong>(default value)</strong>
-								{/if}
-								{include #toggler}
-								<ul class="tracy-collapsed">
-									<li>
-										{var refl = new \Nette\Reflection\ClassType($param['meta']['since']) }
-										persistent parameter declared in
-										{include #editlink title=>$param['meta']['since'], file=>$refl->getFileName(), line=>1}
-										{if $param['meta']['since'] == get_class($object)}(this){/if}
-                                    <li>default value: <code>{$helpers->simpleDump($param['meta']['def'])}</code>
-									<li>full name: <strong>{$object->getParameterId($name)}</strong>
-								</ul>
-							{else}
-                                <strong>{$name}</strong> =
-                                <code>{$helpers->simpleDump($param['value'])}</code> {include #toggler}
-								<ul class="tracy-collapsed">
-									<li>full name: <strong>{$object->getParameterId($name)}</strong>
-								</ul>
+                    <i>instance of</i>
+                    {include #editlink title=>get_class($object), file=>$refl->getFileName(), line=>$refl->getStartLine()}
+                    {var parent = $refl->getParentClass()}
+                    <i>extends</i>
+                    {include #editlink title=>$parent->name, file=>$parent->getFileName(), line=>$parent->getStartLine()}
+                </li>
 
-							{/if}
-						{/foreach}
-					</ul>
+                {* path *}
 
-				{/if}
+                <li n:if="method_exists($object, 'lookupPath') && $object->getParent()">
+                    <i>path: </i><code>{$object->lookupPath(\Nette\Application\IPresenter::class)}</code>
+                </li>
 
-			{/if}
+                {* parameters *}
+                {php $params = $object instanceOf \Nette\Application\UI\PresenterComponent ? $helpers->getParametersInfo($object) : []}
+                {if count($params) > 0}
+                    <li>
+                        <i>
+                        <span title="persistent parameters are marked with P icon">
+                            url parameters:
+                            <code>
+                                ({php echo implode(', ', array_keys($params))})
+                            </code>
+                        </span>
+                        </i>
+                        {include #toggler open=>$parametersOpen}
+                        <ul n:class="!$parametersOpen ? tracy-collapsed">
+                            {foreach $params as $name =>$param}
+                                <li>
+                                    {if $param['persistent']}
+                                        <strong>{$name}</strong> {include #icon type=>'P', title=>"persistent"} =
+                                        <code>{$helpers->simpleDump($param['value'])}</code>
+                                        {if $param['value'] === $param['meta']['def']}
+                                            <strong>(default value)</strong>
+                                        {/if}
+                                        {include #toggler}
+                                            <ul class="tracy-collapsed">
+                                                <li>
+                                                    {var refl = new \Nette\Reflection\ClassType($param['meta']['since']) }
+                                                    persistent parameter declared in
+                                                    {include #editlink title=>$param['meta']['since'], file=>$refl->getFileName(), line=>1}
+                                                    {if $param['meta']['since'] == get_class($object)}(this){/if}
+                                                <li>default value: <code>{$helpers->simpleDump($param['meta']['def'])}</code>
+                                                <li>full name: <strong>{$object->getParameterId($name)}</strong>
+                                            </ul>
+                                    {else}
+                                        <strong>{$name}</strong> =
+                                        <code>{$helpers->simpleDump($param['value'])}</code> {include #toggler}
+                                        <ul class="tracy-collapsed">
+                                            <li>full name: <strong>{$object->getParameterId($name)}</strong>
+                                        </ul>
 
-
-                    {if !($object instanceOf \Nette\Forms\Controls\BaseControl || $object instanceOf \Nette\Forms\Container)}
-				{php $key = get_class($object) . '|' . $object->getName() . '|' . $presenter->getName()}
-				{if ($cache && $cached = $cache->load($key))}
-					{php echo $cached}
-				{else}
-
-					{php ob_start()}
-
-					<li>
-                    <i>component methods (PHP)</i>{include #toggler open=>false}
-						<ul n:class="tracy-collapsed">
-							{* createComponent *}
-							{include #methods name => "createComponent<name>", object => $object, inherited => TRUE, pattern => "#^(createComponent)(.+)#", hideMethods => []}
-
-							{* aciton<action>, beforeRender<view> *}
-							{if $object instanceof \Nette\Application\IPresenter}
-							{include #methods name => "action<Action>", object => $object, inherited => TRUE, pattern => "#^(action)(.+)#"}
-							{include #methods name => "lifecycle", object => $object, inherited => TRUE, pattern => "~\A()(startup | beforeHandle | beforeRender |shutdown)\z~x"}
-							{/if}
-
-							{* render<view>, handle<signal> *}
-							{if $object instanceof \Nette\Application\UI\Control}
-							{include #methods name => "render<View>", object => $object, inherited => TRUE, pattern => "#^(render)(.*)#"}
-							{include #methods name => "handle<Signal>", object => $object, inherited => TRUE, pattern => "#^(handle)(.*)#", hideMethods => []}
-							{/if}
+                                    {/if}
+                                </li>
+                            {/foreach}
+                        </ul>
+                    </li>
+                {/if}
 
 
-							{* create<object> *}
-							{include #methods name => "create<object>", object =>$object, inherited => TRUE, pattern => "#^(create(?!Component))(\w+)#", hideMethods => ['createRequest']}
+                {if !($object instanceOf \Nette\Forms\Controls\BaseControl || $object instanceOf \Nette\Forms\Container)}
+                    {php $key = get_class($object) . '|' . $object->getName() . '|' . $presenter->getName()}
+                    {if ($cache && $cached = $cache->load($key))}
+                        {php echo $cached}
+                    {else}
+                        {php ob_start()}
 
-							{* get/set properties *}
-							{include #methods name => "get<property>", object => $object, inherited => FALSE, pattern => "#^(get)(.+)#"}
-							{include #methods name => "set<property>", object => $object, inherited => FALSE, pattern => "#^(set)(.*)#"}
-						</ul>
-					</li>
+                        <li>
+                            <i>component methods (PHP)</i>{include #toggler open=>false}
+                            <ul n:class="tracy-collapsed">
+                                {* createComponent *}
+                                {include #methods name => "createComponent<name>", object => $object, inherited => TRUE, pattern => "#^(createComponent)(.+)#", hideMethods => []}
 
-					{* Source - do not show Nette\Forms\Form sources *}
+                                {* aciton<action>, beforeRender<view> *}
+                                {if $object instanceof \Nette\Application\IPresenter}
+                                    {include #methods name => "action<Action>", object => $object, inherited => TRUE, pattern => "#^(action)(.+)#"}
+                                    {include #methods name => "lifecycle", object => $object, inherited => TRUE, pattern => "~\A()(startup | beforeHandle | beforeRender |shutdown)\z~x"}
+                                {/if}
 
-					{if !$object instanceOf \Nette\Forms\Form}
-                    	{include #source object => $object, title => "full component source (PHP)"}
-					{/if}
+                                {* render<view>, handle<signal> *}
+                                {if $object instanceof \Nette\Application\UI\Control}
+                                    {include #methods name => "render<View>", object => $object, inherited => TRUE, pattern => "#^(render)(.*)#"}
+                                    {include #methods name => "handle<Signal>", object => $object, inherited => TRUE, pattern => "#^(handle)(.*)#", hideMethods => []}
+                                {/if}
 
-					{php
-						$content = ob_get_clean();
-						echo $content;
-						if ($cache) {
-							$cache->save($key, $content, ['files'=>[$refl->getFileName(), $helpers->getReflection($this)->getFileName()]]);
-						}
-					}
-				{/if}
 
-			{/if} {* /if object instanceOf BaseControl*}
+                                {* create<object> *}
+                                {include #methods name => "create<object>", object =>$object, inherited => TRUE, pattern => "#^(create(?!Component))(\w+)#", hideMethods => ['createRequest']}
 
-			{* Templates *}
+                                {* get/set properties *}
+                                {include #methods name => "get<property>", object => $object, inherited => FALSE, pattern => "#^(get)(.+)#"}
+                                {include #methods name => "set<property>", object => $object, inherited => FALSE, pattern => "#^(set)(.*)#"}
+                            </ul>
+                        </li>
 
-			{var $templates = $helpers->getRenderedTemplates($object)}
-			{if count($templates)}
-				<li n:foreach="$templates as $tinfo">
-				<li>
-					{include #template info => $tinfo, t => $tinfo['template'], file => $tinfo['file'], parameters => $tinfo['params'], rendered => $tinfo['rendered']}
-				</li>
-				</li>
-			{/if}
+                        {* Source - do not show Nette\Forms\Form sources *}
+
+                        {if !$object instanceOf \Nette\Forms\Container}
+                            {include #source object => $object, title => "full component source (PHP)"}
+                        {/if}
+
+                        {php
+                            $content = ob_get_clean();
+                            echo $content;
+                            if ($cache) {
+                                $cache->save($key, $content, ['files'=>[$refl->getFileName(), $helpers->getReflection($this)->getFileName()]]);
+                            }
+                        }
+                    {/if}
+
+                {/if} {* /if object instanceOf BaseControl*}
+
+                {* Templates *}
+
+                {var $templates = $helpers->getRenderedTemplates($object)}
+                {if count($templates)}
+                    <li n:foreach="$templates as $tinfo">
+                        {include #template info => $tinfo, t => $tinfo['template'], file => $tinfo['file'], parameters => $tinfo['params'], rendered => $tinfo['rendered']}
+                    </li>
+                {/if}
 
 
                 {* Form *}
 
                 {if $object instanceOf \Nette\Forms\Container}
 
-				{* Form components *}
+                    {* Form components *}
 
-				{if $objectHasComponents}
-                <li>
-                    <i title="inputs aka form controls">inputs ({count($components)})</i>
-                    {include #toggler}
-					<ul>
-                    {foreach $object->getComponents() as $c1}
-                    <li>{include #component object=>$c1, opened=>false}
-						{/foreach}
-					</ul>
-				{/if}
+                    {if $objectHasComponents}
+                        <li>
+                        <i title="inputs aka form controls">inputs ({count($components)})</i>
+                        {include #toggler}
+                        <ul>
+                            {foreach $object->getComponents() as $c1}
+                                <li>{include #component object=>$c1, opened=>false}</li>
+                            {/foreach}
+                        </ul>
+                    {/if}
 
-                <li>{include #values title=>"values", values=>$object->getValues()}
+                    <li>{include #values title=>"values", values=>$object->getValues()}</li>
 
-			{/if}
-
-
-			{* Dumps *}
-
-			{include #dump title=>"dump", object=>$object}
-
-			{* Custom info *}
-
-            {if method_exists($object, '__componentTreeInfo')}
-                <li>
-                    {var data = $object->__componentTreeInfo()}
-                    {include #dump 'title' => 'own info (output of __componentTreeInfo())', 'dumps' => true, 'object' => $data}
-                </li>
-            {/if}
-
-			</ul>
-		</div>
-	</ul>
+                {/if}
 
 
+                {* Dumps *}
+
+                {include #dump title=>"dump", object=>$object}
+
+                {* Custom info *}
+
+                {if method_exists($object, '__componentTreeInfo')}
+                    <li>
+                        {var data = $object->__componentTreeInfo()}
+                        {include #dump 'title' => 'own info (output of __componentTreeInfo())', 'dumps' => true, 'object' => $data}
+                    </li>
+                {/if}
+
+            </ul>
+        </div>
+    </ul>
 
     {* Children components *}
+
     {if !$objectIsForm && $object instanceOf \Nette\ComponentModel\Container}
-		<ul>
+        <ul>
             {foreach $object->getComponents() as $com}
-				<li>{include #component object=>$com, opened=>false}</li>
-			{/foreach}
-		</ul>
-	{/if}
+                <li>{include #component object=>$com, opened=>false}</li>
+            {/foreach}
+        </ul>
+    {/if}
 {/block}
