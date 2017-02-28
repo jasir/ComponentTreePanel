@@ -77,7 +77,7 @@
                                         {include #toggler}
                                             <ul class="tracy-collapsed">
                                                 <li>
-                                                    {var refl = new \Nette\Reflection\ClassType($param['meta']['since']) }
+                                                    {var refl = $helpers->getReflection($param['meta']['since'])}
                                                     persistent parameter declared in
                                                     {include #editlink title=>$param['meta']['since'], file=>$refl->getFileName(), line=>1}
                                                     {if $param['meta']['since'] == get_class($object)}(this){/if}

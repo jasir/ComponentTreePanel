@@ -84,7 +84,10 @@ class ComponentTreePanel implements IBarPanel
 
 	public static $omittedTemplateVariables = ['presenter', 'control', 'netteCacheStorage', 'netteHttpResponse', 'template', 'user'];
 
+	private static $reflectionCache = [];
+
 	private static $_dumpCache = [];
+
 
 
 	/* --- Private --- */
@@ -360,13 +363,25 @@ class ComponentTreePanel implements IBarPanel
 
 
 	/**
-	 * @param $object
-	 * @return mixed
+	 * @param string|\stdClass $object
+	 * @return \ReflectionClass
 	 */
 	public static function getReflection($object)
 	{
-		$class = class_exists(ClassType::class) ? ClassType::class : \ReflectionClass::class;
-		return new $class($object);
+		$key = is_object($object) ? get_class($object) : $object;
+		if (!array_key_exists($key, self::$reflectionCache)) {
+			self::$reflectionCache[$key] = new \ReflectionClass($object);
+		}
+		return self::$reflectionCache[$key];
+	}
+
+
+	public static function readPrivateProperty($object, $propertyName, $parentClass = null) {
+		$class = $parentClass ?: get_class($object);
+		$reflection = self::getReflection($class);
+		$property = $reflection->getProperty($propertyName);
+		$property->setAccessible(true);
+		return $property->getValue($object);
 	}
 
 
