@@ -1,9 +1,9 @@
 {define #component-head}
 	<span n:class="tracy-toggle, !$opened ? tracy-collapsed" href="#" rel="#{$id |noescape}">
-		<strong>{$object->name}</strong>
         {if $objectIsPersistent}{include #icon type=>'P', title=>"persistent component"}{/if}
         {if $objectIsForm}{include #icon type=>'F', title=>"Form"}{/if}
         {include #class-title class=>get_class($object)}
+		<strong>{$object->name}</strong>
 		{var bytes = $helpers->getOutputCount($object)}
 		{if $bytes !== null}
 			<strong {if $bytes>0}style="color:green"{/if}>({$bytes} bytes)</strong>
