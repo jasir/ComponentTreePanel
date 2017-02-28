@@ -98,6 +98,11 @@
                     </li>
                 {/if}
 
+                {if $object instanceOf \Nette\Application\UI\Presenter}
+                    {var $signalReceiver = $helpers->readPrivateProperty($object, 'signalReceiver', '\Nette\Application\UI\Presenter')}
+                    <li><i>signal receiver:</i><code>{$helpers->simpleDump($signalReceiver)}</code></li>
+                {/if}
+
 
                 {if !($object instanceOf \Nette\Forms\Controls\BaseControl || $object instanceOf \Nette\Forms\Container)}
                     {php $key = get_class($object) . '|' . $object->getName() . '|' . $presenter->getName()}
