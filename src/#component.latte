@@ -4,9 +4,13 @@
         {if $objectIsForm}{include #icon type=>'F', title=>"Form"}{/if}
         {include #class-title class=>get_class($object)}
 		<strong>{$object->name}</strong>
+        {if $object instanceOf \Nette\Forms\Controls\BaseControl}
+            <code>{$helpers->simpleDump($object->getValue()) |truncate:120}</code>
+        {/if}
 		{var bytes = $helpers->getOutputCount($object)}
 		{if $bytes !== null}
-			<strong {if $bytes>0}style="color:green"{/if}>({$bytes} bytes)</strong>
+            <strong style="{if $bytes>0}color:rgba(0,147,0,0.96){else}color:rgba(0,170,0,0.51){/if}">({$bytes}
+                bytes)</strong>
 		{/if}
 	</span>
 {/define}
@@ -22,7 +26,7 @@
 
 	{var id = 'ctr-' . $object->lookupPath('Nette\Application\IPresenter', FALSE) . '-' . str_replace($object->name, ':', '-')}
 	{var refl = $helpers->getReflection($object)}
-	{var objectIsForm = $object instanceOf \Nette\Forms\Form}
+    {var objectIsForm = $object instanceOf \Nette\Forms\Container}
 	{var objectIsContainer = $object instanceOf \Nette\ComponentModel\Container}
 	{var components = $objectIsContainer ? $object->getComponents() : []}
 	{var objectHasComponents = $objectIsContainer && count($components) > 0}
@@ -73,7 +77,7 @@
 						<li>
 							{if $param['persistent']}
                                 <strong>{$name}</strong> {include #icon type=>'P', title=>"persistent"} =
-                                <code>{php var_dump($param['value'])}</code>
+                                <code>{$helpers->simpleDump($param['value'])}</code>
 								{if $param['value'] === $param['meta']['def']}
 									<strong>(default value)</strong>
 								{/if}
@@ -84,12 +88,12 @@
 										persistent parameter declared in
 										{include #editlink title=>$param['meta']['since'], file=>$refl->getFileName(), line=>1}
 										{if $param['meta']['since'] == get_class($object)}(this){/if}
-									<li>default value: <code>{php var_dump($param['meta']['def'])}</code>
+                                    <li>default value: <code>{$helpers->simpleDump($param['meta']['def'])}</code>
 									<li>full name: <strong>{$object->getParameterId($name)}</strong>
 								</ul>
 							{else}
                                 <strong>{$name}</strong> =
-                                <code>{php var_dump($param['value'])}</code> {include #toggler}
+                                <code>{$helpers->simpleDump($param['value'])}</code> {include #toggler}
 								<ul class="tracy-collapsed">
 									<li>full name: <strong>{$object->getParameterId($name)}</strong>
 								</ul>
@@ -103,13 +107,8 @@
 			{/if}
 
 
-			{* Methods *}
-
-
-			{if !($object instanceOf \Nette\Forms\Controls\BaseControl || $object instanceOf \Nette\Forms\Form
-				  || $object instanceOf \Nette\Forms\Container)}
+                    {if !($object instanceOf \Nette\Forms\Controls\BaseControl || $object instanceOf \Nette\Forms\Container)}
 				{php $key = get_class($object) . '|' . $object->getName() . '|' . $presenter->getName()}
-
 				{if ($cache && $cached = $cache->load($key))}
 					{php echo $cached}
 				{else}
@@ -175,7 +174,7 @@
 
                 {* Form *}
 
-			{if $object instanceOf \Nette\Forms\Form}
+                {if $object instanceOf \Nette\Forms\Container}
 
 				{* Form components *}
 
@@ -184,13 +183,13 @@
                     <i title="inputs aka form controls">inputs ({count($components)})</i>
                     {include #toggler}
 					<ul>
-						{foreach $components as $c}
-							<li>{include #component object=>$c, opened=>false}
+                    {foreach $object->getComponents() as $c1}
+                    <li>{include #component object=>$c1, opened=>false}
 						{/foreach}
 					</ul>
 				{/if}
 
-				<li>{include #values title=>"Values", values=>$object->getValues()}
+                <li>{include #values title=>"values", values=>$object->getValues()}
 
 			{/if}
 
@@ -214,10 +213,10 @@
 
 
 
-	{* Components *}
-	{if ($objectIsForm === FALSE) && $object instanceOf \Nette\ComponentModel\Container}
+    {* Children components *}
+    {if !$objectIsForm && $object instanceOf \Nette\ComponentModel\Container}
 		<ul>
-			{foreach $components as $com}
+            {foreach $object->getComponents() as $com}
 				<li>{include #component object=>$com, opened=>false}</li>
 			{/foreach}
 		</ul>
