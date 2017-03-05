@@ -60,7 +60,7 @@
                         <span title="persistent parameters are marked with P icon">
                             url parameters:
                             <code>
-                                ({php echo implode(', ', array_keys($params))})
+                                ({php echo trim(implode(', ', array_keys($params)))})
                             </code>
                         </span>
                         </i>
@@ -100,7 +100,7 @@
 
                 {if $object instanceOf \Nette\Application\UI\Presenter}
                     {var $signalReceiver = $helpers->readPrivateProperty($object, 'signalReceiver', '\Nette\Application\UI\Presenter')}
-                    <li><i>signal receiver:</i><code>{$helpers->simpleDump($signalReceiver)}</code></li>
+                    <li><i>signal receiver: </i><code>{$helpers->simpleDump($signalReceiver)}</code></li>
                 {/if}
 
 

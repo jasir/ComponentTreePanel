@@ -12,7 +12,6 @@ use Nette\Application\Application;
 use Nette\Application\IPresenter;
 use Nette\Application\Responses\ForwardResponse;
 use Nette\Application\Responses\RedirectResponse;
-use Nette\Application\UI\Form;
 use Nette\Application\UI\Presenter;
 use Nette\Application\UI\PresenterComponent;
 use Nette\Bridges\ApplicationLatte\TemplateFactory;
@@ -20,7 +19,6 @@ use Nette\Caching\Cache;
 use Nette\Caching\IStorage;
 use Nette\ComponentModel\IComponent;
 use Nette\DI\Container;
-use Nette\Forms\Controls\BaseControl;
 use Nette\Reflection\ClassType;
 use Nette\Reflection\Method;
 use Nette\Utils\Strings;
@@ -87,7 +85,6 @@ class ComponentTreePanel implements IBarPanel
 	private static $reflectionCache = [];
 
 	private static $_dumpCache = [];
-
 
 
 	/* --- Private --- */
@@ -355,7 +352,8 @@ class ComponentTreePanel implements IBarPanel
 	 * @param $object
 	 * @return string
 	 */
-	static public function simpleDump($object) {
+	static public function simpleDump($object)
+	{
 		ob_start();
 		var_dump($object);
 		return trim(ob_get_clean());
@@ -376,7 +374,14 @@ class ComponentTreePanel implements IBarPanel
 	}
 
 
-	public static function readPrivateProperty($object, $propertyName, $parentClass = null) {
+	/**
+	 * @param $object
+	 * @param $propertyName
+	 * @param null $parentClass
+	 * @return mixed
+	 */
+	public static function readPrivateProperty($object, $propertyName, $parentClass = null)
+	{
 		$class = $parentClass ?: get_class($object);
 		$reflection = self::getReflection($class);
 		$property = $reflection->getProperty($propertyName);
@@ -481,7 +486,6 @@ class ComponentTreePanel implements IBarPanel
 		}
 		return false;
 	}
-
 
 
 }

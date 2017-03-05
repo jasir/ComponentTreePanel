@@ -6,7 +6,6 @@ use Nette\Application\UI\ITemplateFactory;
 use Nette\DI\CompilerExtension;
 use Nette\DI\ServiceDefinition;
 use Nette\PhpGenerator\ClassType;
-use NettX\Templating\ITemplate;
 
 class ComponentTreePanelExtension extends CompilerExtension
 {
@@ -25,8 +24,7 @@ class ComponentTreePanelExtension extends CompilerExtension
 		$definition = new ServiceDefinition();
 		$definition
 			->setClass(DebugTemplateFactory::class)
-			->addSetup('setOriginalFactory', [$factoryName])
-		;
+			->addSetup('setOriginalFactory', [$factoryName]);
 		$compiler->addDefinition($this->prefix('templateFactory'), $definition);
 	}
 
