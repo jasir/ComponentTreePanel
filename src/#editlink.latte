@@ -7,5 +7,6 @@
     {var shortfile = $helpers::relativePath($file)}
     <a title="{$title}
 {$shortfile}{if $line>1} - line {$line}{/if}"
-       href="{$helpers->buildEditorLink($file, $line) |noescape|nocheck}">{$label |noescape}</a>
+       href="{$helpers->buildEditorLink($file, $line) |noescape|nocheck}" onclick="event.stopPropagation()">
+        {$label |noescape}</a>
 {/define}
