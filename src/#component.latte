@@ -4,17 +4,16 @@
         {if $objectIsForm}{include #icon type=>'F', title=>"Form"}{/if}
         {include #class-title class=>get_class($object)}
         <strong>{$object->name}</strong>
-        {include #editlink title=>'[edit]', file=>$refl->getFileName(), line=>$refl->getStartLine()}
+        {include #editlink title=>'<small>src</small>', file=>$refl->getFileName(), line=>$refl->getStartLine()}
         {if $object instanceOf \Nette\Forms\Controls\BaseControl}
             <code>{$helpers->simpleDump($object->getValue()) |truncate:120}</code>
         {/if}
         {var bytes = $helpers->getOutputCount($object)}
         {if $bytes !== null}
-            <strong style="{if $bytes>0}color:rgba(0,147,0,0.96){else}color:rgba(0,170,0,0.51){/if}">({$bytes}
-                bytes)</strong>
+            <strong style="{if $bytes>0}color:rgba(0,147,0,0.96){else}color:rgba(0,170,0,0.51){/if}">({$bytes} bytes)</strong>
         {/if}
         {if count($templates)}
-            {include #editlink title=>basename($templates[0]['file']), file=>$templates[0]['file']}
+            {include #editlink title=>"<small>" . basename($templates[0]['file']) . "</small>", file=>$templates[0]['file']}
         {/if}
 	</span>
 {/define}

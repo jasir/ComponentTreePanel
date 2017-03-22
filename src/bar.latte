@@ -28,8 +28,9 @@
     </div>
 
     {var $elapsed = \Nette\Diagnostics\Debugger::timer('component-tree-panel') }
+
     <p>
-        Time to render panel: <strong>{=number_format($elapsed,3)}</strong> secs
+        <small>Time to render panel: <strong>{=number_format($elapsed,3)}</strong> secs</small>
     </p>
 
 </div>
